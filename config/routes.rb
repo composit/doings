@@ -1,4 +1,14 @@
 Doings::Application.routes.draw do
+  resources :tickets
+
+  resources :projects
+
+  resources :office_hours
+
+  resources :invoices
+
+  resources :clients
+
   devise_for :users
 
   root :to => "clients#index"

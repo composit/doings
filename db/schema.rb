@@ -10,7 +10,120 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101124191620) do
+ActiveRecord::Schema.define(:version => 20101124231759) do
+
+  create_table "addresses", :force => true do |t|
+    t.string   "line_1"
+    t.string   "line_2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip_code"
+    t.string   "country"
+    t.string   "phone"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "billing_rates", :force => true do |t|
+    t.integer  "billable_id"
+    t.decimal  "dollars",     :precision => 10, :scale => 2
+    t.string   "units"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "clients", :force => true do |t|
+    t.string   "name"
+    t.string   "web_address"
+    t.integer  "address_id"
+    t.string   "billing_frequency"
+    t.boolean  "active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "comments", :force => true do |t|
+    t.integer  "commentable_id"
+    t.integer  "commenter_id"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "invoices", :force => true do |t|
+    t.integer  "client_id"
+    t.integer  "created_by_user_id"
+    t.date     "invoice_date"
+    t.datetime "paid_at"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "office_hours", :force => true do |t|
+    t.integer  "workable_id"
+    t.integer  "worker_id"
+    t.integer  "day_of_week"
+    t.time     "start_time"
+    t.time     "end_time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "projects", :force => true do |t|
+    t.integer  "client_id"
+    t.integer  "created_by_user_id"
+    t.string   "name"
+    t.datetime "closed_at"
+    t.integer  "closed_by_user_id"
+    t.integer  "authorized_by_user_id"
+    t.datetime "authorized_at"
+    t.boolean  "urgent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ticket_times", :force => true do |t|
+    t.integer  "worker_id"
+    t.integer  "ticket_id"
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.integer  "invoice_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tickets", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "created_by_user_id"
+    t.string   "name"
+    t.datetime "closed_at"
+    t.integer  "estimated_minutes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_activity_alerts", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "alertable_id"
+    t.text     "content"
+    t.datetime "dismissed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_roles", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "manageable_id"
+    t.boolean  "worker"
+    t.boolean  "authorizer"
+    t.boolean  "viewer"
+    t.boolean  "finances_viewer"
+    t.boolean  "invoicer"
+    t.integer  "priority"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -32,6 +145,9 @@ ActiveRecord::Schema.define(:version => 20101124191620) do
     t.datetime "locked_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "login"
+    t.integer  "address_id"
+    t.string   "time_zone"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
