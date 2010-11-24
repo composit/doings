@@ -5,9 +5,9 @@ gem 'rails', '3.0.3'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'mysql2'
-gem 'devise'
-gem 'cancan'
+gem 'mysql2', '>=0.2.6'
+gem 'devise', '>=1.1.3'
+gem 'cancan', '>=1.4.1'
 
 group :development do
   gem 'ruby-debug19', '>=0.11.6'
