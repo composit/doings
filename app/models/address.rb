@@ -3,7 +3,7 @@ class Address < ActiveRecord::Base
   PROVINCE_OPTIONS = [ "AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT" ]
   COUNTRY_OPTIONS = [ "USA", "Canada" ]
 
-  validates_format_of :zip, :with => /(\d{5}(-\d{4})?)|([ABCEGHJKLMNPRSTVXY]\d[A-Z] \d[A-Z]\d)/
-  validates_inclusion_of :state, :in => STATE_OPTIONS + PROVINCE_OPTIONS
-  validates_inclusion_of :country, :in => COUNTRY_OPTIONS
+  validates :zip_code, :format => /(^\d{5}(-\d{4})?$)|(^[ABCEGHJKLMNPRSTVXY]{1}\d{1}[A-Z]{1} \d{1}[A-Z]{1}\d{1}$)/, :allow_blank => true
+  validates :state, :inclusion => { :in => STATE_OPTIONS + PROVINCE_OPTIONS }, :allow_blank => true
+  validates :country, :inclusion => { :in => COUNTRY_OPTIONS }, :allow_blank => true
 end
