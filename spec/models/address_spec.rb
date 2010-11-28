@@ -10,7 +10,7 @@ describe Address do
     address.should be_valid
   end
 
-  it "should not allow zip codes with letters" do
+  it "should not allow American zip codes with letters" do
     address = Factory.build( :address, :zip_code => "11a11" )
     address.save
 

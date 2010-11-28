@@ -3,6 +3,14 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :confirmable, :lockable and :timeoutable
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :confirmable, :lockable
 
+  has_many :comments, :as => :commenter
+  has_many :invoices, :as => :created_by_user
+  has_many :office_hours, :as => :worker
+  has_many :created_projects, :class_name => 'Project', :as => :created_by_user
+  has_many :closed_projects, :class_name => 'Project', :as => :closed_by_user
+  has_many :authorized_projects, :class_name => 'Project', :as => :authorized_by_user
+  has_many :ticket_times, :as => :worker
+
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
 end
