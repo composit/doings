@@ -6,7 +6,7 @@ gem 'rails', '3.0.3'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2', '>=0.2.6'
-gem 'devise', '>=1.1.3'
+gem 'devise', '>=1.1.5'
 gem 'cancan', '>=1.4.1'
 
 group :development do
@@ -18,7 +18,7 @@ group :test do
   gem 'capybara', '>=0.4.0'
   gem 'database_cleaner', '>=0.6.0'
   gem 'cucumber-rails', '>=0.3.2'
-  gem 'rspec-rails', '>=2.1.0'
+  gem 'rspec-rails', '>=2.2.0'
   gem 'spork', '>=0.9.0.rc2'
   gem 'launchy', '>=0.3.7'
   gem 'factory_girl_rails', '>=1.0'

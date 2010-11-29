@@ -7,7 +7,6 @@ describe Project do
 
   it "should destroy associated billing rate when destroyed" do
     project = Factory( :project, :billing_rate => Factory( :billing_rate ) )
-    BillingRate.all.length.should eql( 1 )
     project.destroy
 
     BillingRate.all.length.should eql( 0 )
