@@ -20,6 +20,22 @@ describe User do
     user.errors.should eql( :email => ["has already been taken"] )
   end
 
-  pending "should require a unique username"
-  pending "should require a valid US time zone"
+  it "should require a unique username" do
+    Factory( :user, :username => "abc" )
+    user = Factory.build( :user, :username => "abc" )
+    user.save
+
+    user.errors.should eql( :username => ["has already been taken"] )
+  end
+
+  it "should allow a valid US time zone" do
+    Factory.build( :user, :time_zone => "Mountain Time" ).should be_valid
+  end
+
+  it "should not allow an invalid US time zone" do
+    user = Factory.build( :user, :time_zone => "Somewhere" )
+    user.save
+
+    user.errors.should eql( :time_zone => ["is not included in the list"] )
+  end
 end

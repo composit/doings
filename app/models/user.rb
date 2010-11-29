@@ -13,5 +13,8 @@ class User < ActiveRecord::Base
   has_many :created_tickets, :class_name => 'Ticket', :as => :created_by_user
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :username
+
+  validates :username, :uniqueness => true
+  validates :time_zone, :inclusion => { :in => ActiveSupport::TimeZone.us_zones }
 end
