@@ -1,17 +1,13 @@
 Doings::Application.routes.draw do
-  resources :tickets
+  resources :tickets do
+    get :current, :on => :collection
+  end
 
-  resources :projects
-
-  resources :office_hours
-
-  resources :invoices
-
-  resources :clients
+  resources :projects, :office_hours, :invoices, :clients
 
   devise_for :users
 
-  root :to => "clients#index"
+  root :to => "projects#index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
