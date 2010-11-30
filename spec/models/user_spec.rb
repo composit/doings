@@ -28,14 +28,10 @@ describe User do
     user.errors.should eql( :username => ["has already been taken"] )
   end
 
-  it "should allow a valid US time zone" do
-    Factory.build( :user, :time_zone => "Mountain Time" ).should be_valid
-  end
-
-  it "should not allow an invalid US time zone" do
-    user = Factory.build( :user, :time_zone => "Somewhere" )
+  it "should require a time zone" do
+    user = Factory.build( :user, :time_zone => "" )
     user.save
 
-    user.errors.should eql( :time_zone => ["is not included in the list"] )
+    user.errors.should eql( :time_zone => ["can't be blank"] )
   end
 end

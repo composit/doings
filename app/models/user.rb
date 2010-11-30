@@ -16,5 +16,5 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :username
 
   validates :username, :uniqueness => true
-  validates :time_zone, :inclusion => { :in => ActiveSupport::TimeZone.us_zones }
+  validates :time_zone, :presence => true
 end
