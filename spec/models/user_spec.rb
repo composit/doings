@@ -20,6 +20,13 @@ describe User do
     user.errors.should eql( :email => ["has already been taken"] )
   end
 
+  it "should require a username" do
+    user = Factory.build( :user, :username => "" )
+    user.save
+
+    user.errors.should eql( :username => ["can't be blank"] )
+  end
+
   it "should require a unique username" do
     Factory( :user, :username => "abc" )
     user = Factory.build( :user, :username => "abc" )
