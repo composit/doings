@@ -12,7 +12,9 @@ class User < ActiveRecord::Base
   has_many :ticket_times, :as => :worker
   has_many :created_tickets, :class_name => 'Ticket', :as => :created_by_user
   has_many :user_roles
+  has_many :clients, :through => :user_roles, :source => :manageable, :source_type => 'Client'
   has_many :projects, :through => :user_roles, :source => :manageable, :source_type => 'Project'
+  has_many :tickets, :through => :user_roles, :source => :manageable, :source_type => 'Ticket'
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :time_zone

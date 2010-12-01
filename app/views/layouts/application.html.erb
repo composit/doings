@@ -7,10 +7,13 @@
     <%= csrf_meta_tag %>
   </head>
   <body>
-
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-    <%= yield %>
-
+    <div id="wrap">
+      <p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>
+      <%= yield %>
+      <div id="footer">
+        Composition9 Design, LLC<br />
+      </div>
+    </div>
   </body>
 </html>

@@ -1,4 +1,4 @@
 class ClientsController < ApplicationController
-  def index
+  def edit
   end
 end

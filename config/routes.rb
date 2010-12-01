@@ -9,6 +9,8 @@ Doings::Application.routes.draw do
 
   root :to => "projects#index"
 
+  match 'client/:client_id/projects', :to => 'projects#index', :as => 'client_projects'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
