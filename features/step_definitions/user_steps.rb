@@ -1,4 +1,4 @@
-Given /^I am logged in as "([^"]*)"$/ do |username|
+Given /^I log in as "([^"]*)"$/ do |username|
   visit destroy_user_session_path
   user = User.find_by_username( username ) || Factory( :confirmed_user, :username => username )
   visit new_user_session_path

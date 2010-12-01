@@ -1,24 +1,9 @@
-<div id='content'>
-  <div id="header">
-    <h1>Projects</h1>
-  </div>
+<%= content_for( :header ) do %>
+  <h1>Projects</h1>
+<% end %>
 
-  <% for project in @projects %>
-    <div class="project">
-      <%= project.name %>
-    </div>
-  <% end %>
-</div>
-
-<div id='controls'>
-  <div class="client" id="client-all">
-    All clients -
-    <%= link_to "projects", projects_path %>
+<% for project in @projects %>
+  <div class="project">
+    <%= project.name %>
   </div>
-  <% for client in current_user.clients %>
-    <div class="client" id="client-<%= client.id %>">
-      <%= link_to client.name, edit_client_path( client ) %> -
-      <%= link_to "projects", client_projects_path( :client_id => client.id ) %>
-    </div>
-  <% end %>
-</div>
+<% end %>

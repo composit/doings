@@ -3,3 +3,7 @@ Given /^the following (.+) records:$/ do |factory, table|
     Factory( factory, hash )
   end
 end
+
+Then /^I should not see a field labeled "([^"]*)"$/ do |label|
+  page.should have_no_xpath( "//label", :text => label )
+end

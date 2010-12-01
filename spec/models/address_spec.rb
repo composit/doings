@@ -90,4 +90,10 @@ describe Address do
     address = Factory.build( :address, :phone => "1 + (4848) 333-8888 ext. 45" )
     address.should be_valid
   end
+
+  it "should return a street address string" do
+    address = Factory( :address, :line_1 => "123 Street", :line_2 => nil, :city => "Cityville", :state => "UT", :zip_code => "12345", :country => "USA" )
+
+    address.street_address.should eql( "123 Street, Cityville, UT  12345, USA" )
+  end
 end

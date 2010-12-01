@@ -60,9 +60,14 @@ a:hover, a:active {
   text-decoration: underline;
 }
 
+.clear {
+  overflow: hidden;
+  width: 100%;
+}
+
 #wrap {
   width: 1000px;
-  margin: 0 auto;
+  margin: 0 10px;
   position: relative;
   }
 
@@ -76,7 +81,7 @@ a:hover, a:active {
       color: #d2d0c0;
     }
 
-  #wrap #content {
+  #wrap #main {
     background: #fff;
     padding: 0 10px;
     border-left: 3px solid #d2d0c0;
@@ -84,7 +89,7 @@ a:hover, a:active {
     margin-right: 200px;
     }
 
-    #wrap #content .project {
+    #wrap #main .project {
       font-family: Helvetica, Arial, sans-serif;
     }
 
@@ -103,3 +108,32 @@ a:hover, a:active {
     font-weight: bold;
     color: #d2d0c0;
   }
+
+.row {
+  line-height: 2em;
+  }
+
+  .row div {
+    float: left;
+    margin: 4px;
+  }
+
+  .row .title {
+    width: 15%;
+    text-align: right;
+    }
+
+    .row .title .field_with_errors {
+      margin: 0;
+      width: 100%;
+      text-align: right;
+    }
+
+  .row .content {
+    width: 80%;
+    }
+
+    .row .content .field_with_errors {
+      margin: 0;
+      border: 2px solid #933;
+    }

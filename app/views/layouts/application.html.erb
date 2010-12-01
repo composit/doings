@@ -8,9 +8,30 @@
   </head>
   <body>
     <div id="wrap">
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
-      <%= yield %>
+      <div id="main">
+        <div id="header"><%= yield( :header ) %></div>
+        <p class="notice"><%= notice %></p>
+        <p class="alert"><%= alert %></p>
+        <%= yield %>
+      </div>
+      <% if( current_user ) %>
+        <div id='controls'>
+          <p><%= link_to "Panel", panel_path %></p>
+          <p class="client" id="client-all">
+            All clients -
+            <%= link_to "projects", projects_path %>
+          </p>
+          <% for client in current_user.clients %>
+            <p class="client" id="client-<%= client.id %>">
+              <%= link_to client.name, client %> -
+              <%= link_to "projects", client_projects_path( :client_id => client.id ) %>
+            </p>
+          <% end %>
+          <p>
+            <%= link_to "Sign out", destroy_user_session_path %>
+          </p>
+        </div>
+      <% end %>
       <div id="footer">
         Composition9 Design, LLC<br />
       </div>

@@ -18,7 +18,7 @@ Feature: manage projects
       | user_username | project_name  |
       | tester        | Test project  |
       | other         | Other project |
-    When I am logged in as "tester"
+    When I log in as "tester"
     And I am on the projects page
     Then I should see "Test project"
     And I should not see "Other project"
@@ -36,12 +36,12 @@ Feature: manage projects
       | user_username | client_name  |
       | tester        | Test client  |
       | other         | Other client |
-    When I am logged in as "tester"
+    When I log in as "tester"
     And I am on the projects page
     Then I should see "Test client"
     And I should not see "Other client"
 
-  Scenario: I should get to the edit client page by clicking the client name
+  Scenario: I should get to the edit client page by clicking the client name, even without admin rights
     Given the following confirmed_user records:
       | username |
       | tester   |
@@ -51,10 +51,10 @@ Feature: manage projects
     And the following user roles:
       | user_username | client_name |
       | tester        | Test client |
-    When I am logged in as "tester"
+    When I log in as "tester"
     And I am on the projects page
     And I follow "Test client"
-    Then I should be on the edit client page for "Test client"
+    Then I should be on the client page for "Test client"
 
   Scenario: I should only see a specific client's projects by clicking their "projects" link
     Given the following confirmed_user records:
@@ -76,7 +76,7 @@ Feature: manage projects
       | user_username | project_name  |
       | tester        | Test project  |
       | tester        | Other project |
-    When I am logged in as "tester"
+    When I log in as "tester"
     And I am on the projects page
     When I follow "projects" for the "Test client" client
     Then I should see "Test project"
@@ -98,12 +98,42 @@ Feature: manage projects
     And the following user roles:
       | user_username | project_name  |
       | tester        | Test project  |
-    When I am logged in as "tester"
+    When I log in as "tester"
     And I am on the projects page
     And I follow "projects" for the "Other client" client
     Then I should not see "Test project"
     When I follow "projects" for the "All clients" client
     Then I should see "Test project"
 
-  Scenario: I should see a project's tickets when I click "tickets"
-    pending
+  @javascript
+  Scenario: I should see a project's tickets that I'm attached to when I click "tickets"
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Other client |
+    And the following projects:
+      | name          |
+      | Test project  |
+      | Other project |
+    And the following tickets:
+      | name           | project_name  |
+      | Test ticket    | Test project  |
+      | Other ticket 1 | Other project |
+      | Other ticket 2 | Test project  |
+    And the following user roles:
+      | user_username | client_name  |
+      | tester        | Other client |
+    And the following user roles:
+      | user_username | project_name  |
+      | tester        | Test project  |
+    And the following user roles:
+      | user_username | ticket_name    |
+      | tester        | Test ticket    |
+      | tester        | Other ticket 1 |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "ticket" for the "Test project" project
+    Then I should see "Test ticket"
+    And I should not see "Other ticket"

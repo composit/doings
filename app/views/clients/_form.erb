@@ -1,0 +1,46 @@
+<div class="row clear">
+  <div class="title"><%= f.label :name %></div>
+  <div class="content"><%= f.text_field :name %></div>
+</div>
+<div class="row clear">
+  <div class="title"><%= f.label :web_address %></div>
+  <div class="content"><%= f.text_field :web_address %></div>
+</div>
+<%= f.fields_for :address do |address| %>
+  <div class="row clear">
+    <div class="title"><%= address.label :line_1 %></div>
+    <div class="content"><%= address.text_field :line_1 %></div>
+  </div>
+  <div class="row clear">
+    <div class="title"><%= address.label :line_2 %></div>
+    <div class="content"><%= address.text_field :line_2 %></div>
+  </div>
+  <div class="row clear">
+    <div class="title"><%= address.label :city %></div>
+    <div class="content"><%= address.text_field :city %></div>
+  </div>
+  <div class="row clear">
+    <div class="title"><%= address.label :state %></div>
+    <div class="content"><%= address.select :state, grouped_options_for_select( Address::GROUPED_OPTIONS, @client.address.state ) %></div>
+  </div>
+  <div class="row clear">
+    <div class="title"><%= address.label :zip_code %></div>
+    <div class="content"><%= address.text_field :zip_code %></div>
+  </div>
+  <div class="row clear">
+    <div class="title"><%= address.label :country %></div>
+    <div class="content"><%= address.select :country, Address::COUNTRY_OPTIONS %></div>
+  </div>
+  <div class="row clear">
+    <div class="title"><%= address.label :phone %></div>
+    <div class="content"><%= address.text_field :phone %></div>
+  </div>
+<% end %>
+<div class="row clear">
+  <div class="title"><%= f.label :billing_frequency %></div>
+  <div class="content"><%= f.text_field :billing_frequency %></div>
+</div>
+<div class="row clear">
+  <div class="title"><%= f.label :active %></div>
+  <div class="content"><%= f.check_box :active %></div>
+</div>

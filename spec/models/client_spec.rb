@@ -8,6 +8,7 @@ describe Client do
   it "should require a name" do
     client = Factory.build( :client, :name => "" )
     client.save
+
     client.errors.should eql( :name => ["can't be blank"] )
   end
 
@@ -15,6 +16,7 @@ describe Client do
     Factory( :client, :name => "Test client" )
     client = Factory.build( :client, :name => "Test client" )
     client.save
+
     client.errors.should eql( :name => ["has already been taken"] )
   end
 
@@ -31,4 +33,6 @@ describe Client do
 
     Address.all.length.should eql( 0 )
   end
+
+  pending "should require the web address to be properly formatted"
 end

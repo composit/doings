@@ -5,4 +5,6 @@ class Client < ActiveRecord::Base
   has_many :office_hours, :as => :workable
 
   validates :name, :presence => true, :uniqueness => true
+
+  accepts_nested_attributes_for :address
 end

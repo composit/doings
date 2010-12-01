@@ -1,13 +1,12 @@
 Doings::Application.routes.draw do
-  resources :tickets do
-    get :current, :on => :collection
-  end
-
-  resources :projects, :office_hours, :invoices, :clients
+  resources :clients, :only => [:show, :update]
+  resources :projects, :only => :index
 
   devise_for :users
 
-  root :to => "projects#index"
+  match 'panel', :to => 'panel#index', :as => 'panel'
+
+  root :to => "panel#index"
 
   match 'client/:client_id/projects', :to => 'projects#index', :as => 'client_projects'
 
