@@ -134,6 +134,6 @@ Feature: manage projects
       | tester        | Other ticket 1 |
     When I log in as "tester"
     And I am on the projects page
-    And I follow "ticket" for the "Test project" project
+    And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket"
     And I should not see "Other ticket"

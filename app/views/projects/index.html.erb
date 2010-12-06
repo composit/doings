@@ -3,7 +3,10 @@
 <% end %>
 
 <% for project in @projects %>
-  <div class="project">
+  <div class="project" id="project-<%= project.id %>">
     <%= project.name %>
+    <div class="details">
+      <%= link_to "tickets", "#", :class => "project-details", "data-project-id" => project.id %>
+    </div>
   </div>
 <% end %>
