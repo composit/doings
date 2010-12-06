@@ -34,5 +34,10 @@ describe Client do
     Address.all.length.should eql( 0 )
   end
 
-  pending "should require the web address to be properly formatted"
+  it "should require the web address to be properly formatted" do
+    client = Factory.build( :client, :web_address => "bad" )
+    client.save
+
+    client.errors.should eql( :web_address => ["is invalid"] )
+  end
 end
