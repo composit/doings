@@ -42,6 +42,7 @@ describe User do
     user.errors.should eql( :time_zone => ["can't be blank"] )
   end
 
+=begin
   it "should not be identified as a worker if it doesn't have anything it's working on" do
     user = Factory( :user )
     user.is_worker?.should be_false
@@ -79,4 +80,5 @@ describe User do
     user.user_roles << Factory( :user_role, :manageable => client )
     user.can_view?( client ).should be_true
   end
+=end
 end

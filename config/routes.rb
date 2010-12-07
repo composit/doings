@@ -1,6 +1,6 @@
 Doings::Application.routes.draw do
   resources :clients, :only => [:show, :update]
-  resources :projects, :only => :index
+  resources :projects, :only => [:index, :show]
 
   devise_for :users
 

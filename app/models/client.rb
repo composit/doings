@@ -3,6 +3,7 @@ class Client < ActiveRecord::Base
   has_one :billing_rate, :as => :billable, :dependent => :destroy
   has_many :invoices
   has_many :office_hours, :as => :workable
+  has_many :user_roles, :as => :manageable
 
   validates :name, :presence => true, :uniqueness => true
   validates :web_address, :format => { :with => URI::regexp( %w( http https ) ) }, :allow_blank => true

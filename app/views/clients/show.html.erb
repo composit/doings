@@ -11,7 +11,7 @@
   <% end %>
 <% else %>
   <p><%= @client.name %></p>
-  <p><%= link_to @client.web_address %></p>
+  <p><%= link_to @client.web_address, @client.web_address %></p>
   <p><%= @client.address.street_address %></p>
   <p><%= @client.address.phone %></p>
   <p><%= @client.billing_frequency %></p>

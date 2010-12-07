@@ -3,6 +3,7 @@
 
 $( document ).ready( function() {
   $( ".project-details" ).click( function() {
-    alert( "goodness" );
+    $( this ).parents( ".details" ).html( "<img src='/images/ajax-loader.gif' />" );
+    $.get( "/projects/" + $( this ).attr( "data-project-id" ) );
   } );
 } );

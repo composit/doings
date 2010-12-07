@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
   validates :username, :uniqueness => true, :presence => true
   validates :time_zone, :presence => true
 
+=begin
   def is_worker?
     user_roles.where( :worker => true ).count > 0
   end
@@ -38,4 +39,5 @@ class User < ActiveRecord::Base
     def manageable_roles( manageable )
       user_roles.where( :manageable_id => manageable.id, :manageable_type => manageable.class.name )
     end
+=end
 end
