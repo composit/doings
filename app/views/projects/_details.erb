@@ -1,4 +1,4 @@
-<% for ticket in @project.tickets.accessible_by( Ability.new( current_user ) ) %>
+<% for ticket in details.tickets.accessible_by( Ability.new( current_user ) ) %>
   <div id="ticket-<%= ticket.id %>">
     <%= ticket.name %><br />
     <%= form_for( ticket.ticket_times.build( :worker => current_user ), :remote => true ) do |f| %>
@@ -7,6 +7,26 @@
         <%= f.hidden_field :worker_id %>
         <%= link_to "start", "#", :class => "submitter" %>
       <% end %>
+    <% end %>
+  </div>
+<% end %>
+<% if( can?( :update, details ) ) %>
+  <%= link_to "new ticket", "#", :class => "new-ticket" %>
+  <div class="new-ticket-form">
+    <%= form_for( details.build_ticket_with_inherited_roles, :remote => true ) do |f| %>
+      <%= f.label :name %>
+      <%= f.text_field :name %>
+      <%= f.hidden_field :project_id %><br />
+      <%= f.fields_for :user_roles do |role| %>
+        <%= role.hidden_field :user_id %>
+        <%= role.object.user.username %>
+        <%= role.label :admin %>
+        <%= role.check_box :admin %>
+        <%= role.label :worker %>
+        <%= role.check_box :worker %>
+        <br />
+      <% end %>
+      <%= f.submit "Create ticket" %>
     <% end %>
   </div>
 <% end %>

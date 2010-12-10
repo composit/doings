@@ -8,4 +8,6 @@ class Ticket < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => { :scope => :project_id }
   validates :estimated_minutes, :numericality => true, :allow_blank => true
+
+  accepts_nested_attributes_for :user_roles
 end

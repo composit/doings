@@ -23,6 +23,11 @@ $( document ).ready( function() {
       $( this ).parents( "form" ).submit();
       return false;
     } );
+    $( ".new-ticket" ).click( function() {
+      $( this ).hide();
+      $( this ).parents( ".project" ).children( ".details" ).children( ".new-ticket-form" ).show();
+      return false;
+    } );
   }
   initializeDefaults();
 } );

@@ -35,4 +35,15 @@ describe Project do
 
     project.errors.should eql( :name => ["has already been taken"] )
   end
+
+  it "should build a ticket with inherited user roles" do
+    user_one = Factory( :user )
+    user_two = Factory( :user )
+    project = Factory( :project )
+    Factory( :user_role, :user => user_one, :manageable => project )
+    Factory( :user_role, :user => user_two, :manageable => project )
+    ticket = project.build_ticket_with_inherited_roles
+
+    ticket.user_roles.collect { |t| t.user_id }.should eql( [user_one.id, user_two.id] )
+  end
 end
