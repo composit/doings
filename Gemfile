@@ -23,6 +23,7 @@ group :test do
   gem 'launchy', '>=0.3.7'
   gem 'factory_girl_rails', '>=1.0'
   gem 'autotest', '>=4.4.6'
+  gem 'timecop', '>=0.3.5'
 end
 
 # Use unicorn as the web server

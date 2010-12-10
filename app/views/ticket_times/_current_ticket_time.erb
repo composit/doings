@@ -1,0 +1,8 @@
+<% if( current_ticket_time ) %>
+  <%= current_ticket_time.ticket.name %>
+  <%= current_ticket_time.started_at.strftime( "%Y-%m-%d %H:%M" ) %>
+  <%= form_for( current_ticket_time, :remote => true ) do |f| %>
+    <%= f.hidden_field :stop_now, :value => "1" %>
+    <%= f.submit "Stop now" %>
+  <% end %>
+<% end %>

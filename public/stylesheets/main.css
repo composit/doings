@@ -91,7 +91,11 @@ a:hover, a:active {
 
     #wrap #main .project {
       font-family: Helvetica, Arial, sans-serif;
-    }
+      }
+
+      #wrap #main .project .collapse-project-details {
+        display: none;
+      }
 
   #wrap #controls {
     font-size: .8em;

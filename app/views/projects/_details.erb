@@ -1,3 +1,12 @@
-<% for ticket in @project.tickets %>
-  <%= ticket.name %><br />
+<% for ticket in @project.tickets.accessible_by( Ability.new( current_user ) ) %>
+  <div id="ticket-<%= ticket.id %>">
+    <%= ticket.name %><br />
+    <%= form_for( ticket.ticket_times.build( :worker => current_user ), :remote => true ) do |f| %>
+      <% if can?( :create, f.object ) %>
+        <%= f.hidden_field :ticket_id %>
+        <%= f.hidden_field :worker_id %>
+        <%= link_to "start", "#", :class => "submitter" %>
+      <% end %>
+    <% end %>
+  </div>
 <% end %>

@@ -9,6 +9,7 @@
   <body>
     <div id="wrap">
       <div id="main">
+        <div id="current-ticket" ><%= render( :partial => "/ticket_times/current_ticket_time", :object => @current_ticket_time ) %></div>
         <div id="header"><%= yield( :header ) %></div>
         <p class="notice"><%= notice %></p>
         <p class="alert"><%= alert %></p>

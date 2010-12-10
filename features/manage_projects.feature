@@ -96,8 +96,8 @@ Feature: manage projects
       | user_username | client_name  |
       | tester        | Other client |
     And the following user roles:
-      | user_username | project_name  |
-      | tester        | Test project  |
+      | user_username | project_name |
+      | tester        | Test project |
     When I log in as "tester"
     And I am on the projects page
     And I follow "projects" for the "Other client" client
@@ -126,8 +126,8 @@ Feature: manage projects
       | user_username | client_name  |
       | tester        | Other client |
     And the following user roles:
-      | user_username | project_name  |
-      | tester        | Test project  |
+      | user_username | project_name |
+      | tester        | Test project |
     And the following user roles:
       | user_username | ticket_name    |
       | tester        | Test ticket    |
@@ -137,3 +137,54 @@ Feature: manage projects
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket"
     And I should not see "Other ticket"
+
+  Scenario: The "tickets" and "collapse" links should show and hide appropriately
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following projects:
+      | name         |
+      | Test project |
+    And the following tickets:
+      | name           | project_name |
+      | Test ticket    | Test project |
+    And the following user roles:
+      | user_username | project_name |
+      | tester        | Test project |
+    And the following user roles:
+      | user_username | ticket_name |
+      | tester        | Test ticket |
+    When I log in as "tester"
+    And I am on the projects page
+    Then "tickets" should be visible
+    Then "collapse" should not be visible
+    When I follow "tickets"
+    Then "tickets" should not be visible
+    Then "collapse" should be visible
+    When I follow "collapse"
+    Then "tickets" should be visible
+    Then "collapse" should not be visible
+
+  @javascript
+  Scenario: I should be able to hide a project's tickets when I click "collapse"
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following projects:
+      | name         |
+      | Test project |
+    And the following tickets:
+      | name           | project_name |
+      | Test ticket    | Test project |
+    And the following user roles:
+      | user_username | project_name |
+      | tester        | Test project |
+    And the following user roles:
+      | user_username | ticket_name |
+      | tester        | Test ticket |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    Then I should see "Test ticket"
+    When I follow "collapse"
+    Then I should not see "Test ticket"

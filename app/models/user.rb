@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   has_many :created_projects, :class_name => 'Project', :as => :created_by_user
   has_many :closed_projects, :class_name => 'Project', :as => :closed_by_user
   has_many :authorized_projects, :class_name => 'Project', :as => :authorized_by_user
-  has_many :ticket_times, :as => :worker
+  has_many :ticket_times, :foreign_key => :worker_id
   has_many :created_tickets, :class_name => 'Ticket', :as => :created_by_user
   has_many :user_roles
   has_many :clients, :through => :user_roles, :source => :manageable, :source_type => 'Client'

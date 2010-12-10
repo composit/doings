@@ -1,6 +1,7 @@
 Doings::Application.routes.draw do
   resources :clients, :only => [:show, :update]
   resources :projects, :only => [:index, :show]
+  resources :ticket_times, :only => [:create, :update]
 
   devise_for :users
 

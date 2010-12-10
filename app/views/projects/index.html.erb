@@ -4,9 +4,10 @@
 
 <% for project in @projects %>
   <div class="project" id="project-<%= project.id %>">
-    <%= project.name %>
+    <%= project.name %><br />
+    <%= link_to "tickets", "#", :class => "expand-project-details", "data-project-id" => project.id %>
     <div class="details">
-      <%= link_to "tickets", "#", :class => "project-details", "data-project-id" => project.id %>
     </div>
+    <%= link_to "collapse", "#", :class => "collapse-project-details" %>
   </div>
 <% end %>

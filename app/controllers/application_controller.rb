@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :authenticate_user!
   before_filter :set_user_time_zone
-  before_filter :set_nav_clients
+  before_filter :set_layout_defaults
 
   self.responder = DoingsResponder
 
@@ -12,7 +12,10 @@ class ApplicationController < ActionController::Base
       Time.zone = current_user.time_zone if( user_signed_in? )
     end
 
-    def set_nav_clients
-      @nav_clients = Client.accessible_by( current_ability ) if( current_user )
+    def set_layout_defaults
+      if( current_user )
+        @nav_clients = Client.accessible_by( current_ability )
+        @current_ticket_time = current_user.ticket_times.where( :ended_at => nil ).first
+      end
     end
 end
