@@ -10,6 +10,13 @@
     <div id="wrap">
       <div id="main">
         <div id="current-ticket" ><%= render( :partial => "/ticket_times/current_ticket_time", :object => @current_ticket_time ) %></div>
+        <% if( current_user ) %>
+          <div id="alerts">
+            <% for activity_alert in current_user.user_activity_alerts %>
+              <%= activity_alert.content %><br />
+            <% end %>
+          </div>
+        <% end %>
         <div id="header"><%= yield( :header ) %></div>
         <p class="notice"><%= notice %></p>
         <p class="alert"><%= alert %></p>

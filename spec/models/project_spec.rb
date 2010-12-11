@@ -42,7 +42,7 @@ describe Project do
     project = Factory( :project )
     Factory( :user_role, :user => user_one, :manageable => project )
     Factory( :user_role, :user => user_two, :manageable => project )
-    ticket = project.build_ticket_with_inherited_roles
+    ticket = project.build_ticket_with_inherited_roles( user_one.id )
 
     ticket.user_roles.collect { |t| t.user_id }.should eql( [user_one.id, user_two.id] )
   end

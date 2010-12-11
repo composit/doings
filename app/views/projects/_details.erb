@@ -1,6 +1,6 @@
 <% for ticket in details.tickets.accessible_by( Ability.new( current_user ) ) %>
   <div id="ticket-<%= ticket.id %>">
-    <%= ticket.name %><br />
+    <%= ticket.name %> created by <%= ticket.created_by_user.username %><br />
     <%= form_for( ticket.ticket_times.build( :worker => current_user ), :remote => true ) do |f| %>
       <% if can?( :create, f.object ) %>
         <%= f.hidden_field :ticket_id %>
@@ -18,14 +18,16 @@
       <%= f.label :name %>
       <%= f.text_field :name %>
       <%= f.hidden_field :project_id %><br />
+      <%= f.hidden_field :created_by_user_id %><br />
       <%= f.fields_for :user_roles do |role| %>
-        <%= role.hidden_field :user_id %>
-        <%= role.object.user.username %>
-        <%= role.label :admin %>
-        <%= role.check_box :admin %>
-        <%= role.label :worker %>
-        <%= role.check_box :worker %>
-        <br />
+        <div class="user-role">
+          <%= role.hidden_field :user_id %>
+          <%= role.object.user.username %>
+          <%= role.label :admin %>
+          <%= role.check_box :admin %>
+          <%= role.label :worker %>
+          <%= role.check_box :worker %>
+        </div>
       <% end %>
       <%= f.submit "Create ticket" %>
     <% end %>

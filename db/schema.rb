@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101130221134) do
+ActiveRecord::Schema.define(:version => 20101210234716) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(:version => 20101130221134) do
     t.datetime "dismissed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "alertable_type"
   end
 
   create_table "user_roles", :force => true do |t|

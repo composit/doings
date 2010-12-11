@@ -12,6 +12,13 @@ describe Ticket do
     ticket.errors.should eql( :name => ["can't be blank"] )
   end
 
+  it "should require a created by user" do
+    ticket = Factory.build( :ticket, :created_by_user_id => nil )
+    ticket.save
+
+    ticket.errors.should eql( :created_by_user_id => ["can't be blank"] )
+  end
+
   it "should allow non-unique names for differend projects" do
     project_one = Factory( :project )
     project_two = Factory( :project )
@@ -41,5 +48,14 @@ describe Ticket do
     ticket.save
 
     ticket.errors.should eql( :estimated_minutes => ["is not a number"] )
+  end
+
+  it "should generate user activity alerts when created" do
+    project = Factory( :project, :name => "Test project" )
+    user_one = Factory( :user, :username => "tester" )
+    user_two = Factory( :user )
+    ticket = Factory( :ticket, :project => project, :created_by_user => user_one, :user_roles_attributes => [{ :user => user_two }] )
+
+    user_two.user_activity_alerts.first.content.should eql( "tester created a new ticket for Test project" )
   end
 end
