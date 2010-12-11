@@ -1,0 +1,3 @@
+$( "#project-<%= @ticket.project.id %> .details" ).html( "<%= escape_javascript( render( :partial => "/projects/details", :object => @ticket.project ) ) %>" );
+$( "#project-<%= @ticket.project.id %> > .details .new-ticket" ).hide();
+$( "#project-<%= @ticket.project.id %> > .details .new-ticket-form" ).show();

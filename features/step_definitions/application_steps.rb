@@ -15,3 +15,7 @@ end
 Then /^"([^"]*)" should be visible$/ do |text|
   page.should have_xpath( "//*[text()='#{text}']", :visible => true )
 end
+
+When /^I wait for (\d+) second(?:|s)$/ do |seconds|
+  sleep( seconds.to_i )
+end

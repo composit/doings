@@ -6,10 +6,7 @@ $( document ).ready( function() {
     $( this ).hide();
     $( this ).parents( ".project" ).children( ".collapse-project-details" ).show();
     $( this ).parents( ".project" ).children( ".details" ).html( "<img src='/images/ajax-loader.gif' />" );
-    $.get(
-      "/projects/" + $( this ).attr( "data-project-id" ),
-      function() { initializeDefaults(); }
-    );
+    $.get( "/projects/" + $( this ).attr( "data-project-id" ) );
     return false;
   } );
   $( ".collapse-project-details" ).click( function() {
@@ -18,16 +15,13 @@ $( document ).ready( function() {
     $( this ).parents( ".project" ).children( ".details" ).html( "" );
     return false;
   } );
-  function initializeDefaults() {
-    $( ".submitter" ).click( function() {
-      $( this ).parents( "form" ).submit();
-      return false;
-    } );
-    $( ".new-ticket" ).click( function() {
-      $( this ).hide();
-      $( this ).parents( ".project" ).children( ".details" ).children( ".new-ticket-form" ).show();
-      return false;
-    } );
-  }
-  initializeDefaults();
+  $( ".submitter" ).live( "click", function() {
+    $( this ).parents( "form" ).submit();
+    return false;
+  } );
+  $( ".new-ticket" ).live( "click", function() {
+    $( this ).hide();
+    $( this ).parents( ".project" ).children( ".details" ).children( ".new-ticket-form" ).show();
+    return false;
+  } );
 } );

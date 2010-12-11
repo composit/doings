@@ -13,7 +13,8 @@
 <% if( can?( :update, details ) ) %>
   <%= link_to "new ticket", "#", :class => "new-ticket" %>
   <div class="new-ticket-form">
-    <%= form_for( details.build_ticket_with_inherited_roles, :remote => true ) do |f| %>
+    <%= form_for( generate_new_ticket( details ), :remote => true ) do |f| %>
+      <%= render( "shared/error_messages", :target => f.object ) %>
       <%= f.label :name %>
       <%= f.text_field :name %>
       <%= f.hidden_field :project_id %><br />
