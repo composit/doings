@@ -7,6 +7,8 @@ class Project < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => { :scope => :client_id }
 
+  accepts_nested_attributes_for :user_roles
+
   def build_ticket_with_inherited_roles( created_by_user_id )
     ticket = tickets.new( :created_by_user_id => created_by_user_id )
     user_roles.each do |role|

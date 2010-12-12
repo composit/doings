@@ -24,4 +24,9 @@ $( document ).ready( function() {
     $( this ).parents( ".project" ).children( ".details" ).children( ".new-ticket-form" ).show();
     return false;
   } );
+  $( ".new-project" ).live( "click", function() {
+    $( this ).hide();
+    $( ".new-project-form" ).show();
+    return false;
+  } );
 } );

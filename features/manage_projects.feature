@@ -104,3 +104,74 @@ Feature: manage projects
     Then I should not see "Test project"
     When I follow "projects" for the "All clients" client
     Then I should see "Test project"
+
+  Scenario: I should not be able to add new projects from the general projects page
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Other client |
+    And the following user roles:
+      | user_username | client_name  |
+      | tester        | Other client |
+    When I log in as "tester"
+    And I am on the projects page
+    Then I should not see "new project"
+
+  Scenario: I should not be able to add new projects to clients I don't have admin access to
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Other client |
+    And the following user roles:
+      | user_username | client_name  |
+      | tester        | Other client |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Other client" client
+    Then I should not see "new project"
+
+  @javascript @current
+  Scenario: I should be able to add new projects from the projects page
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following user roles:
+      | user_username | client_name  | admin |
+      | tester        | Test client  | true  |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    And I fill in "Name" with "Test project"
+    And I press "Create project"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    Then I should see "Test project"
+
+  Scenario: If I try to add an invalid project, I should see an alert
+    pending
+
+  Scenario: I should be able to add multiple projects without refreshing the page
+    pending
+
+  Scenario: Creating projects should alert everyone associated with the client except the creator
+    pending
+
+  Scenario: I should be able to assign rights to the project I'm creating
+    pending
+
+  Scenario: The rights to the project I'm creating should default to the rights for the client that project belongs to
+    pending
+
+  Scenario: When I create a project, it should keep track of and display who it was created by
+    pending
+
+  Scenario: I should be able to create a new project and create a new ticket for that project without refreshing the page
+    pending

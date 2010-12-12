@@ -122,7 +122,7 @@ Feature: manage tickets
     Then I should see "Test ticket"
 
   @javascript
-  Scenario: If I try to create a new ticket, but don't enter a name, I should see an alert
+  Scenario: If I try to create an invalid ticket, I should see an alert
     Given the following confirmed_user records:
       | username |
       | tester   |

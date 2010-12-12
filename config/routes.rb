@@ -1,6 +1,6 @@
 Doings::Application.routes.draw do
   resources :clients, :only => [:show, :update]
-  resources :projects, :only => [:index, :show]
+  resources :projects, :only => [:index, :show, :create]
   resources :tickets, :only => [:create, :update]
   resources :ticket_times, :only => [:create, :update]
 

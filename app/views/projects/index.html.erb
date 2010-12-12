@@ -11,3 +11,26 @@
     <%= link_to "collapse", "#", :class => "collapse-project-details" %>
   </div>
 <% end %>
+<% if( @client ) %>
+  <%= link_to "new project", "#", :class => "new-project" %>
+  <div class="new-project-form">
+    <%= form_for( generate_new_project( @client ), :remote => true ) do |f| %>
+      <%= render( "shared/error_messages", :target => f.object ) %>
+      <%= f.label :name %>
+      <%= f.text_field :name %>
+      <%= f.hidden_field :client_id %><br />
+      <%= f.hidden_field :created_by_user_id %><br />
+      <%= f.fields_for :user_roles do |role| %>
+        <div class="user-role">
+          <%= role.hidden_field :user_id %>
+          <%= role.object.user.username %>
+          <%= role.label :admin %>
+          <%= role.check_box :admin %>
+          <%= role.label :worker %>
+          <%= role.check_box :worker %>
+        </div>
+      <% end %>
+      <%= f.submit "Create project" %>
+    <% end %>
+  </div>
+<% end %>

@@ -73,8 +73,31 @@ Feature: manage ticket times
     When I log in as "tester"
     Then I should not see "Other ticket" within "#current-ticket"
 
-  Scenario: If I start a new ticket time and one is already open, it should close the open one at the current time
-    pending
+  @javascript
+  Scenario: If I try to start a new ticket and the open ticket has a start time in the future, I should see a validation errror
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following project records:
+      | name         |
+      | Test project |
+    And the following tickets:
+      | name        | project_name |
+      | Test ticket | Test project |
+    And the following user roles:
+      | user_username | project_name |
+      | tester        | Test project |
+    And the following user roles:
+      | user_username | ticket_name | worker |
+      | tester        | Test ticket | true   |
+    And the following ticket times:
+      | worker_username | ticket_name | started_at |
+      | tester          | Test ticket | 2999-01-01 |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    And I follow "start" for the "Test ticket" ticket
+    Then I should see "Worker has a currently open ticket time with a future start date. Please close it before opening a new ticket."
 
   @javascript
   Scenario: If I stop a current ticket time, it should disappear from the current-ticket box

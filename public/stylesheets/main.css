@@ -89,6 +89,10 @@ a:hover, a:active {
     margin-right: 200px;
     }
 
+    #wrap #main .new-project-form {
+      display: none;
+    }
+
     #wrap #main .project {
       font-family: Helvetica, Arial, sans-serif;
       }
@@ -100,6 +104,7 @@ a:hover, a:active {
       #wrap #main .project .new-ticket-form {
         display: none;
       }
+
 
   #wrap #controls {
     font-size: .8em;

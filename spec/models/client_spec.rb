@@ -40,4 +40,15 @@ describe Client do
 
     client.errors.should eql( :web_address => ["is invalid"] )
   end
+
+  it "should build a project with inherited user roles" do
+    user_one = Factory( :user )
+    user_two = Factory( :user )
+    client = Factory( :client )
+    Factory( :user_role, :user => user_one, :manageable => client )
+    Factory( :user_role, :user => user_two, :manageable => client )
+    project = client.build_project_with_inherited_roles( user_one.id )
+
+    project.user_roles.collect { |t| t.user_id }.should eql( [user_one.id, user_two.id] )
+  end
 end

@@ -1,3 +1,6 @@
+<% if( @ticket_time && @ticket_time.errors ) %>
+  <%= render( "shared/error_messages", :target => @ticket_time ) %>
+<% end %>
 <% if( current_ticket_time ) %>
   <%= current_ticket_time.ticket.name %>
   <%= current_ticket_time.started_at.strftime( "%Y-%m-%d %H:%M" ) %>
