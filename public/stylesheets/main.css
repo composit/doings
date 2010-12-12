@@ -89,7 +89,7 @@ a:hover, a:active {
     margin-right: 200px;
     }
 
-    #wrap #main .new-project-form {
+    #wrap #main #new-project-form {
       display: none;
     }
 

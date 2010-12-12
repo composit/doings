@@ -26,7 +26,7 @@ $( document ).ready( function() {
   } );
   $( ".new-project" ).live( "click", function() {
     $( this ).hide();
-    $( ".new-project-form" ).show();
+    $( "#new-project-form" ).show();
     return false;
   } );
 } );

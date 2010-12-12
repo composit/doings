@@ -1,0 +1,18 @@
+<%= form_for( new_project_form, :remote => true ) do |f| %>
+  <%= render( "shared/error_messages", :target => f.object ) %>
+  <%= f.label :name %>
+  <%= f.text_field :name %>
+  <%= f.hidden_field :client_id %><br />
+  <%= f.hidden_field :created_by_user_id %><br />
+  <%= f.fields_for :user_roles do |role| %>
+    <div class="user-role">
+      <%= role.hidden_field :user_id %>
+      <%= role.object.user.username %>
+      <%= role.label :admin %>
+      <%= role.check_box :admin %>
+      <%= role.label :worker %>
+      <%= role.check_box :worker %>
+    </div>
+  <% end %>
+  <%= f.submit "Create project" %>
+<% end %>

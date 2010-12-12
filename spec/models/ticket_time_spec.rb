@@ -80,6 +80,6 @@ describe TicketTime do
     new_ticket_time = Factory.build( :ticket_time, :worker => user )
     new_ticket_time.save
 
-    new_ticket_time.errors.should eql( :worker => ["has a currently open ticket time with a future start date.  Please close it before opening a new ticket"] )
+    new_ticket_time.errors.should eql( :worker => ["has a currently open ticket time with a future start date. Please close it before opening a new ticket."] )
   end
 end

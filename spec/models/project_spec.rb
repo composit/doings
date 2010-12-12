@@ -42,8 +42,24 @@ describe Project do
     project = Factory( :project )
     Factory( :user_role, :user => user_one, :manageable => project )
     Factory( :user_role, :user => user_two, :manageable => project )
-    ticket = project.build_ticket_with_inherited_roles( user_one.id )
+    ticket = project.reload.build_ticket_with_inherited_roles( user_one.id )
 
     ticket.user_roles.collect { |t| t.user_id }.should eql( [user_one.id, user_two.id] )
+  end
+
+  it "should generate user activity alerts when created" do
+    user_one = Factory( :user, :username => "tester" )
+    user_two = Factory( :user )
+    project = Factory( :project, :name => "Test project", :created_by_user => user_one, :user_roles_attributes => [{ :user => user_two }] )
+
+    user_two.user_activity_alerts.first.content.should eql( "tester created a new project called Test project" )
+  end
+
+  it "should not generate user activity alerts for people not associated with that project" do
+    user_one = Factory( :user, :username => "tester" )
+    user_two = Factory( :user )
+    project = Factory( :project, :name => "Test project", :created_by_user => user_one, :user_roles_attributes => [{ :user => user_one }] )
+
+    user_two.user_activity_alerts.should be_empty
   end
 end

@@ -18,7 +18,7 @@ class Ticket < ActiveRecord::Base
   private
     def generate_alerts
       user_roles.each do |role|
-        user_activity_alerts.create!( :user => role.user, :alertable => self, :content => "#{created_by_user.username} created a new ticket for #{project.name}" ) unless( role.user_id == created_by_user_id )
+        user_activity_alerts.create!( :user => role.user, :alertable => self, :content => "#{created_by_user.username} created a new ticket called #{name}" ) unless( role.user_id == created_by_user_id )
       end
     end
 end

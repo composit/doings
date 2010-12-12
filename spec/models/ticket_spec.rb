@@ -51,11 +51,18 @@ describe Ticket do
   end
 
   it "should generate user activity alerts when created" do
-    project = Factory( :project, :name => "Test project" )
     user_one = Factory( :user, :username => "tester" )
     user_two = Factory( :user )
-    ticket = Factory( :ticket, :project => project, :created_by_user => user_one, :user_roles_attributes => [{ :user => user_two }] )
+    ticket = Factory( :ticket, :name => "Test ticket", :created_by_user => user_one, :user_roles_attributes => [{ :user => user_two }] )
 
-    user_two.user_activity_alerts.first.content.should eql( "tester created a new ticket for Test project" )
+    user_two.user_activity_alerts.first.content.should eql( "tester created a new ticket called Test ticket" )
+  end
+
+  it "should not generate user activity alerts for people not associated with the ticket" do
+    user_one = Factory( :user, :username => "tester" )
+    user_two = Factory( :user )
+    ticket = Factory( :ticket, :name => "Test ticket", :created_by_user => user_one, :user_roles_attributes => [{ :user => user_one }] )
+
+    user_two.user_activity_alerts.should be_empty
   end
 end

@@ -134,7 +134,7 @@ Feature: manage projects
     And I follow "projects" for the "Other client" client
     Then I should not see "new project"
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to add new projects from the projects page
     Given the following confirmed_user records:
       | username |
@@ -155,17 +155,75 @@ Feature: manage projects
     And I follow "projects" for the "Test client" client
     Then I should see "Test project"
 
+  @javascript
   Scenario: If I try to add an invalid project, I should see an alert
-    pending
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following user roles:
+      | user_username | client_name  | admin |
+      | tester        | Test client  | true  |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    And I press "Create project"
+    Then I should see "t be blank"
 
+  @javascript
   Scenario: I should be able to add multiple projects without refreshing the page
-    pending
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following user roles:
+      | user_username | client_name  | admin |
+      | tester        | Test client  | true  |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    And I fill in "Name" with "Test project"
+    And I press "Create project"
+    And I wait for 1 second
+    And I follow "new project"
+    And I fill in "Name" with "Test project 2"
+    And I press "Create project"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    Then I should see "Test project 2"
 
-  Scenario: Creating projects should alert everyone associated with the client except the creator
-    pending
-
+  @javascript @current
   Scenario: I should be able to assign rights to the project I'm creating
-    pending
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+      | other    |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following user roles:
+      | user_username | client_name | admin |
+      | tester        | Test client | true  |
+      | other         | Test client | false |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    And I fill in "Name" with "Test project"
+    And I uncheck "Admin" in the roles for "tester"
+    And I check "Admin" in the roles for "other"
+    And I press "Create project"
+    And I wait for 1 second
+    Then the following roles should be set:
+      | user_username | project_name | admin |
+      | tester        | Test project | 0     |
+      | other         | Test project | 1     |
 
   Scenario: The rights to the project I'm creating should default to the rights for the client that project belongs to
     pending

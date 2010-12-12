@@ -1,0 +1,7 @@
+<div class="project" id="project-<%= line.id %>">
+  <%= line.name %><br />
+  <%= link_to "tickets", "#", :class => "expand-project-details", "data-project-id" => line.id %>
+  <div class="details">
+  </div>
+  <%= link_to "collapse", "#", :class => "collapse-project-details" %>
+</div>
