@@ -35,9 +35,10 @@
               <%= link_to "projects", client_projects_path( :client_id => client.id ) %>
             </p>
           <% end %>
-          <p>
-            <%= link_to "Sign out", destroy_user_session_path %>
-          </p>
+          <% if( current_user.is_worker? ) %>
+            <p><%= link_to "Update goals", goals_path %></p>
+          <% end %>
+          <p><%= link_to "Sign out", destroy_user_session_path %></p>
         </div>
       <% end %>
       <div id="footer">

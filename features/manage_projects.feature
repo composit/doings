@@ -286,7 +286,7 @@ Feature: manage projects
     And I press "Create project"
     And I am on the projects page
     And I follow "projects" for the "Test client" client
-    Then I should see "Test project created by tester"
+    Then I should see "created by tester"
 
   @javascript
   Scenario: I should be able to create a new project and create a new ticket for that project without refreshing the page

@@ -93,6 +93,10 @@ a:hover, a:active {
       display: none;
     }
 
+    #wrap #main #new-goal-form {
+      display: none;
+    }
+
     #wrap #main .project {
       font-family: Helvetica, Arial, sans-serif;
       }

@@ -1,0 +1,4 @@
+$( "#goals" ).append( "<%= escape_javascript( render( :partial => "line", :object => @goal ) ) %>" );
+$( "#new-goal" ).show();
+$( "#new-goal-form" ).hide();
+$( "#new-goal-form" ).html( "<%= escape_javascript( render( :partial => "new_goal_form", :object => current_user.goals.build ) ) %>" );

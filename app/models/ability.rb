@@ -14,5 +14,7 @@ class Ability
 
     can [:read, :update, :destroy], TicketTime, :worker_id => user.id
     can :create, TicketTime, :ticket => { :user_roles => { :user_id => user.id, :worker => true } }
+
+    can :manage, Goal, :user_id => user.id
   end
 end

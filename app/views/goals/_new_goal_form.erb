@@ -1,0 +1,13 @@
+<%= form_for( new_goal_form, :remote => true ) do |f| %>
+  <%= render( "shared/error_messages", :target => f.object ) %>
+  <%= f.label :name %>
+  <%= f.text_field :name %><br />
+  <%= f.label :workable_type, "Workable type (optional)" %>
+  <%= f.select :workable_type, Goal::WORKABLE_TYPES, :include_blank => true %><br />
+  <%= f.label :period %>
+  <%= f.select :period, Goal::PERIODS, :include_blank => true %><br />
+  <%= f.label :amount, "Amount (minutes/dollars)" %>
+  <%= f.text_field :amount %><br />
+  <%= f.hidden_field :user_id %>
+  <%= f.submit "Create goal" %>
+<% end %>

@@ -24,9 +24,14 @@ $( document ).ready( function() {
     $( this ).parents( ".project" ).children( ".details" ).children( ".new-ticket-form" ).show();
     return false;
   } );
-  $( ".new-project" ).live( "click", function() {
+  $( "#new-project" ).live( "click", function() {
     $( this ).hide();
     $( "#new-project-form" ).show();
+    return false;
+  } );
+  $( "#new-goal" ).live( "click", function() {
+    $( this ).hide();
+    $( "#new-goal-form" ).show();
     return false;
   } );
 } );

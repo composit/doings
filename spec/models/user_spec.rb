@@ -42,7 +42,6 @@ describe User do
     user.errors.should eql( :time_zone => ["can't be blank"] )
   end
 
-=begin
   it "should not be identified as a worker if it doesn't have anything it's working on" do
     user = Factory( :user )
     user.is_worker?.should be_false
@@ -53,32 +52,4 @@ describe User do
     user.user_roles << Factory( :user_role, :manageable => Factory( :client ), :worker => true )
     user.is_worker?.should be_true
   end
-
-  it "should not be admin for manageable items without admin rights" do
-    user = Factory( :user )
-    client = Factory( :client )
-    user.user_roles << Factory( :user_role, :manageable => client )
-    user.is_admin_for?( client ).should be_false
-  end
-
-  it "should be admin for manageable items with admin rights" do
-    user = Factory( :user )
-    client = Factory( :client )
-    user.user_roles << Factory( :user_role, :manageable => client, :admin => true )
-    user.is_admin_for?( client ).should be_true
-  end
-
-  it "should not be able to view manageable items it is not associated with" do
-    user = Factory( :user )
-    client = Factory( :client )
-    user.can_view?( client ).should be_false
-  end
-
-  it "should be able to view manageable items it is associated with" do
-    user = Factory( :user )
-    client = Factory( :client )
-    user.user_roles << Factory( :user_role, :manageable => client )
-    user.can_view?( client ).should be_true
-  end
-=end
 end
