@@ -1,6 +1,6 @@
 <% for ticket in details.tickets.accessible_by( Ability.new( current_user ) ) %>
   <div id="ticket-<%= ticket.id %>">
-    <%= ticket.name %> created by <%= ticket.created_by_user.username %><br />
+    <%= ticket.name %><span class="sidenote">created by <%= ticket.created_by_user.username %></span><br />
     <%= form_for( ticket.ticket_times.build( :worker => current_user ), :remote => true ) do |f| %>
       <% if can?( :create, f.object ) %>
         <%= f.hidden_field :ticket_id %>
@@ -24,7 +24,7 @@
           <%= role.hidden_field :user_id %>
           <%= role.object.user.username %>
           <%= role.label :admin %>
-          <%= role.check_box :admin %>
+          <%= role.check_box :admin, :disabled => ( role.object.user_id == f.object.created_by_user_id ) %>
           <%= role.label :worker %>
           <%= role.check_box :worker %>
         </div>

@@ -5,6 +5,13 @@ describe Project do
     Factory.build( :project ).should be_valid
   end
 
+  it "should require a created by user" do
+    project = Factory.build( :project, :created_by_user_id => nil )
+    project.save
+
+    project.errors.should eql( :created_by_user_id => ["can't be blank"] )
+  end
+
   it "should destroy associated billing rate when destroyed" do
     project = Factory( :project, :billing_rate => Factory( :billing_rate ) )
     project.destroy

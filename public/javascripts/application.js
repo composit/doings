@@ -2,14 +2,14 @@
 // This file is automatically included by javascript_include_tag :defaults
 
 $( document ).ready( function() {
-  $( ".expand-project-details" ).click( function() {
+  $( ".expand-project-details" ).live( "click", function() {
     $( this ).hide();
     $( this ).parents( ".project" ).children( ".collapse-project-details" ).show();
     $( this ).parents( ".project" ).children( ".details" ).html( "<img src='/images/ajax-loader.gif' />" );
     $.get( "/projects/" + $( this ).attr( "data-project-id" ) );
     return false;
   } );
-  $( ".collapse-project-details" ).click( function() {
+  $( ".collapse-project-details" ).live( "click", function() {
     $( this ).hide();
     $( this ).parents( ".project" ).children( ".expand-project-details" ).show();
     $( this ).parents( ".project" ).children( ".details" ).html( "" );

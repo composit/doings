@@ -1,4 +1,6 @@
 Doings::Application.routes.draw do
+  resources :goals
+
   resources :clients, :only => [:show, :update]
   resources :projects, :only => [:index, :show, :create]
   resources :tickets, :only => [:create, :update]

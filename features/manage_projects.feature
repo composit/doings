@@ -56,6 +56,7 @@ Feature: manage projects
     And I follow "Test client"
     Then I should be on the client page for "Test client"
 
+    @current
   Scenario: I should only see a specific client's projects by clicking their "projects" link
     Given the following confirmed_user records:
       | username |
@@ -198,8 +199,37 @@ Feature: manage projects
     And I follow "projects" for the "Test client" client
     Then I should see "Test project 2"
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to assign rights to the project I'm creating
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+      | other    |
+      | another  |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following user roles:
+      | user_username | client_name | admin |
+      | tester        | Test client | true  |
+      | other         | Test client | true  |
+      | another       | Test client | false |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    And I fill in "Name" with "Test project"
+    And I uncheck "Admin" in the roles for "other"
+    And I check "Admin" in the roles for "another"
+    And I press "Create project"
+    And I wait for 1 second
+    Then the following roles should be set:
+      | user_username | project_name | admin |
+      | other         | Test project | 0     |
+      | another       | Test project | 1     |
+
+  @javascript
+  Scenario: The rights to the project I'm creating should default to the rights for the client that project belongs to
     Given the following confirmed_user records:
       | username |
       | tester   |
@@ -208,28 +238,78 @@ Feature: manage projects
       | name        |
       | Test client |
     And the following user roles:
+      | user_username | client_name | admin | worker |
+      | tester        | Test client | true  | false  |
+      | other         | Test client | false | true   |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    Then the "Admin" checkbox in the roles for "tester" should be checked
+    And the "Worker" checkbox in the roles for "tester" should not be checked
+    And the "Admin" checkbox in the roles for "other" should not be checked
+    And the "Worker" checkbox in the roles for "other" should be checked
+
+  @javascript
+  Scenario: I should not be able to remove admin rights for myself for a project I'm creating
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following user roles:
       | user_username | client_name | admin |
       | tester        | Test client | true  |
-      | other         | Test client | false |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    Then the "Admin" checkbox in the roles for "tester" should be disabled
+
+  @javascript
+  Scenario: When I create a project, it should keep track of and display who it was created by
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following user roles:
+      | user_username | client_name  | admin |
+      | tester        | Test client  | true  |
     When I log in as "tester"
     And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     And I fill in "Name" with "Test project"
-    And I uncheck "Admin" in the roles for "tester"
-    And I check "Admin" in the roles for "other"
+    And I press "Create project"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    Then I should see "Test project created by tester"
+
+  @javascript
+  Scenario: I should be able to create a new project and create a new ticket for that project without refreshing the page
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following user roles:
+      | user_username | client_name  | admin |
+      | tester        | Test client  | true  |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    And I fill in "Name" with "Test project"
     And I press "Create project"
     And I wait for 1 second
-    Then the following roles should be set:
-      | user_username | project_name | admin |
-      | tester        | Test project | 0     |
-      | other         | Test project | 1     |
-
-  Scenario: The rights to the project I'm creating should default to the rights for the client that project belongs to
-    pending
-
-  Scenario: When I create a project, it should keep track of and display who it was created by
-    pending
-
-  Scenario: I should be able to create a new project and create a new ticket for that project without refreshing the page
-    pending
+    And I follow "tickets" for the "Test project" project
+    And I follow "new ticket"
+    And I fill in "Name" with "Test ticket"
+    And I press "Create ticket"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    Then I should see "Test ticket"

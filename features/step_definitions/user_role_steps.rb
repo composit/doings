@@ -21,7 +21,6 @@ Then /^the following roles should be set:$/ do |table|
     user = User.find_by_username( hash["user_username"] )
     manageable = Ticket.find_by_name( hash["ticket_name"] ) if( hash["ticket_name"] )
     manageable = Project.find_by_name( hash["project_name"] ) if( hash["project_name"] )
-    puts manageable.inspect
     roles = {}
     roles[:admin] = hash["admin"] if( hash["admin"] )
     roles[:worker] = hash["worker"] if( hash["worker"] )
@@ -35,4 +34,8 @@ end
 
 Then /^the "([^"]*)" checkbox in the roles for "([^"]*)" should not be checked$/ do |role, username|
   page.find( ".user-role", :text => username ).find_field( role )['checked'].should be_false
+end
+
+Then /^the "([^"]*)" checkbox in the roles for "([^"]*)" should be disabled$/ do |role, username|
+  page.find( ".user-role", :text => username ).find_field( role )['disabled'].should eql( "true" )
 end

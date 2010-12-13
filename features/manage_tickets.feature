@@ -164,32 +164,34 @@ Feature: manage tickets
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket 2"
 
-  @javascript
+  @javascript @current
   Scenario: I should be able to assign rights to the ticket I'm creating
     Given the following confirmed_user records:
       | username |
       | tester   |
       | other    |
+      | another  |
     And the following projects:
       | name         |
       | Test project |
     And the following user roles:
       | user_username | project_name | admin |
       | tester        | Test project | true  |
-      | other         | Test project | false |
+      | other         | Test project | true  |
+      | another       | Test project | false |
     When I log in as "tester"
     And I am on the projects page
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     And I fill in "Name" with "Test ticket"
-    And I uncheck "Admin" in the roles for "tester"
-    And I check "Admin" in the roles for "other"
+    And I uncheck "Admin" in the roles for "other"
+    And I check "Admin" in the roles for "another"
     And I press "Create ticket"
     And I wait for 1 second
     Then the following roles should be set:
       | user_username | ticket_name | admin |
-      | tester        | Test ticket | 0     |
-      | other         | Test ticket | 1     |
+      | other         | Test ticket | 0     |
+      | another       | Test ticket | 1     |
 
   @javascript
   Scenario: The rights to the ticket I'm creating should default to the rights for the project that ticket belongs to
@@ -212,6 +214,24 @@ Feature: manage tickets
     And the "Worker" checkbox in the roles for "tester" should not be checked
     And the "Admin" checkbox in the roles for "other" should not be checked
     And the "Worker" checkbox in the roles for "other" should be checked
+
+  @javascript
+  Scenario: I should not be able to remove admin rights for myself for a ticket I'm creating
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+      | other    |
+    And the following projects:
+      | name         |
+      | Test project |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    And I follow "new ticket" for the "Test project" project
+    Then the "Admin" checkbox in the roles for "tester" should be disabled
 
   @javascript
   Scenario: When I create a ticket, it should keep track of and display who it was created by

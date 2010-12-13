@@ -7,6 +7,7 @@ class Project < ActiveRecord::Base
   has_many :user_activity_alerts, :as => :alertable
 
   validates :name, :presence => true, :uniqueness => { :scope => :client_id }
+  validates :created_by_user_id, :presence => true
 
   accepts_nested_attributes_for :user_roles
 

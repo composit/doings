@@ -150,3 +150,15 @@ a:hover, a:active {
       margin: 0;
       border: 2px solid #933;
     }
+
+.sidenote {
+  padding-left: 5px;
+  font-size: .8em;
+  color: #d2d0c0;
+}
+
+hr {
+  background-color: #d2d0c0;
+  height: 1px;
+  border: 0;
+}
