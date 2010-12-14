@@ -1,0 +1,5 @@
+$( "#goal_workable_id" ).html( "" );
+<% @workables.each do |workable| %>
+  $( '<option></option>' ).val( '<%= workable.id %>' ).text( '<%= workable.name %>' ).appendTo( "#goal_workable_id" );
+<% end %>
+$( "#workables" ).show();

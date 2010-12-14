@@ -30,5 +30,88 @@ Feature: manage goals
     And I am on the goals page
     Then I should see "Test goal"
 
+  @javascript
   Scenario: I should see an alert if I enter an invalid goal
-    pending
+    Given the following worker records:
+      | username |
+      | tester   |
+    When I log in as "tester"
+    And I am on the goals page
+    And I follow "new goal"
+    And I press "Create goal"
+    Then I should see "t be blank"
+
+  @javascript
+  Scenario: I should be able to select a workable object
+    Given the following worker records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following user roles:
+      | user_username | client_name | worker |
+      | tester        | Test client | true   |
+    When I log in as "tester"
+    And I am on the goals page
+    And I follow "new goal"
+    And I fill in "Name" with "Test goal"
+    And I select "Client" from "Workable type (optional)"
+    Then I should see "Test client" within "#new-goal-form"
+    When I select "Test client" from "Workable"
+    And I select "Yearly" from "Period"
+    And I fill in "Amount (minutes/dollars)" with "2"
+    And I press "Create goal"
+    And I am on the goals page
+    Then I should see "Test goal: 2 minutes/year for Test client"
+
+  @javascript
+  Scenario: I should not be able to select a workable object I am not a worker for
+    Given the following worker records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following user roles:
+      | user_username | client_name | worker |
+      | tester        | Test client | false  |
+    When I log in as "tester"
+    And I am on the goals page
+    And I follow "new goal"
+    And I select "Client" from "Workable type"
+    Then I should not see "Test client" within "#new-goal-form"
+
+  @javascript
+  Scenario: I should not be able to select a closed project
+    Given the following worker records:
+      | username |
+      | tester   |
+    And the following project records:
+      | name         | closed_at           |
+      | Test project | 2001-01-01 01:01:01 |
+    And the following user roles:
+      | user_username | project_name | worker |
+      | tester        | Test project | true   |
+    When I log in as "tester"
+    And I am on the goals page
+    And I follow "new goal"
+    And I select "Project" from "Workable type"
+    Then I should not see "Test project" within "#new-goal-form"
+
+  @javascript
+  Scenario: I should not be able to select a closed ticket
+    Given the following worker records:
+      | username |
+      | tester   |
+    And the following ticket records:
+      | name        | closed_at           |
+      | Test ticket | 2001-01-01 01:01:01 |
+    And the following user roles:
+      | user_username | ticket_name | worker |
+      | tester        | Test ticket | true   |
+    When I log in as "tester"
+    And I am on the goals page
+    And I follow "new goal"
+    And I select "Ticket" from "Workable type"
+    Then I should not see "Test ticket" within "#new-goal-form"

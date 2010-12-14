@@ -1,5 +1,5 @@
 class Ticket < ActiveRecord::Base
-  has_one :billing_rate, :dependent => :destroy
+  has_one :billing_rate, :as => :billable, :dependent => :destroy
   has_many :comments, :as => :commentable
   has_many :ticket_times
   has_many :user_roles, :as => :manageable
@@ -10,6 +10,7 @@ class Ticket < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => { :scope => :project_id }
   validates :estimated_minutes, :numericality => true, :allow_blank => true
   validates :created_by_user_id, :presence => true
+  validates :billing_rate, :presence => true
 
   accepts_nested_attributes_for :user_roles
 

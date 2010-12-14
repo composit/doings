@@ -19,6 +19,13 @@ describe Ticket do
     ticket.errors.should eql( :created_by_user_id => ["can't be blank"] )
   end
 
+  it "should require a billing rate" do
+    ticket = Factory.build( :ticket, :billing_rate => nil )
+    ticket.save
+
+    ticket.errors.should eql( :billing_rate => ["can't be blank"] )
+  end
+
   it "should allow non-unique names for differend projects" do
     project_one = Factory( :project )
     project_two = Factory( :project )

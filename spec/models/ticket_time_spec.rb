@@ -12,6 +12,13 @@ describe TicketTime do
     ticket_time.errors.should eql( :worker_id => ["can't be blank"] )
   end
 
+  it "should require a ticket" do
+    ticket_time = Factory.build( :ticket_time, :ticket_id => nil )
+    ticket_time.save
+
+    ticket_time.errors.should eql( :ticket_id => ["can't be blank"] )
+  end
+
   it "should default the start time to the current time if it is nil" do
     ticket_time = Factory.build( :ticket_time, :started_at => nil )
     Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) ) do
@@ -81,5 +88,29 @@ describe TicketTime do
     new_ticket_time.save
 
     new_ticket_time.errors.should eql( :worker => ["has a currently open ticket time with a future start date. Please close it before opening a new ticket."] )
+  end
+
+  it "should calculate minutes worked for a batch of ticket times" do
+    ticket_time_one = Factory( :ticket_time, :started_at => 30.minutes.ago, :ended_at => 20.minutes.ago )
+    ticket_time_two = Factory( :ticket_time, :started_at => 10.minutes.ago, :ended_at => 5.minutes.ago )
+
+    TicketTime.batch_minutes_worked( [ticket_time_one, ticket_time_two] ).round.should eql( 15 )
+  end
+
+  it "should calculate minutes worked for a batch of ticket times including an open ticket time" do
+    ticket_time_one = Factory( :ticket_time, :started_at => 30.minutes.ago, :ended_at => 20.minutes.ago )
+    ticket_time_two = Factory( :ticket_time, :started_at => 10.minutes.ago )
+
+    TicketTime.batch_minutes_worked( [ticket_time_one, ticket_time_two] ).round.should eql( 20 )
+  end
+
+  it "should calculate dollars earned for a batch of ticket times with hourly rates" do
+    ticket_one = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 10, :units => "hour" ) )
+    ticket_two = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 20, :units => "hour" ) )
+
+    ticket_time_one = Factory( :ticket_time, :ticket => ticket_one, :started_at => 30.minutes.ago, :ended_at => 20.minutes.ago )
+    ticket_time_two = Factory( :ticket_time, :ticket => ticket_two, :started_at => 10.minutes.ago, :ended_at => 5.minutes.ago )
+
+    sprintf( "%.2f", TicketTime.batch_dollars_earned( [ticket_time_one, ticket_time_two] ) ).should eql( "3.33" )
   end
 end

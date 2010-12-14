@@ -1,7 +1,13 @@
 Doings::Application.routes.draw do
-  resources :clients, :only => [:show, :update]
-  resources :projects, :only => [:index, :show, :create]
-  resources :tickets, :only => [:create, :update]
+  resources :clients, :only => [:show, :update] do
+    collection { get :workables }
+  end
+  resources :projects, :only => [:index, :show, :create] do
+    collection { get :workables }
+  end
+  resources :tickets, :only => [:create, :update] do
+    collection { get :workables }
+  end
   resources :ticket_times, :only => [:create, :update]
   resources :goals, :only => [:index, :create]
 

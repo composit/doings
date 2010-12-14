@@ -4,8 +4,14 @@
   <%= f.text_field :name %><br />
   <%= f.label :workable_type, "Workable type (optional)" %>
   <%= f.select :workable_type, Goal::WORKABLE_TYPES, :include_blank => true %><br />
+  <div id="workables">
+    <%= f.label :workable_id %>
+    <%= f.select :workable_id, [] %><br />
+  </div>
   <%= f.label :period %>
   <%= f.select :period, Goal::PERIODS, :include_blank => true %><br />
+  <%= f.label :units %>
+  <%= f.select :units, Goal::UNITS %><br />
   <%= f.label :amount, "Amount (minutes/dollars)" %>
   <%= f.text_field :amount %><br />
   <%= f.hidden_field :user_id %>

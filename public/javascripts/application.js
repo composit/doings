@@ -34,4 +34,20 @@ $( document ).ready( function() {
     $( "#new-goal-form" ).show();
     return false;
   } );
+  $( "#goal_workable_type" ).live( "change", function() {
+    switch( $( this ).val() ) {
+      case "Client":
+        $.get( "/clients/workables" );
+        break;
+      case "Project":
+        $.get( "/projects/workables" )
+        break;
+      case "Ticket":
+        $.get( "/tickets/workables" );
+        break;
+      case "":
+        $( "#workables" ).hide();
+        break;
+    }
+  } );
 } );
