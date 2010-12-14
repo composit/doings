@@ -16,5 +16,8 @@ class Ability
     can :create, TicketTime, :ticket => { :user_roles => { :user_id => user.id, :worker => true } }
 
     can :manage, Goal, :user_id => user.id
+
+    can :read, BillingRate, :billable => { :user_roles => { :user_id => user.id, :finances => true } }
+    can :manage, BillingRate, :billable => { :user_roles => { :user_id => user.id, :finances => true, :admin => true } }
   end
 end

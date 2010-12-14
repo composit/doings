@@ -1,6 +1,6 @@
 <% for ticket in details.tickets.accessible_by( Ability.new( current_user ) ) %>
-  <div id="ticket-<%= ticket.id %>">
-    <%= ticket.name %><span class="sidenote">created by <%= ticket.created_by_user.username %></span><br />
+  <div class="ticket" id="ticket-<%= ticket.id %>">
+    <%= ticket.name %><span class="sidenote"><%= ticket.billing_rate.description %> created by <%= ticket.created_by_user.username %></span><br />
     <%= form_for( ticket.ticket_times.build( :worker => current_user ), :remote => true ) do |f| %>
       <% if can?( :create, f.object ) %>
         <%= f.hidden_field :ticket_id %>
@@ -19,6 +19,12 @@
       <%= f.text_field :name %>
       <%= f.hidden_field :project_id %><br />
       <%= f.hidden_field :created_by_user_id %><br />
+      <%= f.fields_for :billing_rate do |rate| %>
+        <%= rate.label :dollars, "Billing rate" %>
+        <%= rate.text_field :dollars, :size => 10 %>
+        <%= rate.label :units, "per" %>
+        <%= rate.select :units, BillingRate::UNIT_OPTIONS %><br />
+      <% end %>
       <%= f.fields_for :user_roles do |role| %>
         <div class="user-role">
           <%= role.hidden_field :user_id %>

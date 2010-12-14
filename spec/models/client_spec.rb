@@ -20,6 +20,13 @@ describe Client do
     client.errors.should eql( :name => ["has already been taken"] )
   end
 
+  it "should require a billing rate" do
+    client = Factory.build( :client, :billing_rate => nil )
+    client.save
+
+    client.errors.should eql( :billing_rate => ["can't be blank"] )
+  end
+
   it "should destroy associated billing rate when destroyed" do
     client = Factory( :client, :billing_rate => Factory( :billing_rate ) )
     client.destroy
@@ -47,9 +54,18 @@ describe Client do
     client = Factory( :client )
     Factory( :user_role, :user => user_one, :manageable => client )
     Factory( :user_role, :user => user_two, :manageable => client )
-    project = client.build_project_with_inherited_roles( user_one.id )
+    project = client.build_inherited_project( user_one.id )
 
     project.user_roles.collect { |t| t.user_id }.should eql( [user_one.id, user_two.id] )
+  end
+
+  it "should build a project with inherited billing rate" do
+    user = Factory( :user )
+    client = Factory( :client, :billing_rate => Factory( :billing_rate, :dollars => 10, :units => "hour" ) )
+    project = client.build_inherited_project( user.id )
+
+    project.billing_rate.dollars.should eql( 10 )
+    project.billing_rate.units.should eql( "hour" )
   end
 
   it "should return ticket times associated with it" do

@@ -4,6 +4,14 @@
   <%= f.text_field :name %>
   <%= f.hidden_field :client_id %><br />
   <%= f.hidden_field :created_by_user_id %><br />
+  <%= f.fields_for :billing_rate do |rate| %>
+    <% if( can?( :manage, f.object.billing_rate.build ) ) %>
+      <%= rate.label :dollars, "Billing rate" %>
+      <%= rate.text_field :dollars, :size => 10 %>
+      <%= rate.label :units, "per" %>
+      <%= rate.select :units, BillingRate::UNIT_OPTIONS %><br />
+    <% end %>
+  <% end %>
   <%= f.fields_for :user_roles do |role| %>
     <div class="user-role">
       <%= role.hidden_field :user_id %>

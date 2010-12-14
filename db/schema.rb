@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101213182932) do
+ActiveRecord::Schema.define(:version => 20101214175634) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -134,7 +134,7 @@ ActiveRecord::Schema.define(:version => 20101213182932) do
     t.boolean  "worker"
     t.boolean  "authorizer"
     t.boolean  "admin"
-    t.boolean  "finances_viewer"
+    t.boolean  "finances"
     t.boolean  "invoicer"
     t.integer  "priority"
     t.datetime "created_at"

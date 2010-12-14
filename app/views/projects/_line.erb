@@ -1,5 +1,5 @@
 <div class="project" id="project-<%= line.id %>">
-  <%= line.name %><span class="sidenote">created by <%= line.created_by_user.username %></span><br />
+  <%= line.name %><span class="sidenote"><%= line.billing_rate.description if( can?( :read, line.billing_rate ) ) %> created by <%= line.created_by_user.username %></span><br />
   <%= link_to "tickets", "#", :class => "expand-project-details", "data-project-id" => line.id %>
   <div class="details">
   </div>

@@ -1,23 +1,25 @@
 class Project < ActiveRecord::Base
   belongs_to :client
   belongs_to :created_by_user, :class_name => 'User'
-  has_one :billing_rate, :dependent => :destroy
+  has_one :billing_rate, :as => :billable, :dependent => :destroy
   has_many :tickets
   has_many :user_roles, :as => :manageable
   has_many :user_activity_alerts, :as => :alertable
 
   validates :name, :presence => true, :uniqueness => { :scope => :client_id }
   validates :created_by_user_id, :presence => true
+  validates :billing_rate, :presence => true
 
-  accepts_nested_attributes_for :user_roles
+  accepts_nested_attributes_for :user_roles, :billing_rate
 
   after_save :generate_alerts
 
-  def build_ticket_with_inherited_roles( created_by_user_id )
+  def build_inherited_ticket( created_by_user_id )
     ticket = tickets.new( :created_by_user_id => created_by_user_id )
     user_roles.each do |role|
       ticket.user_roles << UserRole.new( role.attributes.reject { |key, value| ["id", "created_at", "updated_at", "manageable_id", "manageable_type"].include?( key ) } )
     end
+    ticket.billing_rate = BillingRate.new( :dollars => billing_rate.dollars, :units => billing_rate.units )
     ticket
   end
 

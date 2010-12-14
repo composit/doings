@@ -254,8 +254,46 @@ Feature: manage tickets
     And I follow "tickets" for the "Test project" project
     Then I should see "created by tester"
 
+  @javascript
   Scenario: I should be able to enter billing rate info when entering a new ticket
-    pending
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following projects:
+      | name         |
+      | Test project |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    And I follow "new ticket" for the "Test project" project
+    And I fill in "Name" with "Test ticket"
+    And I fill in "Billing rate" with "10"
+    And I select "hour" from "per"
+    And I press "Create ticket"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    Then I should see "$10/hour" within ".ticket"
 
+  @javascript
   Scenario: the billing rate info for a new ticket should default to the billing rate info for its project
-    pending
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following projects:
+      | name         |
+      | Test project |
+    And the following billing rates:
+      | project_name | dollars | units |
+      | Test project | 100     | month |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    And I follow "new ticket" for the "Test project" project
+    Then the "Billing rate" field should contain "100"
+    And the "per" field should contain "month"

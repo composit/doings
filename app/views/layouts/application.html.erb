@@ -36,7 +36,7 @@
             </p>
           <% end %>
           <% if( current_user.is_worker? ) %>
-            <p><%= link_to "Update goals", goals_path %></p>
+            <p><%= link_to "Manage goals", goals_path %></p>
           <% end %>
           <p><%= link_to "Sign out", destroy_user_session_path %></p>
         </div>

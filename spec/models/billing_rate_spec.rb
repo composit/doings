@@ -16,4 +16,10 @@ describe BillingRate do
     billing_rate.save
     billing_rate.errors.should eql( :units => ["are not included in the list"] )
   end
+
+  it "should return a description" do
+    billing_rate = Factory( :billing_rate, :dollars => 10, :units => "hour" )
+
+    billing_rate.description.should eql( "$10/hour" )
+  end
 end

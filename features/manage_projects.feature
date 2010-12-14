@@ -23,66 +23,6 @@ Feature: manage projects
     Then I should see "Test project"
     And I should not see "Other project"
 
-  Scenario: I should see clients I am connected with in the details section of the projects page
-    Given the following confirmed_user records:
-      | username |
-      | tester   |
-      | other    |
-    And the following client records:
-      | name         |
-      | Test client  |
-      | Other client |
-    And the following user roles:
-      | user_username | client_name  |
-      | tester        | Test client  |
-      | other         | Other client |
-    When I log in as "tester"
-    And I am on the projects page
-    Then I should see "Test client"
-    And I should not see "Other client"
-
-  Scenario: I should get to the edit client page by clicking the client name, even without admin rights
-    Given the following confirmed_user records:
-      | username |
-      | tester   |
-    And the following client records:
-      | name        |
-      | Test client |
-    And the following user roles:
-      | user_username | client_name |
-      | tester        | Test client |
-    When I log in as "tester"
-    And I am on the projects page
-    And I follow "Test client"
-    Then I should be on the client page for "Test client"
-
-    @current
-  Scenario: I should only see a specific client's projects by clicking their "projects" link
-    Given the following confirmed_user records:
-      | username |
-      | tester   |
-    And the following client records:
-      | name         |
-      | Test client  |
-      | Other client |
-    And the following projects:
-      | name          | client_name  |
-      | Test project  | Test client  |
-      | Other project | Other client |
-    And the following user roles:
-      | user_username | client_name  |
-      | tester        | Test client  |
-      | tester        | Other client |
-    And the following user roles:
-      | user_username | project_name  |
-      | tester        | Test project  |
-      | tester        | Other project |
-    When I log in as "tester"
-    And I am on the projects page
-    When I follow "projects" for the "Test client" client
-    Then I should see "Test project"
-    And I should not see "Other project"
-
   Scenario: I should be able to see all projects by clicking the "projects" link associated with "All clients"
     Given the following confirmed_user records:
       | username |
@@ -288,7 +228,7 @@ Feature: manage projects
     And I follow "projects" for the "Test client" client
     Then I should see "created by tester"
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to create a new project and create a new ticket for that project without refreshing the page
     Given the following confirmed_user records:
       | username |
@@ -314,8 +254,82 @@ Feature: manage projects
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket"
 
+  @javascript
   Scenario: I should be able to enter billing rate info when entering a new project
-    pending
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following user roles:
+      | user_username | client_name  | admin |
+      | tester        | Test client  | true  |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    And I fill in "Name" with "Test project"
+    And I fill in "Billing rate" with "10"
+    And I select "hour" from "per"
+    And I press "Create project"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    Then I should see "$10/hour"
 
+  @javascript
   Scenario: the billing rate info for a new ticket should default to the billing rate info for its client
-    pending
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following billing rates:
+      | client_name | dollars | units |
+      | Test client | 100     | month |
+    And the following user roles:
+      | user_username | client_name  | admin |
+      | tester        | Test client  | true  |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    Then the "Billing rate" field should contain "100"
+    And the "per" field should contain "month"
+
+  Scenario: I should not see the billing rate if I do not have "finances" access to the project
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following project records:
+      | name         |
+      | Test project |
+    And the following billing rates:
+      | project_name | dollars | units |
+      | Test project | 100     | hour  |
+    And the following user roles:
+      | user_username | project_name | finances |
+      | tester        | Test project | false    |
+    When I log in as "tester"
+    And I am on the projects page
+    Then I should see "Test project"
+    And I should not see "$100/hour"
+
+  @javascript @current
+  Scenario: I should not be able to update a billing rate for a project if I don't have "finances" and "admin" access to the project
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following user roles:
+      | user_username | client_name  | admin | finances |
+      | tester        | Test client  | true  | false    |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    Then I should not see a field labeled "Billing rate"
+    And I should not see a field labeled "per"

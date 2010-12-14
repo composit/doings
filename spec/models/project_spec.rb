@@ -26,7 +26,14 @@ describe Project do
     project.errors.should eql( :name => ["can't be blank"] )
   end
 
-  it "should allow non-unique names for differend clients" do
+  it "should require a billing rate" do
+    project = Factory.build( :project, :billing_rate => nil )
+    project.save
+
+    project.errors.should eql( :billing_rate => ["can't be blank"] )
+  end
+
+  it "should allow non-unique names for different clients" do
     client_one = Factory( :client )
     client_two = Factory( :client )
     Factory( :project, :client => client_one, :name => "Test project" )
@@ -49,9 +56,18 @@ describe Project do
     project = Factory( :project )
     Factory( :user_role, :user => user_one, :manageable => project )
     Factory( :user_role, :user => user_two, :manageable => project )
-    ticket = project.reload.build_ticket_with_inherited_roles( user_one.id )
+    ticket = project.reload.build_inherited_ticket( user_one.id )
 
     ticket.user_roles.collect { |t| t.user_id }.should eql( [user_one.id, user_two.id] )
+  end
+
+  it "should build a ticket with inherited billing rate" do
+    user = Factory( :user )
+    project = Factory( :project, :billing_rate => Factory( :billing_rate, :dollars => 10, :units => "hour" ) )
+    ticket = project.build_inherited_ticket( user.id )
+
+    ticket.billing_rate.dollars.should eql( 10 )
+    ticket.billing_rate.units.should eql( "hour" )
   end
 
   it "should generate user activity alerts when created" do
