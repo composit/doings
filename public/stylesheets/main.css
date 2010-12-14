@@ -170,3 +170,9 @@ hr {
   height: 1px;
   border: 0;
 }
+
+.progressbar {
+  width: 30%;
+  float: right;
+  height: 1em;
+}

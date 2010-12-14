@@ -50,4 +50,8 @@ $( document ).ready( function() {
         break;
     }
   } );
+  $( ".progressbar" ).each( function() {
+    value = parseInt( $( this ).attr( "data-percent-complete" ) );
+    $( this ).progressbar( { value: value } );
+  } );
 } );

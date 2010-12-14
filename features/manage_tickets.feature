@@ -164,7 +164,7 @@ Feature: manage tickets
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket 2"
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to assign rights to the ticket I'm creating
     Given the following confirmed_user records:
       | username |
@@ -263,8 +263,8 @@ Feature: manage tickets
       | name         |
       | Test project |
     And the following user roles:
-      | user_username | project_name | admin |
-      | tester        | Test project | true  |
+      | user_username | project_name | admin | finances |
+      | tester        | Test project | true  | true     |
     When I log in as "tester"
     And I am on the projects page
     And I follow "tickets" for the "Test project" project
@@ -289,11 +289,91 @@ Feature: manage tickets
       | project_name | dollars | units |
       | Test project | 100     | month |
     And the following user roles:
-      | user_username | project_name | admin |
-      | tester        | Test project | true  |
+      | user_username | project_name | admin | finances |
+      | tester        | Test project | true  | true     |
     When I log in as "tester"
     And I am on the projects page
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     Then the "Billing rate" field should contain "100"
     And the "per" field should contain "month"
+
+  @javascript
+  Scenario: I should not see the billing rate if I do not have "finances" access to the ticket
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following project records:
+      | name         |
+      | Test project |
+    And the following tickets:
+      | name        | project_name |
+      | Test ticket | Test project |
+    And the following billing rates:
+      | ticket_name | dollars | units |
+      | Test ticket | 100     | hour  |
+    And the following user roles:
+      | user_username | project_name |
+      | tester        | Test project |
+    And the following user roles:
+      | user_username | ticket_name | finances |
+      | tester        | Test ticket | false    |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    Then I should not see "$100/hour" within ".ticket"
+
+  @javascript
+  Scenario: I should not be able to update a billing rate for a ticket if I don't have "finances" and "admin" access to the ticket
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following project records:
+      | name         |
+      | Test project |
+    And the following user roles:
+      | user_username | project_name  | admin | finances |
+      | tester        | Test project  | true  | false    |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    And I follow "new ticket"
+    Then I should not see a field labeled "Billing rate"
+    And I should not see a field labeled "per"
+
+  @javascript
+  Scenario: I should be able to assign financial roles if I have the financial role
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following project records:
+      | name         |
+      | Test project |
+    And the following user roles:
+      | user_username | project_name  | admin | finances |
+      | tester        | Test project  | true  | true     |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    And I follow "new ticket"
+    Then the "Finances" checkbox in the roles for "tester" should not be disabled
+
+  @javascript
+  Scenario: I should not be able to assign financial roles if I don't have the financial role
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+      | other    |
+    And the following project records:
+      | name         |
+      | Test project |
+    And the following user roles:
+      | user_username | project_name | admin | finances |
+      | tester        | Test project | true  | false    |
+      | other         | Test project | true  | false    |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "tickets" for the "Test project" project
+    And I follow "new ticket"
+    Then the "Finances" checkbox in the roles for "tester" should be disabled
+    And the "Finances" checkbox in the roles for "other" should be disabled

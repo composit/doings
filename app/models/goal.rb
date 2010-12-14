@@ -18,13 +18,13 @@ class Goal < ActiveRecord::Base
     return desc
   end
 
-  def fraction_complete
+  def percent_complete
     if( units == "minutes" )
       fraction = TicketTime.batch_minutes_worked( applicable_ticket_times ) / amount
     elsif( units == "dollars" )
       fraction = TicketTime.batch_dollars_earned( applicable_ticket_times ) / amount
     end
-    return( fraction > 1 ? 1.0 : fraction )
+    return( fraction > 1 ? 100 : ( fraction * 100 ).round )
   end
 
   def applicable_ticket_times
@@ -42,7 +42,7 @@ class Goal < ActiveRecord::Base
         start_time = Time.zone.now.beginning_of_year
         end_time = start_time + 1.year
     end
-    if( workable.nil? )
+    if( workable_id.nil? )
       ticket_times = TicketTime
     else
       ticket_times = workable.ticket_times

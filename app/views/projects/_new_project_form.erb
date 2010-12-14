@@ -4,8 +4,8 @@
   <%= f.text_field :name %>
   <%= f.hidden_field :client_id %><br />
   <%= f.hidden_field :created_by_user_id %><br />
-  <%= f.fields_for :billing_rate do |rate| %>
-    <% if( can?( :manage, f.object.billing_rate.build ) ) %>
+  <% if( can?( :create, f.object.client.billing_rate ) ) %>
+    <%= f.fields_for :billing_rate do |rate| %>
       <%= rate.label :dollars, "Billing rate" %>
       <%= rate.text_field :dollars, :size => 10 %>
       <%= rate.label :units, "per" %>
@@ -20,6 +20,8 @@
       <%= role.check_box :admin, :disabled => ( role.object.user_id == f.object.created_by_user_id ) %>
       <%= role.label :worker %>
       <%= role.check_box :worker %>
+      <%= role.label :finances %>
+      <%= role.check_box :finances, :disabled => !can?( :update, f.object.client.billing_rate ) %>
     </div>
   <% end %>
   <%= f.submit "Create project" %>

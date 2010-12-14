@@ -39,3 +39,7 @@ end
 Then /^the "([^"]*)" checkbox in the roles for "([^"]*)" should be disabled$/ do |role, username|
   page.find( ".user-role", :text => username ).find_field( role )['disabled'].should eql( "true" )
 end
+
+Then /^the "([^"]*)" checkbox in the roles for "([^"]*)" should not be disabled$/ do |role, username|
+  page.find( ".user-role", :text => username ).find_field( role )['disabled'].should eql( "false" )
+end

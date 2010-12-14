@@ -19,11 +19,11 @@ describe Ticket do
     ticket.errors.should eql( :created_by_user_id => ["can't be blank"] )
   end
 
-  it "should require a billing rate" do
-    ticket = Factory.build( :ticket, :billing_rate => nil )
+  it "should require a project" do
+    ticket = Factory.build( :ticket, :project => nil )
     ticket.save
 
-    ticket.errors.should eql( :billing_rate => ["can't be blank"] )
+    ticket.errors.should eql( :billing_rate => ["can't be blank"], :project => ["can't be blank"] )
   end
 
   it "should allow non-unique names for differend projects" do
@@ -44,10 +44,11 @@ describe Ticket do
   end
 
   it "should destroy associated billing rate when destroyed" do
-    ticket = Factory( :ticket, :billing_rate => Factory( :billing_rate ) )
+    ticket = Factory( :ticket )
+    billing_rate = ticket.billing_rate
     ticket.destroy
 
-    BillingRate.all.length.should eql( 0 )
+    BillingRate.where( :id => billing_rate.id ).should be_empty
   end
 
   it "should only allow numerical estimated minutes" do
@@ -71,5 +72,13 @@ describe Ticket do
     ticket = Factory( :ticket, :name => "Test ticket", :created_by_user => user_one, :user_roles_attributes => [{ :user => user_one }] )
 
     user_two.user_activity_alerts.should be_empty
+  end
+
+  it "should automatically adopt the project's billing rate if no billing rate is set" do
+    project = Factory( :project, :billing_rate => Factory( :billing_rate, :dollars => 100, :units => "month" ) )
+    ticket = Factory( :ticket, :project => project, :billing_rate => nil )
+
+    ticket.billing_rate.dollars.should eql( 100 )
+    ticket.billing_rate.units.should eql( "month" )
   end
 end

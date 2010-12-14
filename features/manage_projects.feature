@@ -263,8 +263,8 @@ Feature: manage projects
       | name         |
       | Test client  |
     And the following user roles:
-      | user_username | client_name  | admin |
-      | tester        | Test client  | true  |
+      | user_username | client_name  | admin | finances |
+      | tester        | Test client  | true  | true     |
     When I log in as "tester"
     And I am on the projects page
     And I follow "projects" for the "Test client" client
@@ -289,8 +289,8 @@ Feature: manage projects
       | client_name | dollars | units |
       | Test client | 100     | month |
     And the following user roles:
-      | user_username | client_name  | admin |
-      | tester        | Test client  | true  |
+      | user_username | client_name  | admin | finances |
+      | tester        | Test client  | true  | true     |
     When I log in as "tester"
     And I am on the projects page
     And I follow "projects" for the "Test client" client
@@ -313,10 +313,9 @@ Feature: manage projects
       | tester        | Test project | false    |
     When I log in as "tester"
     And I am on the projects page
-    Then I should see "Test project"
-    And I should not see "$100/hour"
+    Then I should not see "$100/hour"
 
-  @javascript @current
+  @javascript
   Scenario: I should not be able to update a billing rate for a project if I don't have "finances" and "admin" access to the project
     Given the following confirmed_user records:
       | username |
@@ -333,3 +332,40 @@ Feature: manage projects
     And I follow "new project"
     Then I should not see a field labeled "Billing rate"
     And I should not see a field labeled "per"
+
+  @javascript
+  Scenario: I should be able to assign financial roles if I have the financial role
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following user roles:
+      | user_username | client_name  | admin | finances |
+      | tester        | Test client  | true  | true     |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    Then the "Finances" checkbox in the roles for "tester" should not be disabled
+
+  @javascript
+  Scenario: I should not be able to assign financial roles if I don't have the financial role
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+      | other    |
+    And the following client records:
+      | name         |
+      | Test client  |
+    And the following user roles:
+      | user_username | client_name  | admin | finances |
+      | tester        | Test client  | true  | false    |
+      | other         | Test client  | true  | false    |
+    When I log in as "tester"
+    And I am on the projects page
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    Then the "Finances" checkbox in the roles for "tester" should be disabled
+    And the "Finances" checkbox in the roles for "other" should be disabled

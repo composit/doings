@@ -13,10 +13,11 @@ describe Project do
   end
 
   it "should destroy associated billing rate when destroyed" do
-    project = Factory( :project, :billing_rate => Factory( :billing_rate ) )
+    project = Factory( :project )
+    billing_rate = project.billing_rate
     project.destroy
 
-    BillingRate.all.length.should eql( 0 )
+    BillingRate.where( :id => billing_rate.id ).should be_empty
   end
 
   it "should require a name" do
@@ -26,11 +27,11 @@ describe Project do
     project.errors.should eql( :name => ["can't be blank"] )
   end
 
-  it "should require a billing rate" do
-    project = Factory.build( :project, :billing_rate => nil )
+  it "should require a client" do
+    project = Factory.build( :project, :client => nil )
     project.save
 
-    project.errors.should eql( :billing_rate => ["can't be blank"] )
+    project.errors.should eql( :billing_rate => ["can't be blank"], :client => ["can't be blank"] )
   end
 
   it "should allow non-unique names for different clients" do
@@ -95,5 +96,13 @@ describe Project do
     Factory( :ticket_time )
 
     project.ticket_times.collect { |ticket_time| ticket_time.id }.should eql( [ticket_time.id, other_ticket_time.id] )
+  end
+
+  it "should automatically adopt the client's billing rate if no billing rate is set" do
+    client = Factory( :client, :billing_rate => Factory( :billing_rate, :dollars => 100, :units => "month" ) )
+    project = Factory( :project, :client => client, :billing_rate => nil )
+
+    project.billing_rate.dollars.should eql( 100 )
+    project.billing_rate.units.should eql( "month" )
   end
 end

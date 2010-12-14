@@ -1,4 +1,5 @@
-<div class="goal" id="goal-<%= line.id %>">
+<div class="goal clear" id="goal-<%= line.id %>">
   <%= line.full_description %>
+  <div class="progressbar" data-percent-complete="<%= line.percent_complete %>"></div>
   <hr />
 </div>

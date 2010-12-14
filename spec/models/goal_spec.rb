@@ -176,7 +176,7 @@ describe Goal do
     goal = Factory( :goal, :user => user, :units => "minutes", :amount => 60 )
     Factory( :ticket_time, :worker => user, :started_at => Time.zone.now, :ended_at => 30.minutes.since )
 
-    goal.fraction_complete.should eql( 0.5 )
+    goal.percent_complete.should eql( 50 )
   end
 
   it "should calculate completion for a dollar-based goal" do
@@ -185,7 +185,7 @@ describe Goal do
     ticket = Factory( :ticket, :billing_rate => Factory( :billing_rate, :units => "hour", :dollars => 100 ) )
     Factory( :ticket_time, :ticket => ticket, :worker => user, :started_at => Time.zone.now, :ended_at => 30.minutes.since )
 
-    goal.fraction_complete.should eql( 0.5 )
+    goal.percent_complete.should eql( 50 )
   end
 
   it "should return 100% completion for goals that are greater than 100%" do
@@ -193,6 +193,6 @@ describe Goal do
     goal = Factory( :goal, :user => user, :units => "minutes", :amount => 60 )
     Factory( :ticket_time, :worker => user, :started_at => Time.zone.now, :ended_at => 1.day.since )
 
-    goal.fraction_complete.should eql( 1.0 )
+    goal.percent_complete.should eql( 100 )
   end
 end
