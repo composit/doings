@@ -18,4 +18,8 @@ class Client < ActiveRecord::Base
     end
     project
   end
+  
+  def ticket_times
+    TicketTime.joins( :ticket => :project ).where( :projects => { :client_id => id } )
+  end
 end

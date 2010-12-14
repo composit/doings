@@ -69,4 +69,15 @@ describe Project do
 
     user_two.user_activity_alerts.should be_empty
   end
+
+  it "should return ticket times associated with it" do
+    project = Factory( :project )
+    ticket = Factory( :ticket, :project => project )
+    other_ticket = Factory( :ticket, :project => project )
+    ticket_time = Factory( :ticket_time, :ticket => ticket )
+    other_ticket_time = Factory( :ticket_time, :ticket => other_ticket )
+    Factory( :ticket_time )
+
+    project.ticket_times.collect { |ticket_time| ticket_time.id }.should eql( [ticket_time.id, other_ticket_time.id] )
+  end
 end

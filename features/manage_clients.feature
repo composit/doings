@@ -48,3 +48,5 @@ Feature: manage clients
     Then I should see "Client was successfully updated"
     And the "Line 1" field should contain "Test address"
 
+  Scenario: I should be able to update billing rate info for a client
+    pending

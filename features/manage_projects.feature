@@ -288,7 +288,7 @@ Feature: manage projects
     And I follow "projects" for the "Test client" client
     Then I should see "created by tester"
 
-  @javascript
+  @javascript @current
   Scenario: I should be able to create a new project and create a new ticket for that project without refreshing the page
     Given the following confirmed_user records:
       | username |
@@ -313,3 +313,9 @@ Feature: manage projects
     And I am on the projects page
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket"
+
+  Scenario: I should be able to enter billing rate info when entering a new project
+    pending
+
+  Scenario: the billing rate info for a new ticket should default to the billing rate info for its client
+    pending

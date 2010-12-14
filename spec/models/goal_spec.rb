@@ -91,8 +91,8 @@ describe Goal do
     goal = Factory( :goal, :user => user, :period => "Daily" )
     good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_day, :ended_at => 30.minutes.ago )
     good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_day, :ended_at => 1.day.since )
-    bad_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_day - 1.second, :ended_at => 30.minutes.ago )
-    bad_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_day + 1.second, :ended_at => 1.day.since )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_day - 1.second, :ended_at => 30.minutes.ago )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_day + 1.second, :ended_at => 1.day.since )
 
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time_one.id, good_time_two.id] )
   end
@@ -102,8 +102,8 @@ describe Goal do
     goal = Factory( :goal, :user => user, :period => "Weekly" )
     good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_week, :ended_at => 30.minutes.ago )
     good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_week, :ended_at => 1.week.since )
-    bad_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_week - 1.second, :ended_at => 30.minutes.ago )
-    bad_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_week + 1.second, :ended_at => 1.week.since )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_week - 1.second, :ended_at => 30.minutes.ago )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_week + 1.second, :ended_at => 1.week.since )
 
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time_one.id, good_time_two.id] )
   end
@@ -113,8 +113,8 @@ describe Goal do
     goal = Factory( :goal, :user => user, :period => "Monthly" )
     good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_month, :ended_at => 30.minutes.ago )
     good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_month, :ended_at => 1.month.since )
-    bad_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_month - 1.second, :ended_at => 30.minutes.ago )
-    bad_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_month + 1.second, :ended_at => 1.month.since )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_month - 1.second, :ended_at => 30.minutes.ago )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_month + 1.second, :ended_at => 1.month.since )
 
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time_one.id, good_time_two.id] )
   end
@@ -124,8 +124,8 @@ describe Goal do
     goal = Factory( :goal, :user => user, :period => "Yearly" )
     good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_year, :ended_at => 30.minutes.ago )
     good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_year, :ended_at => 1.year.since )
-    bad_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_year - 1.second, :ended_at => 30.minutes.ago )
-    bad_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_year + 1.second, :ended_at => 1.year.since )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_year - 1.second, :ended_at => 30.minutes.ago )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_year + 1.second, :ended_at => 1.year.since )
 
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time_one.id, good_time_two.id] )
   end
@@ -133,21 +133,43 @@ describe Goal do
   it "should find ticket times within the range of a client-specific goal" do
     user = Factory( :user )
     client = Factory( :client )
-    project = Factory( :project, :client => client )
-    ticket = Factory( :ticket, :project => project )
-    other_ticket = Factory( :ticket )
+    ticket = Factory( :ticket, :project => Factory( :project, :client => client ) )
     goal = Factory( :goal, :user => user, :workable => client )
-    good_time = Factory( :ticket_time, :ticket => ticket )
-    bad_time = Factory( :ticket_time, :ticket => other_ticket )
+    good_time = Factory( :ticket_time, :worker => user, :ticket => ticket )
+    Factory( :ticket_time, :worker => user )
 
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time.id] )
   end
 
-  pending "should find ticket times within the range of a project-specific goal"
+  it "should find ticket times within the range of a project-specific goal" do
+    user = Factory( :user )
+    project = Factory( :project )
+    ticket = Factory( :ticket, :project => project )
+    goal = Factory( :goal, :user => user, :workable => project )
+    good_time = Factory( :ticket_time, :worker => user, :ticket => ticket )
+    Factory( :ticket_time, :worker => user )
 
-  pending "should find ticket times within the range of a ticket-specific goal"
+    goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time.id] )
+  end
 
-  pending "should not include times worked by other workers"
+  it "should find ticket times within the range of a ticket-specific goal" do
+    user = Factory( :user )
+    ticket = Factory( :ticket )
+    goal = Factory( :goal, :user => user, :workable => ticket )
+    good_time = Factory( :ticket_time, :worker => user, :ticket => ticket )
+    Factory( :ticket_time, :worker => user )
+
+    goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time.id] )
+  end
+
+  it "should not include times worked by other workers" do
+    user = Factory( :user )
+    goal = Factory( :goal, :user => user, :period => "Daily" )
+    good_time = Factory( :ticket_time, :worker => user )
+    Factory( :ticket_time )
+
+    goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time.id] )
+  end
 
   it "should calculate completion for a minute-based goal" do
     user = Factory( :worker )

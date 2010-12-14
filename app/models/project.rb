@@ -21,6 +21,10 @@ class Project < ActiveRecord::Base
     ticket
   end
 
+  def ticket_times
+    TicketTime.joins( :ticket ).where( :tickets => { :project_id => id } )
+  end
+
   private
     def generate_alerts
       user_roles.each do |role|

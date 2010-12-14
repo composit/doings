@@ -253,3 +253,9 @@ Feature: manage tickets
     And I am on the projects page
     And I follow "tickets" for the "Test project" project
     Then I should see "created by tester"
+
+  Scenario: I should be able to enter billing rate info when entering a new ticket
+    pending
+
+  Scenario: the billing rate info for a new ticket should default to the billing rate info for its project
+    pending

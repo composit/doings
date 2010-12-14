@@ -12,7 +12,7 @@ class Ticket < ActiveRecord::Base
   validates :created_by_user_id, :presence => true
   validates :billing_rate, :presence => true
 
-  accepts_nested_attributes_for :user_roles
+  accepts_nested_attributes_for :user_roles, :billing_rate
 
   after_save :generate_alerts
 

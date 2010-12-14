@@ -51,4 +51,17 @@ describe Client do
 
     project.user_roles.collect { |t| t.user_id }.should eql( [user_one.id, user_two.id] )
   end
+
+  it "should return ticket times associated with it" do
+    client = Factory( :client )
+    project = Factory( :project, :client => client )
+    other_project = Factory( :project, :client => client )
+    ticket = Factory( :ticket, :project => project )
+    other_ticket = Factory( :ticket, :project => other_project )
+    ticket_time = Factory( :ticket_time, :ticket => ticket )
+    other_ticket_time = Factory( :ticket_time, :ticket => other_ticket )
+    Factory( :ticket_time )
+
+    client.ticket_times.collect { |ticket_time| ticket_time.id }.should eql( [ticket_time.id, other_ticket_time.id] )
+  end
 end
