@@ -195,4 +195,11 @@ describe Goal do
 
     goal.percent_complete.should eql( 100 )
   end
+
+  pending "should allow the week to be defined"
+  pending "should allow daily tasks to have the day specified"
+  pending "should return the percent to be complete by the end of the day for daily tasks"
+  pending "should return the percent to be complete by the end of the day for weekly tasks"
+  pending "should return the percent to be complete by the end of the day for monthly tasks"
+  pending "should return the percent to be complete by the end of the day for yearly tasks"
 end
