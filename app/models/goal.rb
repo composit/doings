@@ -18,12 +18,16 @@ class Goal < ActiveRecord::Base
     return desc
   end
 
-  def percent_complete
+  def amount_complete
     if( units == "minutes" )
-      fraction = TicketTime.batch_minutes_worked( applicable_ticket_times ) / amount
+      return TicketTime.batch_minutes_worked( applicable_ticket_times )
     elsif( units == "dollars" )
-      fraction = TicketTime.batch_dollars_earned( applicable_ticket_times ) / amount
+      return TicketTime.batch_dollars_earned( applicable_ticket_times )
     end
+  end
+
+  def percent_complete
+    fraction = amount_complete / amount
     return( fraction > 1 ? 100 : ( fraction * 100 ).round )
   end
 
@@ -48,6 +52,17 @@ class Goal < ActiveRecord::Base
       ticket_times = workable.ticket_times
     end
     ticket_times = ticket_times.where( :worker_id => user.id ).where( "started_at >= ? and started_at < ?", start_time, end_time )
+  end
+
+  def to_do_to_date
+    if( period == "Daily" && Time.zone.now.wday != weekday )
+      0
+    else
+      workweek = user.current_workweek
+      total_days = workweek.workday_count( :period => period )
+      days_to_current = workweek.workday_count( :period => period, :end_time => Time.zone.now )
+      amount.to_f / total_days * days_to_current
+    end
   end
 
   private

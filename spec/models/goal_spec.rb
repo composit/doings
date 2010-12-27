@@ -171,7 +171,15 @@ describe Goal do
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time.id] )
   end
 
-  it "should calculate completion for a minute-based goal" do
+  it "should calculate amount completion for a minute-based goal" do
+    user = Factory( :worker )
+    goal = Factory( :goal, :user => user, :units => "minutes", :amount => 60 )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now, :ended_at => 30.minutes.since )
+
+    goal.amount_complete.should eql( 30.0 )
+  end
+
+  it "should calculate percent completion for a minute-based goal" do
     user = Factory( :worker )
     goal = Factory( :goal, :user => user, :units => "minutes", :amount => 60 )
     Factory( :ticket_time, :worker => user, :started_at => Time.zone.now, :ended_at => 30.minutes.since )
@@ -179,7 +187,16 @@ describe Goal do
     goal.percent_complete.should eql( 50 )
   end
 
-  it "should calculate completion for a dollar-based goal" do
+  it "should calculate amount completion for a dollar-based goal" do
+    user = Factory( :worker )
+    goal = Factory( :goal, :user => user, :units => "dollars", :amount => 100 )
+    ticket = Factory( :ticket, :billing_rate => Factory( :billing_rate, :units => "hour", :dollars => 100 ) )
+    Factory( :ticket_time, :ticket => ticket, :worker => user, :started_at => Time.zone.now, :ended_at => 30.minutes.since )
+
+    goal.amount_complete.should eql( 50.0 )
+  end
+
+  it "should calculate percent completion for a dollar-based goal" do
     user = Factory( :worker )
     goal = Factory( :goal, :user => user, :units => "dollars", :amount => 100 )
     ticket = Factory( :ticket, :billing_rate => Factory( :billing_rate, :units => "hour", :dollars => 100 ) )
@@ -196,10 +213,40 @@ describe Goal do
     goal.percent_complete.should eql( 100 )
   end
 
-  pending "should allow the week to be defined"
-  pending "should allow daily tasks to have the day specified"
-  pending "should return the percent to be complete by the end of the day for daily tasks"
-  pending "should return the percent to be complete by the end of the day for weekly tasks"
-  pending "should return the percent to be complete by the end of the day for monthly tasks"
-  pending "should return the percent to be complete by the end of the day for yearly tasks"
+  describe "with a varied set of goals" do
+    before( :each ) do
+      user = Factory( :worker )
+      Factory( :workweek, :worker => user, :sunday => false, :monday => true, :tuesday => true, :wednesday => true, :thursday => true, :friday => true, :saturday => false )
+      @daily_monday = Factory( :goal, :user => user, :units => "minutes", :amount => 10, :period => "Daily", :weekday => 1 )
+      @daily_wednesday = Factory( :goal, :user => user, :units => "minutes", :amount => 20, :period => "Daily", :weekday => 3 )
+      @weekly = Factory( :goal, :user => user, :units => "minutes", :amount => 30, :period => "Weekly" )
+      @monthly = Factory( :goal, :user => user, :units => "minutes", :amount => 40, :period => "Monthly" )
+      @yearly = Factory( :goal, :user => user, :units => "minutes", :amount => 50, :period => "Yearly" )
+      Timecop.freeze( Time.parse( "2010-12-29" ) ) #wednesday
+    end
+
+    after( :each ) do
+      Timecop.return
+    end
+
+    it "should return a zero amount to be complete by the end of the day for daily tasks on other days" do
+      @daily_monday.to_do_to_date.should eql( 0 )
+    end
+
+    it "should return the amount to be complete by the end of the day for daily tasks" do
+      @daily_wednesday.to_do_to_date.should eql( 20.0 )
+    end
+
+    it "should return the amount to be complete by the end of the day for weekly tasks" do
+      @weekly.to_do_to_date.should eql( 18.0 )
+    end
+
+    it "should return the amount to be complete by the end of the day for monthly tasks" do
+      @monthly.to_do_to_date.round.should eql( 37 )
+    end
+
+    it "should return the amount to be complete by the end of the day for yearly tasks" do
+      ( ( @yearly.to_do_to_date * 100 ).round.to_f / 100 ).should eql( 49.62 )
+    end
+  end
 end

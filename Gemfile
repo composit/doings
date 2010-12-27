@@ -11,14 +11,14 @@ gem 'cancan', '>=1.4.1'
 
 group :development do
   gem 'ruby-debug19', '>=0.11.6'
-  gem 'passenger', '>=3.0.0'
+  gem 'passenger', '>=3.0.2'
 end
 
 group :test do
   gem 'capybara', '>=0.4.0'
   gem 'database_cleaner', '>=0.6.0'
   gem 'cucumber-rails', '>=0.3.2'
-  gem 'rspec-rails', '>=2.2.1'
+  gem 'rspec-rails', '>=2.3.1'
   gem 'spork', '>=0.9.0.rc2'
   gem 'launchy', '>=0.3.7'
   gem 'factory_girl_rails', '>=1.0'

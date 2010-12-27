@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101214175634) do
+ActiveRecord::Schema.define(:version => 20101227194530) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(:version => 20101214175634) do
     t.datetime "updated_at"
     t.string   "name"
     t.string   "units"
+    t.integer  "weekday"
   end
 
   create_table "invoices", :force => true do |t|
@@ -171,5 +172,18 @@ ActiveRecord::Schema.define(:version => 20101214175634) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
+
+  create_table "workweeks", :force => true do |t|
+    t.integer  "worker_id"
+    t.boolean  "sunday"
+    t.boolean  "monday"
+    t.boolean  "tuesday"
+    t.boolean  "wednesday"
+    t.boolean  "thursday"
+    t.boolean  "friday"
+    t.boolean  "saturday"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

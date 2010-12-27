@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   has_many :tickets, :through => :user_roles, :source => :manageable, :source_type => 'Ticket'
   has_many :user_activity_alerts
   has_many :goals
+  has_many :workweeks, :foreign_key => :worker_id
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :time_zone
@@ -26,5 +27,9 @@ class User < ActiveRecord::Base
 
   def is_worker?
     user_roles.where( :worker => true ).count > 0
+  end
+
+  def current_workweek( time = Time.zone.now )
+    workweeks.order( "created_at desc" ).where( "created_at <= ?", time ).first
   end
 end

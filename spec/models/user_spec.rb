@@ -52,4 +52,12 @@ describe User do
     user.user_roles << Factory( :user_role, :manageable => Factory( :client ), :worker => true )
     user.is_worker?.should be_true
   end
+
+  it "should return the current workweek" do
+    user = Factory( :user )
+    old_workweek = Factory( :workweek, :worker => user, :created_at => Time.zone.now - 1.week )
+    current_workweek = Factory( :workweek, :worker => user, :created_at => Time.zone.now - 1.hour )
+    future_workweek = Factory( :workweek, :worker => user, :created_at => Time.zone.now + 1.day )
+    user.current_workweek.should eql( current_workweek )
+  end
 end
