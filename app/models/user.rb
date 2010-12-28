@@ -16,7 +16,8 @@ class User < ActiveRecord::Base
   has_many :projects, :through => :user_roles, :source => :manageable, :source_type => 'Project'
   has_many :tickets, :through => :user_roles, :source => :manageable, :source_type => 'Ticket'
   has_many :user_activity_alerts
-  has_many :goals
+  has_many :master_goals
+  has_many :daily_goals
   has_many :workweeks, :foreign_key => :worker_id
 
   # Setup accessible (or protected) attributes for your model

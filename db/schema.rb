@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101228025324) do
+ActiveRecord::Schema.define(:version => 20101228165644) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -57,12 +57,15 @@ ActiveRecord::Schema.define(:version => 20101228025324) do
     t.integer  "workable_id"
     t.string   "workable_type"
     t.string   "period"
-    t.decimal  "amount",        :precision => 10, :scale => 2
+    t.decimal  "amount",                            :precision => 10, :scale => 2
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
     t.string   "units"
     t.integer  "weekday"
+    t.date     "daily_date"
+    t.float    "daily_previously_completed_amount"
+    t.float    "daily_goal_amount"
   end
 
   create_table "invoices", :force => true do |t|
