@@ -215,6 +215,7 @@ describe Goal do
 
   describe "with a varied set of goals" do
     before( :each ) do
+      Timecop.freeze( Time.parse( "2010-12-29" ) ) #wednesday
       @user = Factory( :worker )
       Factory( :workweek, :worker => @user, :sunday => false, :monday => true, :tuesday => true, :wednesday => true, :thursday => true, :friday => true, :saturday => false )
       @daily_monday = Factory( :goal, :user => @user, :units => "minutes", :amount => 10, :period => "Daily", :weekday => 1 )
@@ -222,7 +223,6 @@ describe Goal do
       @weekly = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly" )
       @monthly = Factory( :goal, :user => @user, :units => "minutes", :amount => 40, :period => "Monthly" )
       @yearly = Factory( :goal, :user => @user, :units => "minutes", :amount => 50, :period => "Yearly" )
-      Timecop.freeze( Time.parse( "2010-12-29" ) ) #wednesday
     end
 
     after( :each ) do
@@ -296,5 +296,57 @@ describe Goal do
     it "should set the daily amount to be completed during that day" do
       @goal.reload.daily_goal_amount.should eql( 60.0 ) # 240/2 - 60
     end
+  end
+
+  describe "with available tickets" do
+    before( :each ) do
+      @user = Factory( :user )
+      Factory( :workweek, :worker => @user )
+      @last_client = Factory( :client )
+      @first_client = Factory( :client )
+      @middle_client = Factory( :client )
+      @user.user_roles << Factory( :user_role, :manageable => @middle_client, :worker => true )
+      @user.user_roles << Factory( :user_role, :manageable => @first_client, :worker => true )
+      @user.user_roles << Factory( :user_role, :manageable => @last_client, :worker => true )
+      @last_project = Factory( :project, :client => @last_client )
+      @first_project = Factory( :project, :client => @first_client )
+      @middle_project = Factory( :project, :client => @middle_client )
+      @user.user_roles << Factory( :user_role, :manageable => @middle_project, :worker => true )
+      @user.user_roles << Factory( :user_role, :manageable => @first_project, :worker => true )
+      @user.user_roles << Factory( :user_role, :manageable => @last_project, :worker => true )
+      @last_ticket = Factory( :ticket, :project => @last_project )
+      @first_ticket = Factory( :ticket, :project => @first_project )
+      @middle_ticket = Factory( :ticket, :project => @middle_project )
+      @user.user_roles << Factory( :user_role, :manageable => @middle_ticket, :priority => 2, :worker => true )
+      @user.user_roles << Factory( :user_role, :manageable => @first_ticket, :priority => 1, :worker => true )
+      @user.user_roles << Factory( :user_role, :manageable => @last_ticket, :priority => 3, :worker => true )
+    end
+
+    it "should return the highest priority ticket for a general goal" do
+      goal = Factory( :goal, :user => @user )
+      goal.highest_priority_ticket.should eql( @first_ticket )
+    end
+
+    it "should return the highest priority ticket for a ticket goal" do
+      goal = Factory( :goal, :user => @user, :workable => @last_ticket )
+      goal.highest_priority_ticket.should eql( @last_ticket )
+    end
+
+    pending "should return the highest priority ticket for a project goal"
+
+    pending "should not return tickets the user is not a worker for for a project the user is a worker for"
+
+    pending "should return the highest priority ticket for a client goal"
+
+    pending "should not return tickets the user is not a worker for for a client the user is a worker for"
+
+    pending "should return nothing for a finished goal"
+  end
+
+  it "should return zero as the amount to date if there are no days in the user's workweek" do
+    user = Factory( :user )
+    Factory( :workweek, :worker => user )
+    goal = Factory.build( :goal, :user => user )
+    goal.amount_to_date.should eql( 0 )
   end
 end

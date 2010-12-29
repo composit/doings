@@ -66,7 +66,7 @@ class Goal < ActiveRecord::Base
       workweek = user.current_workweek
       total_days = workweek.workday_count( :period => period )
       days_to_current = workweek.workday_count( :period => period, :end_time => Time.zone.now )
-      amount.to_f / total_days * days_to_current
+      total_days > 0 ? amount.to_f / total_days * days_to_current : 0
     end
   end
 
@@ -77,6 +77,14 @@ class Goal < ActiveRecord::Base
   def update_daily_values
     self.daily_date = Time.zone.now
     self.daily_goal_amount = amount_to_date - amount_complete( :end_time => Time.zone.now.beginning_of_day )
+  end
+
+  def highest_priority_ticket
+    if( workable && workable.class.name == "Ticket" )
+      workable
+    else
+      user.tickets.includes( :user_roles ).order( :priority ).first
+    end
   end
 
   private

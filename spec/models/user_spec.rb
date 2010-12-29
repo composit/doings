@@ -173,4 +173,38 @@ describe User do
       @user.daily_percentage_complete.should eql( 29 )
     end
   end
+
+  describe "when choosing next ticket to work on" do
+    before( :each ) do
+      @user = Factory( :worker )
+    end
+
+    describe "with no goals" do
+      it "should return nothing if there are no open tickets" do
+        @user.highest_priority_ticket.should eql( nil )
+      end
+
+      it "should not return tickets that the user is not a worker for" do
+        Factory( :ticket )
+        @user.highest_priority_ticket.should eql( nil )
+      end
+    end
+    
+    describe "with available tickets" do
+      before( :each ) do
+      end
+
+      it "should choose highest priority ticket if no goals are set" do
+        pending
+      end
+
+      pending "should choose higher priority unfinished goals over higher priority tickets"
+
+      pending "should return tickets for higher priority unfinished goals before lower"
+
+      pending "should skip higher priority finished goals in favor of unfinished goals"
+
+      pending "should choose high priority tickets if all goals are finished"
+    end
+  end
 end
