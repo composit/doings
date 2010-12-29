@@ -16,8 +16,7 @@ class User < ActiveRecord::Base
   has_many :projects, :through => :user_roles, :source => :manageable, :source_type => 'Project'
   has_many :tickets, :through => :user_roles, :source => :manageable, :source_type => 'Ticket'
   has_many :user_activity_alerts
-  has_many :master_goals
-  has_many :daily_goals
+  has_many :goals
   has_many :workweeks, :foreign_key => :worker_id
 
   # Setup accessible (or protected) attributes for your model
@@ -31,6 +30,39 @@ class User < ActiveRecord::Base
   end
 
   def current_workweek( time = Time.zone.now )
-    workweeks.order( "created_at desc" ).where( "created_at <= ?", time ).first
+    workweeks.order( "created_at desc, id desc" ).where( "created_at <= ?", time ).first
   end
+
+  def daily_goals!
+    goals.each do |goal|
+      # update the daily values
+      goal.save! if( goal.daily_date.nil? || goal.daily_date < Time.zone.now.to_date )
+    end
+  end
+
+  def daily_percentage_complete
+    minutes_percentage = daily_percentage( "minutes" )
+    dollars_percentage = daily_percentage( "dollars" )
+    if( dollars_percentage == 0 )
+      ( daily_percentage( "minutes" ) * 100 ).round
+    elsif( minutes_percentage == 0 )
+      ( daily_percentage( "dollars" ) * 100 ).round
+    else
+      ( ( daily_percentage( "minutes" ) + daily_percentage( "dollars" ) ) * 50 ).round
+    end
+  end
+
+  private
+    def daily_percentage( units )
+      goal_array = goals.where( :units => units ).inject( [0, 0] ) do |sum, goal|
+        [
+          sum[0] + ( goal.amount_complete_today > goal.daily_goal_amount ? goal.daily_goal_amount : goal.amount_complete_today ),
+          sum[1] + goal.daily_goal_amount] 
+      end
+      if( goal_array.nil? || goal_array[1] == 0 )
+        0
+      else
+        goal_array[0] / goal_array[1]
+      end
+    end
 end

@@ -14,5 +14,6 @@ Factory.define( :worker, :parent => :confirmed_user ) do |w|
   w.after_create do |worker|
     ticket = Factory( :ticket )
     worker.user_roles << UserRole.create!( :user => worker, :manageable => ticket, :worker => true )
+    Factory( :weekday_workweek, :worker_id => worker.id )
   end
 end

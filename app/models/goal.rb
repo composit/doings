@@ -11,6 +11,9 @@ class Goal < ActiveRecord::Base
   validates :workable_type, :inclusion => { :in => WORKABLE_TYPES }, :allow_blank => true
   validates :period, :presence => true, :inclusion => { :in => PERIODS }
   validates :units, :presence => true, :inclusion => { :in => UNITS }
+  validates :user_id, :presence => true
+
+  before_validation :update_daily_values
 
   def full_description
     desc = "#{name}: #{amount_string}/#{period_unit}"
@@ -18,11 +21,13 @@ class Goal < ActiveRecord::Base
     return desc
   end
 
-  def amount_complete
+  def amount_complete( opts = {} )
     if( units == "minutes" )
-      return TicketTime.batch_minutes_worked( applicable_ticket_times )
+      TicketTime.batch_minutes_worked( applicable_ticket_times( opts ) )
     elsif( units == "dollars" )
-      return TicketTime.batch_dollars_earned( applicable_ticket_times )
+      TicketTime.batch_dollars_earned( applicable_ticket_times( opts ) )
+    else # to not crash validations without units
+      0
     end
   end
 
@@ -31,20 +36,20 @@ class Goal < ActiveRecord::Base
     return( fraction > 1 ? 100 : ( fraction * 100 ).round )
   end
 
-  def applicable_ticket_times
+  def applicable_ticket_times( opts = {} )
     case period
-      when "Daily"
-        start_time = Time.zone.now.beginning_of_day
-        end_time = start_time + 1.day
-      when "Weekly"
-        start_time = Time.zone.now.beginning_of_week
-        end_time = start_time + 1.week
-      when "Monthly"
-        start_time = Time.zone.now.beginning_of_month
-        end_time = start_time + 1.month
-      when "Yearly"
-        start_time = Time.zone.now.beginning_of_year
-        end_time = start_time + 1.year
+    when "Daily"
+      start_time = opts[:start_time] || Time.zone.now.beginning_of_day
+      end_time = opts[:end_time] || start_time + 1.day
+    when "Weekly"
+      start_time = opts[:start_time] || Time.zone.now.beginning_of_week
+      end_time = opts[:end_time] || start_time + 1.week
+    when "Monthly"
+      start_time = opts[:start_time] || Time.zone.now.beginning_of_month
+      end_time = opts[:end_time] || start_time + 1.month
+    when "Yearly"
+      start_time = opts[:start_time] || Time.zone.now.beginning_of_year
+      end_time = opts[:end_time] || start_time + 1.year
     end
     if( workable_id.nil? )
       ticket_times = TicketTime
@@ -54,7 +59,7 @@ class Goal < ActiveRecord::Base
     ticket_times = ticket_times.where( :worker_id => user.id ).where( "started_at >= ? and started_at < ?", start_time, end_time )
   end
 
-  def to_do_to_date
+  def amount_to_date
     if( period == "Daily" && Time.zone.now.wday != weekday )
       0
     else
@@ -63,6 +68,15 @@ class Goal < ActiveRecord::Base
       days_to_current = workweek.workday_count( :period => period, :end_time => Time.zone.now )
       amount.to_f / total_days * days_to_current
     end
+  end
+
+  def amount_complete_today
+    @amount_complete_today ||= amount_complete( :start_time => Time.zone.now.beginning_of_day )
+  end
+
+  def update_daily_values
+    self.daily_date = Time.zone.now
+    self.daily_goal_amount = amount_to_date - amount_complete( :end_time => Time.zone.now.beginning_of_day )
   end
 
   private

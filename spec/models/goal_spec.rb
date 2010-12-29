@@ -87,51 +87,51 @@ describe Goal do
   end
 
   it "should find ticket times within the range of a daily goal" do
-    user = Factory( :user )
+    user = Factory( :worker )
     goal = Factory( :goal, :user => user, :period => "Daily" )
     good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_day, :ended_at => 30.minutes.ago )
-    good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_day, :ended_at => 1.day.since )
-    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_day - 1.second, :ended_at => 30.minutes.ago )
-    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_day + 1.second, :ended_at => 1.day.since )
+    good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_day, :ended_at => Time.zone.now.end_of_day )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_day - 1.second, :ended_at => Time.zone.now.beginning_of_day - 1.second )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_day + 1.second, :ended_at => Time.zone.now.end_of_day + 2.seconds )
 
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time_one.id, good_time_two.id] )
   end
 
   it "should find ticket times within the range of a weekly goal" do
-    user = Factory( :user )
+    user = Factory( :worker )
     goal = Factory( :goal, :user => user, :period => "Weekly" )
-    good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_week, :ended_at => 30.minutes.ago )
-    good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_week, :ended_at => 1.week.since )
-    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_week - 1.second, :ended_at => 30.minutes.ago )
-    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_week + 1.second, :ended_at => 1.week.since )
+    good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_week, :ended_at => Time.zone.now.beginning_of_week )
+    good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_week, :ended_at => Time.zone.now.end_of_week )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_week - 1.second, :ended_at => Time.zone.now.beginning_of_week - 1.second )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_week + 1.second, :ended_at => Time.zone.now.end_of_week + 1.second )
 
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time_one.id, good_time_two.id] )
   end
 
   it "should find ticket times within the range of a monthly goal" do
-    user = Factory( :user )
+    user = Factory( :worker )
     goal = Factory( :goal, :user => user, :period => "Monthly" )
-    good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_month, :ended_at => 30.minutes.ago )
-    good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_month, :ended_at => 1.month.since )
-    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_month - 1.second, :ended_at => 30.minutes.ago )
-    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_month + 1.second, :ended_at => 1.month.since )
+    good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_month, :ended_at => Time.zone.now.beginning_of_month + 1.hour )
+    good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_month, :ended_at => Time.zone.now.end_of_month )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_month - 1.second, :ended_at => Time.zone.now.beginning_of_month - 1.second )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_month + 1.second, :ended_at => Time.zone.now.end_of_month + 2.seconds )
 
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time_one.id, good_time_two.id] )
   end
 
   it "should find ticket times within the range of a yearly goal" do
-    user = Factory( :user )
+    user = Factory( :worker )
     goal = Factory( :goal, :user => user, :period => "Yearly" )
-    good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_year, :ended_at => 30.minutes.ago )
-    good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_year, :ended_at => 1.year.since )
-    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_year - 1.second, :ended_at => 30.minutes.ago )
-    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_year + 1.second, :ended_at => 1.year.since )
+    good_time_one = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_year, :ended_at => Time.zone.now.beginning_of_year + 1.hour )
+    good_time_two = Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_year, :ended_at => Time.zone.now.end_of_year )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.beginning_of_year - 1.second, :ended_at => Time.zone.now.beginning_of_year - 1.second )
+    Factory( :ticket_time, :worker => user, :started_at => Time.zone.now.end_of_year + 1.second, :ended_at => Time.zone.now.end_of_year + 2.seconds )
 
     goal.applicable_ticket_times.collect { |time| time.id }.should eql( [good_time_one.id, good_time_two.id] )
   end
 
   it "should find ticket times within the range of a client-specific goal" do
-    user = Factory( :user )
+    user = Factory( :worker )
     client = Factory( :client )
     ticket = Factory( :ticket, :project => Factory( :project, :client => client ) )
     goal = Factory( :goal, :user => user, :workable => client )
@@ -142,7 +142,7 @@ describe Goal do
   end
 
   it "should find ticket times within the range of a project-specific goal" do
-    user = Factory( :user )
+    user = Factory( :worker )
     project = Factory( :project )
     ticket = Factory( :ticket, :project => project )
     goal = Factory( :goal, :user => user, :workable => project )
@@ -153,7 +153,7 @@ describe Goal do
   end
 
   it "should find ticket times within the range of a ticket-specific goal" do
-    user = Factory( :user )
+    user = Factory( :worker )
     ticket = Factory( :ticket )
     goal = Factory( :goal, :user => user, :workable => ticket )
     good_time = Factory( :ticket_time, :worker => user, :ticket => ticket )
@@ -215,13 +215,13 @@ describe Goal do
 
   describe "with a varied set of goals" do
     before( :each ) do
-      user = Factory( :worker )
-      Factory( :workweek, :worker => user, :sunday => false, :monday => true, :tuesday => true, :wednesday => true, :thursday => true, :friday => true, :saturday => false )
-      @daily_monday = Factory( :goal, :user => user, :units => "minutes", :amount => 10, :period => "Daily", :weekday => 1 )
-      @daily_wednesday = Factory( :goal, :user => user, :units => "minutes", :amount => 20, :period => "Daily", :weekday => 3 )
-      @weekly = Factory( :goal, :user => user, :units => "minutes", :amount => 30, :period => "Weekly" )
-      @monthly = Factory( :goal, :user => user, :units => "minutes", :amount => 40, :period => "Monthly" )
-      @yearly = Factory( :goal, :user => user, :units => "minutes", :amount => 50, :period => "Yearly" )
+      @user = Factory( :worker )
+      Factory( :workweek, :worker => @user, :sunday => false, :monday => true, :tuesday => true, :wednesday => true, :thursday => true, :friday => true, :saturday => false )
+      @daily_monday = Factory( :goal, :user => @user, :units => "minutes", :amount => 10, :period => "Daily", :weekday => 1 )
+      @daily_wednesday = Factory( :goal, :user => @user, :units => "minutes", :amount => 20, :period => "Daily", :weekday => 3 )
+      @weekly = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly" )
+      @monthly = Factory( :goal, :user => @user, :units => "minutes", :amount => 40, :period => "Monthly" )
+      @yearly = Factory( :goal, :user => @user, :units => "minutes", :amount => 50, :period => "Yearly" )
       Timecop.freeze( Time.parse( "2010-12-29" ) ) #wednesday
     end
 
@@ -229,24 +229,72 @@ describe Goal do
       Timecop.return
     end
 
-    it "should return a zero amount to be complete by the end of the day for daily tasks on other days" do
-      @daily_monday.to_do_to_date.should eql( 0 )
+    it "should calculate a zero amount to be complete by the end of the day for daily tasks on other days" do
+      @daily_monday.amount_to_date.should eql( 0 )
     end
 
-    it "should return the amount to be complete by the end of the day for daily tasks" do
-      @daily_wednesday.to_do_to_date.should eql( 20.0 )
+    it "should calculate the amount to be complete by the end of the day for daily tasks" do
+      @daily_wednesday.amount_to_date.should eql( 20.0 )
     end
 
-    it "should return the amount to be complete by the end of the day for weekly tasks" do
-      @weekly.to_do_to_date.should eql( 18.0 )
+    it "should calculate the amount to be complete by the end of the day for weekly tasks" do
+      @weekly.amount_to_date.should eql( 18.0 )
     end
 
-    it "should return the amount to be complete by the end of the day for monthly tasks" do
-      @monthly.to_do_to_date.round.should eql( 37 )
+    it "should calculate the amount to be complete by the end of the day for monthly tasks" do
+      @monthly.amount_to_date.round.should eql( 37 )
     end
 
-    it "should return the amount to be complete by the end of the day for yearly tasks" do
-      ( ( @yearly.to_do_to_date * 100 ).round.to_f / 100 ).should eql( 49.62 )
+    it "should calculate the amount to be complete by the end of the day for yearly tasks" do
+      ( ( @yearly.amount_to_date * 100 ).round.to_f / 100 ).should eql( 49.62 )
+    end
+  end
+
+  it "should calculate amount completion up to a specific time" do
+    user = Factory( :worker )
+    goal = Factory( :goal, :user => user, :units => "minutes", :amount => 100, :period => "Yearly" )
+    ticket = Factory( :ticket, :billing_rate => Factory( :billing_rate, :units => "hour", :dollars => 100 ) )
+    Factory( :ticket_time, :ticket => ticket, :worker => user, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
+    Factory( :ticket_time, :ticket => ticket, :worker => user, :started_at => 30.minutes.ago, :ended_at => Time.zone.now )
+
+    goal.amount_complete( :end_time => Time.zone.now.beginning_of_day ).should eql( 60.0 )
+  end
+
+  it "should calculate amount completion after a specific time" do
+    user = Factory( :worker )
+    goal = Factory( :goal, :user => user, :units => "minutes", :amount => 100, :period => "Yearly" )
+    ticket = Factory( :ticket, :billing_rate => Factory( :billing_rate, :units => "hour", :dollars => 100 ) )
+    Factory( :ticket_time, :ticket => ticket, :worker => user, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
+    Factory( :ticket_time, :ticket => ticket, :worker => user, :started_at => 30.minutes.ago, :ended_at => Time.zone.now )
+
+    goal.amount_complete( :start_time => Time.zone.now.beginning_of_day ).should eql( 30.0 )
+  end
+
+  describe "with a user with a workweek, a goal and time worked" do
+    before( :each ) do
+      Timecop.freeze( Time.parse( "2010-12-29 12:00:00" ) ) #wednesday
+      user = Factory( :worker )
+      Factory( :workweek, :worker => user, :monday => true, :friday => true )
+      @goal = Factory( :goal, :period => "Weekly", :user => user, :units => "minutes", :amount => 240 )
+      Factory( :ticket_time, :worker => user, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
+      Factory( :ticket_time, :worker => user, :started_at => 30.minutes.ago, :ended_at => Time.zone.now )
+      @goal.save!
+    end
+
+    after( :each ) do
+      Timecop.return
+    end
+
+    it "should set the daily date to today" do
+      @goal.reload.daily_date.strftime( "%Y-%m-%d" ).should eql( "2010-12-29" )
+    end
+
+    it "should return the amount completed during that day" do
+      @goal.amount_complete_today.should eql( 30.0 )
+    end
+
+    it "should set the daily amount to be completed during that day" do
+      @goal.reload.daily_goal_amount.should eql( 60.0 ) # 240/2 - 60
     end
   end
 end

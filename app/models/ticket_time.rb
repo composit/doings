@@ -10,6 +10,8 @@ class TicketTime < ActiveRecord::Base
 
   before_validation :set_start_time, :on => :create
   before_validation :close_open_ticket_times
+  before_save :split_wrapping_times
+  after_save :update_goals
 
   attr_accessor :stop_now
 
@@ -54,5 +56,25 @@ class TicketTime < ActiveRecord::Base
           end
         end
       end
+    end
+
+    def split_wrapping_times
+      if( started_at && ended_at && started_at.yday != ended_at.yday )
+        final_ended_at = ended_at
+        self.ended_at = started_at.end_of_day
+        intermediate_days = ( ( final_ended_at - started_at ) / 86400 ).to_i
+        ticket_time_attrs = attributes.reject { |key, value| [ "created_at", "updated_at" ].include?( key ) }
+        #create ticket times for each day between starting and ending date
+        intermediate_days.times do |day|
+          TicketTime.create!( ticket_time_attrs.merge( "started_at" => ( started_at + ( day + 1 ).days ).beginning_of_day, "ended_at" => ( started_at + ( day + 1 ).days ).end_of_day ) )
+        end
+        #create ticket time for the last day
+        TicketTime.create!( ticket_time_attrs.merge( "started_at" => final_ended_at.beginning_of_day, "ended_at" => final_ended_at ) )
+      end
+    end
+
+    def update_goals
+      # update goals: previously completed amount
+      worker.goals.each { |goal| goal.save! } if( started_at < Time.zone.now.beginning_of_day )
     end
 end

@@ -4,9 +4,6 @@ class Workweek < ActiveRecord::Base
   def workday_count( opts = {} )
     opts[:current_time] ||= Time.zone.now
     case opts[:period] 
-    when "Daily"
-      opts[:start_time] ||= opts[:current_time]
-      opts[:end_time] ||= opts[:current_time]
     when "Weekly"
       opts[:start_time] ||= opts[:current_time].beginning_of_week
       opts[:end_time] ||= opts[:current_time].end_of_week
@@ -16,6 +13,9 @@ class Workweek < ActiveRecord::Base
     when "Yearly"
       opts[:start_time] ||= opts[:current_time].beginning_of_year
       opts[:end_time] ||= opts[:current_time].end_of_year
+    else # "Daily"
+      opts[:start_time] ||= opts[:current_time]
+      opts[:end_time] ||= opts[:current_time]
     end
     count_days( opts[:start_time], opts[:end_time] )
   end

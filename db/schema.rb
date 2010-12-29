@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101228165644) do
+ActiveRecord::Schema.define(:version => 20101229011341) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -57,14 +57,13 @@ ActiveRecord::Schema.define(:version => 20101228165644) do
     t.integer  "workable_id"
     t.string   "workable_type"
     t.string   "period"
-    t.decimal  "amount",                            :precision => 10, :scale => 2
+    t.decimal  "amount",            :precision => 10, :scale => 2
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
     t.string   "units"
     t.integer  "weekday"
     t.date     "daily_date"
-    t.float    "daily_previously_completed_amount"
     t.float    "daily_goal_amount"
   end
 
@@ -111,6 +110,8 @@ ActiveRecord::Schema.define(:version => 20101228165644) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "ticket_times", ["started_at"], :name => "index_ticket_times_on_started_at"
 
   create_table "tickets", :force => true do |t|
     t.integer  "project_id"
