@@ -172,39 +172,94 @@ describe User do
       # daily percentage completed = 40/140 = .2857
       @user.daily_percentage_complete.should eql( 29 )
     end
+
+    it "should include open ticket times in the daily percentage complete" do
+      Factory( :goal, :user => @user, :period => "Weekly", :units => "minutes", :amount => 400 )
+      ticket_time = Factory( :ticket_time, :ticket => @ticket, :worker => @user, :started_at => 20.minutes.ago )
+      # daily goal amounts = 200 - 60 = 140
+      # daily amounts complete = 40 + 20 = 60
+      # daily percentage completed = 60/140 = .4286
+
+      @user.daily_percentage_complete.should eql( 43 )
+    end
   end
 
   describe "when choosing next ticket to work on" do
     before( :each ) do
-      @user = Factory( :worker )
+      @user = Factory( :user )
+      Factory( :workweek, :worker => @user, :monday => true )
     end
 
     describe "with no goals" do
-      it "should return nothing if there are no open tickets" do
-        @user.highest_priority_ticket.should eql( nil )
+      it "should return nothing if there are no tickets" do
+        @user.best_available_ticket.should be_nil
       end
 
-      it "should not return tickets that the user is not a worker for" do
-        Factory( :ticket )
-        @user.highest_priority_ticket.should eql( nil )
+      it "should return nothing if there are no open tickets" do
+        ticket = Factory( :ticket, :closed_at => Time.zone.now )
+        Factory( :user_role, :user => @user, :manageable => ticket, :worker => true )
+
+        @user.best_available_ticket.should be_nil
+      end
+    
+      it "should choose highest priority ticket if tickets are available" do
+        @ticket_three = Factory( :ticket )
+        @ticket_one = Factory( :ticket )
+        @ticket_two = Factory( :ticket )
+        Factory( :user_role, :user => @user, :manageable => @ticket_three, :worker => true, :priority => 3 )
+        Factory( :user_role, :user => @user, :manageable => @ticket_one, :worker => true, :priority => 1 )
+        Factory( :user_role, :user => @user, :manageable => @ticket_two, :worker => true, :priority => 2 )
+
+        @user.best_available_ticket.should eql( @ticket_one )
       end
     end
-    
-    describe "with available tickets" do
+
+    describe "with tickets" do
       before( :each ) do
+        @ticket_three = Factory( :ticket )
+        @ticket_one = Factory( :ticket )
+        @ticket_two = Factory( :ticket )
+        Factory( :user_role, :user => @user, :manageable => @ticket_three, :worker => true, :priority => 3 )
+        Factory( :user_role, :user => @user, :manageable => @ticket_one, :worker => true, :priority => 1 )
+        Factory( :user_role, :user => @user, :manageable => @ticket_two, :worker => true, :priority => 2 )
       end
 
-      it "should choose highest priority ticket if no goals are set" do
-        pending
+      it "should choose tickets for unfinished goals over higher priority tickets" do
+        Factory( :goal, :user => @user, :units => "minutes", :amount => 1, :workable => @ticket_two )
+
+        @user.best_available_ticket.should eql( @ticket_two )
       end
 
-      pending "should choose higher priority unfinished goals over higher priority tickets"
+      describe "and goals"
+      before( :each ) do
+        Factory( :goal, :user => @user, :units => "minutes", :amount => 1, :workable => @ticket_three, :priority => 2 )
+        Factory( :goal, :user => @user, :units => "minutes", :amount => 1, :workable => @ticket_one, :priority => 3 )
+        Factory( :goal, :user => @user, :units => "minutes", :amount => 1, :workable => @ticket_two, :priority => 1 )
+      end
 
-      pending "should return tickets for higher priority unfinished goals before lower"
+      it "should return tickets for higher priority unfinished goals before lower" do
+        @user.best_available_ticket.should eql( @ticket_two )
+      end
 
-      pending "should skip higher priority finished goals in favor of unfinished goals"
+      it "should skip higher priority finished goals in favor of unfinished goals" do
+        Factory( :ticket_time, :worker => @user, :ticket => @ticket_two, :started_at => 1.hour.ago, :ended_at => Time.zone.now )
 
-      pending "should choose high priority tickets if all goals are finished"
+        @user.best_available_ticket.should eql( @ticket_three )
+      end
+
+      it "should choose high priority tickets if all goals are finished" do
+        Factory( :ticket_time, :worker => @user, :ticket => @ticket_one, :started_at => 1.hour.ago, :ended_at => Time.zone.now )
+        Factory( :ticket_time, :worker => @user, :ticket => @ticket_two, :started_at => 1.hour.ago, :ended_at => Time.zone.now )
+        Factory( :ticket_time, :worker => @user, :ticket => @ticket_three, :started_at => 1.hour.ago, :ended_at => Time.zone.now )
+
+        @user.best_available_ticket.should eql( @ticket_one )
+      end
+      
+      it "should not include closed tickets in the selection" do
+        @ticket_two.update_attributes!( :closed_at => Time.zone.now )
+
+        @user.best_available_ticket.should eql( @ticket_three )
+      end
     end
   end
 end

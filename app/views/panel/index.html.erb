@@ -1,3 +1,5 @@
 <%= content_for( :header ) do %>
   <h1>Panel</h1>
 <% end %>
+
+<h2><%= current_user.daily_percentage_complete if( current_user.is_worker? ) %>%</h2>

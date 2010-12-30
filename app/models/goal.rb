@@ -79,11 +79,18 @@ class Goal < ActiveRecord::Base
     self.daily_goal_amount = amount_to_date - amount_complete( :end_time => Time.zone.now.beginning_of_day )
   end
 
-  def highest_priority_ticket
-    if( workable && workable.class.name == "Ticket" )
-      workable
-    else
-      user.tickets.includes( :user_roles ).order( :priority ).first
+  def best_available_ticket
+    if( amount_complete_today < daily_goal_amount )
+      tickets = user.tickets.where( :closed_at => nil )
+      tickets = tickets.where( :id => workable.id ) if( workable && workable.class.name == "Ticket" )
+      tickets = tickets.where( :project_id => workable.id ) if( workable && workable.class.name == "Project" )
+      tickets = tickets.joins( :project ).where( :projects => { :client_id => workable.id } ) if( workable && workable.class.name == "Client" )
+      if( units == "minutes" )
+        tickets = tickets.order( :priority )
+      elsif( units == "dollars" )
+        tickets = tickets.joins( :billing_rate ).order( "dollars desc, priority" )
+      end
+      return( tickets.first )
     end
   end
 

@@ -298,49 +298,83 @@ describe Goal do
     end
   end
 
+  it "should return nothing as the best available ticket if there are no tickets available" do
+    user = Factory( :user )
+    Factory( :workweek, :worker => user, :monday => true )
+    Factory( :goal, :user => user ).best_available_ticket.should be_nil
+  end
+
   describe "with available tickets" do
     before( :each ) do
       @user = Factory( :user )
-      Factory( :workweek, :worker => @user )
-      @last_client = Factory( :client )
-      @first_client = Factory( :client )
-      @middle_client = Factory( :client )
-      @user.user_roles << Factory( :user_role, :manageable => @middle_client, :worker => true )
-      @user.user_roles << Factory( :user_role, :manageable => @first_client, :worker => true )
-      @user.user_roles << Factory( :user_role, :manageable => @last_client, :worker => true )
-      @last_project = Factory( :project, :client => @last_client )
-      @first_project = Factory( :project, :client => @first_client )
-      @middle_project = Factory( :project, :client => @middle_client )
-      @user.user_roles << Factory( :user_role, :manageable => @middle_project, :worker => true )
-      @user.user_roles << Factory( :user_role, :manageable => @first_project, :worker => true )
-      @user.user_roles << Factory( :user_role, :manageable => @last_project, :worker => true )
-      @last_ticket = Factory( :ticket, :project => @last_project )
-      @first_ticket = Factory( :ticket, :project => @first_project )
-      @middle_ticket = Factory( :ticket, :project => @middle_project )
-      @user.user_roles << Factory( :user_role, :manageable => @middle_ticket, :priority => 2, :worker => true )
-      @user.user_roles << Factory( :user_role, :manageable => @first_ticket, :priority => 1, :worker => true )
-      @user.user_roles << Factory( :user_role, :manageable => @last_ticket, :priority => 3, :worker => true )
+      Factory( :workweek, :worker => @user, :monday => true )
+      @last_ticket = Factory( :ticket )
+      @first_ticket = Factory( :ticket )
+      @middle_ticket = Factory( :ticket )
+      Factory( :user_role, :user => @user, :manageable => @last_ticket, :priority => 3, :worker => true )
+      Factory( :user_role, :user => @user, :manageable => @first_ticket, :priority => 1, :worker => true )
+      Factory( :user_role, :user => @user, :manageable => @middle_ticket, :priority => 2, :worker => true )
     end
 
-    it "should return the highest priority ticket for a general goal" do
-      goal = Factory( :goal, :user => @user )
-      goal.highest_priority_ticket.should eql( @first_ticket )
+    it "should favor higher priority tickets for time-based goals" do
+      goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 1 )
+
+      goal.best_available_ticket.should eql( @first_ticket )
     end
 
-    it "should return the highest priority ticket for a ticket goal" do
-      goal = Factory( :goal, :user => @user, :workable => @last_ticket )
-      goal.highest_priority_ticket.should eql( @last_ticket )
+    it "should favor tickets with higher rates for dollar-based goals" do
+      @last_ticket.billing_rate.update_attributes!( :dollars => 80, :units => "hour" )
+      @first_ticket.billing_rate.update_attributes!( :dollars => 80, :units => "hour" )
+      @middle_ticket.billing_rate.update_attributes!( :dollars => 100, :units => "hour" )
+      goal = Factory( :goal, :user => @user, :units => "dollars", :amount => 1 )
+
+      goal.best_available_ticket.should eql( @middle_ticket )
     end
 
-    pending "should return the highest priority ticket for a project goal"
+    it "should order tickets by priority for dollar-based goals where rates are the same" do
+      @last_ticket.billing_rate.update_attributes!( :dollars => 100, :units => "hour" )
+      @first_ticket.billing_rate.update_attributes!( :dollars => 100, :units => "hour" )
+      @middle_ticket.billing_rate.update_attributes!( :dollars => 100, :units => "hour" )
+      goal = Factory( :goal, :user => @user, :units => "dollars", :amount => 1 )
 
-    pending "should not return tickets the user is not a worker for for a project the user is a worker for"
+      goal.best_available_ticket.should eql( @first_ticket )
+    end
 
-    pending "should return the highest priority ticket for a client goal"
+    it "should ignore tickets not associated with a ticket when returning the best available ticket for a ticket goal" do
+      goal = Factory( :goal, :user => @user, :workable => @middle_ticket, :amount => 1 )
+      goal.best_available_ticket.should eql( @middle_ticket )
+    end
 
-    pending "should not return tickets the user is not a worker for for a client the user is a worker for"
+    it "should ignore tickets not associated with a project when returning the best available ticket for a project goal" do
+      project = Factory( :project )
+      @middle_ticket.update_attributes!( :project => project )
+      goal = Factory( :goal, :user => @user, :workable => project, :amount => 1 )
 
-    pending "should return nothing for a finished goal"
+      goal.best_available_ticket.should eql( @middle_ticket )
+    end
+
+    it "should ignore tickets not associated with a client when returning the best available ticket for a client goal" do
+      client = Factory( :client )
+      project = Factory( :project, :client => client )
+      @middle_ticket.update_attributes!( :project => project )
+      goal = Factory( :goal, :user => @user, :workable => client, :amount => 1 )
+
+      goal.best_available_ticket.should eql( @middle_ticket )
+    end
+
+    it "should ignore closed tickets" do
+      @first_ticket.update_attributes!( :closed_at => Time.zone.now )
+      goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 1 )
+
+      goal.best_available_ticket.should eql( @middle_ticket )
+    end
+
+    it "should return nothing for a finished goal" do
+      goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 30 )
+      Factory( :ticket_time, :worker => @user, :started_at => 1.hour.ago, :ended_at => Time.zone.now )
+
+      goal.best_available_ticket.should be_nil
+    end
   end
 
   it "should return zero as the amount to date if there are no days in the user's workweek" do

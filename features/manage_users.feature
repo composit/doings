@@ -24,3 +24,18 @@ Feature: manage users
     And I am on the projects page
     And I follow "Panel"
     Then I should be on the panel page
+
+  @javascript @current
+  Scenario: When am on my panel, I should see the percent completed today
+    Given the following worker records:
+      | username | confirmed_at  |
+      | tester   | 2010-12-30    |
+    And the following goals:
+      | user_username | units   | amount |
+      | tester        | minutes | 60     |
+    And the following ticket times:
+      | worker_username | started_at_minutes_ago |
+      | tester          | 30                     |
+    When I log in as "tester"
+    And I am on the panel page
+    Then I should see "50%"

@@ -52,6 +52,13 @@ class User < ActiveRecord::Base
     end
   end
 
+  def best_available_ticket
+    goals.order( :priority ).each do |goal|
+      return goal.best_available_ticket if( goal.best_available_ticket )
+    end
+    return tickets.where( :closed_at => nil ).order( :priority ).first
+  end
+
   private
     def daily_percentage( units )
       goal_array = goals.where( :units => units ).inject( [0, 0] ) do |sum, goal|
