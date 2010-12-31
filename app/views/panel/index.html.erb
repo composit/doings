@@ -2,4 +2,16 @@
   <h1>Panel</h1>
 <% end %>
 
-<h2><%= current_user.daily_percentage_complete if( current_user.is_worker? ) %>%</h2>
+<% if( current_user.is_worker? ) %>
+  <p>
+    <% if( ticket = current_user.best_available_ticket ) %>
+      Best available ticket: <%= ticket.name %>
+    <% else %>
+      No available tickets
+    <% end %>
+  </p>
+
+  <% unless( current_user.goals.empty? ) %>
+    <h2>Today&rsquo;s goals are <%= current_user.daily_percentage_complete if( current_user.is_worker? ) %>% complete</h2>
+  <% end %>
+<% end %>

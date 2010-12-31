@@ -25,11 +25,10 @@ Feature: manage users
     And I follow "Panel"
     Then I should be on the panel page
 
-  @javascript @current
-  Scenario: When am on my panel, I should see the percent completed today
+  Scenario: When am on my panel, I should see the percent completed today if I am a worker and have goals
     Given the following worker records:
-      | username | confirmed_at  |
-      | tester   | 2010-12-30    |
+      | username |
+      | tester   |
     And the following goals:
       | user_username | units   | amount |
       | tester        | minutes | 60     |
@@ -38,4 +37,37 @@ Feature: manage users
       | tester          | 30                     |
     When I log in as "tester"
     And I am on the panel page
-    Then I should see "50%"
+    Then I should see "s goals are 50% complete"
+
+  Scenario: When I am on my panel, I should not see a percent completed today if I am not a worker
+    When I log in as "tester"
+    And I am on the panel page
+    Then I should not see "s goals are"
+
+  Scenario: When I am on my panel, I should not see a percent completed today if I do not have goals
+    Given the following worker records:
+      | username |
+      | tester   |
+    And the following ticket times:
+      | worker_username | started_at_minutes_ago |
+      | tester          | 30                     |
+    When I log in as "tester"
+    And I am on the panel page
+    Then I should not see "s goals are"
+
+  @current
+  Scenario: When I am on my panel, I should see my best available ticket
+    Given the following worker records:
+      | username |
+      | tester   |
+    When I log in as "tester"
+    Then I should see "Best available ticket:"
+
+  @current
+  Scenario: When I am on my panel, I should see "No available tickets" if I do not have open tickets
+    Given the following worker records:
+      | username |
+      | tester   |
+    And all tickets for "tester" are closed
+    When I log in as "tester"
+    Then I should see "No available tickets"
