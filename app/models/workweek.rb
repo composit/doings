@@ -1,6 +1,8 @@
 class Workweek < ActiveRecord::Base
   belongs_to :worker, :class_name => 'User'
 
+  after_save :update_goals
+
   def workday_count( opts = {} )
     opts[:current_time] ||= Time.zone.now
     case opts[:period] 
@@ -39,5 +41,10 @@ class Workweek < ActiveRecord::Base
       else
         ( start_time.yday .. start_time.end_of_year.yday ).select { |day| weekdays.include?( Date.ordinal( start_time.year, day ).wday ) }.length + ( end_time.beginning_of_year.yday .. end_time.yday ).select { |day| weekdays.include?( Date.ordinal( end_time.year, day ).wday ) }.length
       end
+    end
+
+    def update_goals
+      # update goals: previously completed amount
+      worker.goals.each { |goal| goal.save! }
     end
 end

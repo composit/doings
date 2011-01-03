@@ -30,8 +30,8 @@ Feature: manage users
       | username |
       | tester   |
     And the following goals:
-      | user_username | units   | amount |
-      | tester        | minutes | 60     |
+      | user_username | units   | amount | period | relative_weekday |
+      | tester        | minutes | 60     | Daily  | today            |
     And the following ticket times:
       | worker_username | started_at_minutes_ago |
       | tester          | 30                     |
@@ -55,7 +55,6 @@ Feature: manage users
     And I am on the panel page
     Then I should not see "s goals are"
 
-  @current
   Scenario: When I am on my panel, I should see my best available ticket
     Given the following worker records:
       | username |
@@ -63,7 +62,6 @@ Feature: manage users
     When I log in as "tester"
     Then I should see "Best available ticket:"
 
-  @current
   Scenario: When I am on my panel, I should see "No available tickets" if I do not have open tickets
     Given the following worker records:
       | username |
@@ -71,3 +69,27 @@ Feature: manage users
     And all tickets for "tester" are closed
     When I log in as "tester"
     Then I should see "No available tickets"
+
+  Scenario: I should not see my best available ticket on my panel if I am not a worker
+    When I log in as "tester"
+    And I am on the panel page
+    Then I should not see "Best available ticket:"
+    And I should not see "No available tickets"
+
+  Scenario: I should be able to redefine my workweek
+    Given the following worker records:
+      | username |
+      | tester   |
+    When I log in as "tester"
+    And I follow "Manage goals"
+    And I uncheck "Tuesday" 
+    And I uncheck "Thursday"
+    And I press "Update workweek"
+    And I am on the goals page
+    Then the "Sunday" checkbox should not be checked
+    Then the "Monday" checkbox should be checked
+    Then the "Tuesday" checkbox should not be checked
+    Then the "Wednesday" checkbox should be checked
+    Then the "Thursday" checkbox should not be checked
+    Then the "Friday" checkbox should be checked
+    Then the "Saturday" checkbox should not be checked

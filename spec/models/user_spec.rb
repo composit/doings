@@ -112,6 +112,11 @@ describe User do
       Factory( :ticket_time, :worker => Factory( :worker ), :started_at => 1.day.ago, :ended_at => 23.hours.ago )
       @goal.reload.updated_at.should eql( @goal_updated_at )
     end
+
+    it "should recalculate daily amounts for goals whose users have changed their workweek, even if they have been calculated for that day" do
+      @user.current_workweek.update_attributes( :tuesday => false )
+      @goal.reload.daily_goal_amount.should eql( 50.0 )
+    end
   end
 
 

@@ -9,3 +9,26 @@
 <div id="new-goal-form">
   <%= render( :partial => "new_goal_form", :object => current_user.goals.build ) %>
 </div>
+
+<hr />
+<div id="workweek-form">
+  My workweek: 
+  <%= form_for current_user.current_workweek.clone do |f| %>
+    <%= f.hidden_field :worker_id %>
+    <%= f.check_box :sunday %>
+    <%= f.label :sunday %>
+    <%= f.check_box :monday %>
+    <%= f.label :monday %>
+    <%= f.check_box :tuesday %>
+    <%= f.label :tuesday %>
+    <%= f.check_box :wednesday %>
+    <%= f.label :wednesday %>
+    <%= f.check_box :thursday %>
+    <%= f.label :thursday %>
+    <%= f.check_box :friday %>
+    <%= f.label :friday %>
+    <%= f.check_box :saturday %>
+    <%= f.label :saturday %>
+    <%= f.submit "Update workweek" %>
+  <% end %>
+</div>

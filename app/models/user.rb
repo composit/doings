@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
     return tickets.where( :closed_at => nil ).order( :priority ).first
   end
 
-  #private
+  private
     def daily_percentage( units )
       goal_array = goals.where( :units => units ).inject( [0, 0] ) do |sum, goal|
         [

@@ -17,6 +17,8 @@ class Ability
 
     can :manage, Goal, :user_id => user.id
 
+    can :manage, Workweek, :worker_id => user.id
+
     can :read, BillingRate, :billable => { :user_roles => { :user_id => user.id, :finances => true } }
     can :manage, BillingRate, :billable => { :user_roles => { :user_id => user.id, :finances => true, :admin => true } }
   end

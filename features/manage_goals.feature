@@ -115,3 +115,19 @@ Feature: manage goals
     And I follow "new goal"
     And I select "Ticket" from "Workable type"
     Then I should not see "Test ticket" within "#new-goal-form"
+
+  @javascript
+  Scenario: I should be able to set the weekday for daily goals
+    Given the following worker records:
+      | username |
+      | tester   |
+    When I log in as "tester"
+    And I am on the goals page
+    And I follow "new goal"
+    And I fill in "Name" with "Test goal"
+    And I select "Daily" from "Period"
+    And I select "Tuesday" from "Weekday"
+    And I fill in "Amount (minutes/dollars)" with "1"
+    And I press "Create goal"
+    And I am on the goals page
+    Then I should see "Test goal"

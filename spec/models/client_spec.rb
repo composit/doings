@@ -80,4 +80,15 @@ describe Client do
 
     client.ticket_times.collect { |ticket_time| ticket_time.id }.should eql( [ticket_time.id, other_ticket_time.id] )
   end
+
+  it "should return tickets associated with it" do
+    client = Factory( :client )
+    project = Factory( :project, :client => client )
+    other_project = Factory( :project, :client => client )
+    ticket = Factory( :ticket, :project => project )
+    other_ticket = Factory( :ticket, :project => other_project )
+    Factory( :ticket )
+
+    client.tickets.collect { |ticket| ticket.id }.should eql( [ticket.id, other_ticket.id] )
+  end
 end

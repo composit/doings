@@ -82,9 +82,9 @@ class Goal < ActiveRecord::Base
   def best_available_ticket
     if( amount_complete_today < daily_goal_amount )
       tickets = user.tickets.where( :closed_at => nil )
-      tickets = tickets.where( :id => workable.id ) if( workable && workable.class.name == "Ticket" )
-      tickets = tickets.where( :project_id => workable.id ) if( workable && workable.class.name == "Project" )
-      tickets = tickets.joins( :project ).where( :projects => { :client_id => workable.id } ) if( workable && workable.class.name == "Client" )
+      tickets = tickets.where( :id => workable_id ) if( workable_id && workable_type == "Ticket" )
+      tickets = tickets.where( :project_id => workable_id ) if( workable_id && workable_type == "Project" )
+      tickets = tickets.joins( :project ).where( :projects => { :client_id => workable_id } ) if( workable_id && workable_type == "Client" )
       if( units == "minutes" )
         tickets = tickets.order( :priority )
       elsif( units == "dollars" )

@@ -20,6 +20,10 @@ class Client < ActiveRecord::Base
     project.billing_rate = BillingRate.new( :dollars => billing_rate.dollars, :units => billing_rate.units )
     project
   end
+
+  def tickets
+    Ticket.joins( :project ).where( :projects => { :client_id => id } )
+  end
   
   def ticket_times
     TicketTime.joins( :ticket => :project ).where( :projects => { :client_id => id } )

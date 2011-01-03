@@ -12,6 +12,6 @@
   </p>
 
   <% unless( current_user.goals.empty? ) %>
-    <h2>Today&rsquo;s goals are <%= current_user.daily_percentage_complete if( current_user.is_worker? ) %>% complete</h2>
+    <h2>Today&rsquo;s goals are <%= current_user.daily_percentage_complete %>% complete</h2>
   <% end %>
 <% end %>

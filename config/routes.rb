@@ -10,6 +10,7 @@ Doings::Application.routes.draw do
   end
   resources :ticket_times, :only => [:create, :update]
   resources :goals, :only => [:index, :create]
+  resources :workweeks, :only => :create
 
   devise_for :users
 

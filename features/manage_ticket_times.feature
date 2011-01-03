@@ -113,3 +113,6 @@ Feature: manage ticket times
     When I log in as "tester"
     And I press "Stop now"
     Then I should not see "Test ticket" within "#current-ticket"
+
+  Scenario: I should be able to start my best available ticket straight from the panel
+    pending
