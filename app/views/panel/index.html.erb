@@ -3,13 +3,12 @@
 <% end %>
 
 <% if( current_user.is_worker? ) %>
-  <p>
-    <% if( ticket = current_user.best_available_ticket ) %>
-      Best available ticket: <%= ticket.name %>
-    <% else %>
-      No available tickets
-    <% end %>
-  </p>
+  <% if( ticket = current_user.best_available_ticket ) %>
+    Best available ticket: <%= ticket.name %>
+    <%= render( :partial => "ticket_times/starter", :object => ticket ) %>
+  <% else %>
+    No available tickets
+  <% end %>
 
   <% unless( current_user.goals.empty? ) %>
     <h2>Today&rsquo;s goals are <%= current_user.daily_percentage_complete %>% complete</h2>

@@ -3,14 +3,15 @@ class Goal < ActiveRecord::Base
   belongs_to :workable, :polymorphic => true
 
   WORKABLE_TYPES = ["Client", "Project", "Ticket"]
-  PERIODS = ["Yearly", "Monthly", "Weekly", "Daily"]
-  UNITS = ["minutes", "dollars"]
+  PERIOD_OPTIONS = ["Yearly", "Monthly", "Weekly", "Daily"]
+  UNIT_OPTIONS = ["minutes", "dollars"]
+  WEEKDAY_OPTIONS = { "Sunday" => 0, "Monday" => 1, "Tuesday" => 2, "Wednesday" => 3, "Thursday" => 4, "Friday" => 5, "Saturday" => 6 }
 
   validates :name, :presence => true
   validates :amount, :presence => true, :numericality => true
   validates :workable_type, :inclusion => { :in => WORKABLE_TYPES }, :allow_blank => true
-  validates :period, :presence => true, :inclusion => { :in => PERIODS }
-  validates :units, :presence => true, :inclusion => { :in => UNITS }
+  validates :period, :presence => true, :inclusion => { :in => PERIOD_OPTIONS }
+  validates :units, :presence => true, :inclusion => { :in => UNIT_OPTIONS }
   validates :user_id, :presence => true
 
   before_validation :update_daily_values

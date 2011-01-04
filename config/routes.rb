@@ -9,7 +9,7 @@ Doings::Application.routes.draw do
     collection { get :workables }
   end
   resources :ticket_times, :only => [:create, :update]
-  resources :goals, :only => [:index, :create]
+  resources :goals, :only => [:index, :create, :destroy]
   resources :workweeks, :only => :create
 
   devise_for :users

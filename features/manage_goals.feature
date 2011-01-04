@@ -117,6 +117,16 @@ Feature: manage goals
     Then I should not see "Test ticket" within "#new-goal-form"
 
   @javascript
+  Scenario: I should not see a weekday option when creating a non-daily goal
+    Given the following worker records:
+      | username |
+      | tester   |
+    When I log in as "tester"
+    And I am on the goals page
+    And I follow "new goal"
+    Then "Weekday" should not be visible
+
+  @javascript
   Scenario: I should be able to set the weekday for daily goals
     Given the following worker records:
       | username |
@@ -131,3 +141,41 @@ Feature: manage goals
     And I press "Create goal"
     And I am on the goals page
     Then I should see "Test goal"
+
+  @javascript
+  Scenario: I should be able to delete goals
+    Given the following worker records:
+      | username |
+      | tester   |
+    And the following goals:
+      | user_username | name       |
+      | tester        | Test goal  |
+      | tester        | Other goal |
+    When I log in as "tester"
+    And I am on the goals page
+    And I am prepared to confirm a popup dialog
+    And I follow "delete" for the "Test goal" goal
+    Then I should not see "Test goal"
+    And I should see "Other goal"
+
+  @current
+  Scenario: I should be able to reprioritize goals
+    Given the following worker records:
+      | username |
+      | tester   |
+    And the following goals:
+      | user_username | name       | priority |
+      | tester        | Goal one   | 1        |
+      | tester        | Goal two   | 2        |
+      | tester        | Goal three | 3        |
+    When I log in as "tester"
+    And I am on the goals page
+    And I fill in "2" for the "Goal one" priority
+    And I fill in "3" for the "Goal two" priority
+    And I fill in "1" for the "Goal three" priority
+    And I follow "Update goals"
+    Then I should see the following text in order:
+      | text       |
+      | Goal three |
+      | Goal one   |
+      | Goal two   |

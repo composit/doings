@@ -1,0 +1,7 @@
+<%= form_for( starter.ticket_times.build( :worker => current_user ), :remote => true ) do |f| %>
+  <% if can?( :create, f.object ) %>
+    <%= f.hidden_field :ticket_id %>
+    <%= f.hidden_field :worker_id %>
+    <%= link_to "start", "#", :class => "submitter" %>
+  <% end %>
+<% end %>

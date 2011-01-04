@@ -2,9 +2,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   margin: 0;
   padding: 0;
   border: 0;
-  outline: 0;
-  font-size: 100%;
-  vertical-align: baseline;
+  outline: 0; font-size: 100%; vertical-align: baseline;
   background: transparent;
 }
 
@@ -98,7 +96,11 @@ a:hover, a:active {
       }
 
       #wrap #main #new-goal-form #workables {
-        display:none;
+        display: none;
+      }
+
+      #wrap #main #new-goal-form #weekday {
+        display: none;
       }
 
     #wrap #main .project {
@@ -175,4 +177,8 @@ hr {
   width: 30%;
   float: right;
   height: 1em;
+}
+
+form#new_ticket_time {
+  display: inline;
 }

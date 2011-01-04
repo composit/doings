@@ -19,3 +19,8 @@ end
 When /^I wait for (\d+) second(?:|s)$/ do |seconds|
   sleep( seconds.to_i )
 end
+
+When /^I am prepared to confirm a popup dialog$/ do
+  page.evaluate_script( "window.alert = function( msg ) { return true; }" )
+  page.evaluate_script( "window.confirm = function( msg ) { return true; }" )
+end

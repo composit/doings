@@ -50,6 +50,15 @@ $( document ).ready( function() {
         break;
     }
   } );
+  $( "#goal_period" ).live( "change", function() {
+    if( $( this ).val() == "Daily" ) {
+      $( "#weekday" ).show();
+      $( "#goal_weekday" ).attr( "disabled", false );
+    } else {
+      $( "#weekday" ).hide();
+      $( "#goal_weekday" ).attr( "disabled", true );
+    }
+  } );
   $( ".progressbar" ).each( function() {
     value = parseInt( $( this ).attr( "data-percent-complete" ) );
     $( this ).progressbar( { value: value } );

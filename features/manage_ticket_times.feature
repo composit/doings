@@ -114,5 +114,19 @@ Feature: manage ticket times
     And I press "Stop now"
     Then I should not see "Test ticket" within "#current-ticket"
 
+  @javascript
   Scenario: I should be able to start my best available ticket straight from the panel
-    pending
+    Given the following worker records:
+      | username |
+      | tester   |
+    And all tickets for "tester" are closed
+    And the following tickets:
+      | name        |
+      | Test ticket |
+    And the following user roles:
+      | user_username | ticket_name | worker |
+      | tester        | Test ticket | true   |
+    When I log in as "tester"
+    And I am on the panel page
+    And I follow "start"
+    Then I should see "Test ticket" within "#current-ticket"

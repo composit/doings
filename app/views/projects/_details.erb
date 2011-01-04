@@ -1,13 +1,7 @@
 <% for ticket in details.tickets.accessible_by( Ability.new( current_user ) ) %>
   <div class="ticket" id="ticket-<%= ticket.id %>">
     <%= ticket.name %><span class="sidenote"><%= ticket.billing_rate.description if( can?( :read, ticket.billing_rate ) ) %> created by <%= ticket.created_by_user.username %></span><br />
-    <%= form_for( ticket.ticket_times.build( :worker => current_user ), :remote => true ) do |f| %>
-      <% if can?( :create, f.object ) %>
-        <%= f.hidden_field :ticket_id %>
-        <%= f.hidden_field :worker_id %>
-        <%= link_to "start", "#", :class => "submitter" %>
-      <% end %>
-    <% end %>
+    <%= render( :partial => "ticket_times/starter", :object => ticket ) %>
   </div>
 <% end %>
 <% if( can?( :update, details ) ) %>

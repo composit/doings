@@ -7,7 +7,7 @@ describe Workweek do
 
   describe "with a three day workweek" do
     before( :each ) do
-      @workweek = Factory( :workweek, :monday => true, :wednesday => true, :saturday => true )
+      @workweek = Factory( :workweek, :worker => Factory( :user ), :monday => true, :wednesday => true, :saturday => true )
       Timecop.freeze( Time.parse( "2010-10-14" ) )
     end
 
@@ -45,13 +45,13 @@ describe Workweek do
   end
 
   it "should determine the number of workdays in weeks that wrap to the next year" do
-    workweek = Factory( :workweek, :monday => true, :wednesday => true, :saturday => true )
+    workweek = Factory( :workweek, :worker => Factory( :user ), :monday => true, :wednesday => true, :saturday => true )
     Timecop.freeze( Time.parse( "2009-12-30" ) )
     workweek.workday_count( :period => "Weekly" ).should eql( 3 )
   end
 
   it "should determine 1 workday in the day if the day is a workday" do
-    workweek = Factory( :workweek, :monday => true, :wednesday => true, :saturday => true )
+    workweek = Factory( :workweek, :worker => Factory( :user ), :monday => true, :wednesday => true, :saturday => true )
     Timecop.freeze( Time.parse( "2010-10-13" ) )
     workweek.workday_count( :period => "Daily" ).should eql( 1 )
   end

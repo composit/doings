@@ -4,6 +4,7 @@ Given /^the following tickets:$/ do |table|
     Factory( :ticket, hash )
   end
 end
+
 Given /^all tickets for "([^"]*)" are closed$/ do |username|
   User.find_by_username( username ).tickets.each do |ticket|
     ticket.update_attributes!( :closed_at => Time.zone.now )

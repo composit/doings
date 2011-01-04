@@ -1,5 +1,6 @@
 <div class="goal clear" id="goal-<%= line.id %>">
   <%= line.full_description %>
+  <%= link_to "delete", line, :method => :delete, :confirm => "are you sure you want to permanently delete this goal?", :remote => true %>
   <div class="progressbar" data-percent-complete="<%= line.percent_complete %>"></div>
   <hr />
 </div>
