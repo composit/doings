@@ -1,6 +1,7 @@
 <%= content_for :header do %>
   <h1>Client</h1>
 <% end %>
+
 <% if( can?( :update, @client ) ) %>
   <%= form_for( @client ) do |f| %>
     <%= render( :partial => "form", :locals => { :f => f } ) %>

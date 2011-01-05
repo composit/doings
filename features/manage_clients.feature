@@ -125,3 +125,24 @@ Feature: manage clients
     Then I should see "Client was successfully updated"
     And the "Billing rate" field should contain "10"
     And the "per" field should contain "hour"
+
+  @current
+  Scenario: I should be able to create new clients
+    When I log in as "tester"
+    And I follow "New client"
+    And I fill in "Name" with "Test client"
+    And I press "Create client"
+    And I am on the panel page
+    Then I should see "Test client"
+
+  @current
+  Scenario: I should be back on the new page if the client fails validation
+    pending
+
+  @current
+  Scenario: I should have admin permissions on a client I create
+    pending
+
+  @current
+  Scenario: I should be able to give myself worker, etc. permissions on newly created clients
+    pending

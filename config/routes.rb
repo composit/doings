@@ -1,5 +1,5 @@
 Doings::Application.routes.draw do
-  resources :clients, :only => [:show, :update] do
+  resources :clients, :only => [:show, :new, :create, :update] do
     collection { get :workables }
   end
   resources :projects, :only => [:index, :show, :create] do

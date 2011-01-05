@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101230201409) do
+ActiveRecord::Schema.define(:version => 20110105013928) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(:version => 20101230201409) do
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "created_by"
   end
 
   create_table "comments", :force => true do |t|
@@ -70,7 +71,7 @@ ActiveRecord::Schema.define(:version => 20101230201409) do
 
   create_table "invoices", :force => true do |t|
     t.integer  "client_id"
-    t.integer  "created_by_user_id"
+    t.integer  "created_by"
     t.date     "invoice_date"
     t.datetime "paid_at"
     t.text     "description"
@@ -91,11 +92,11 @@ ActiveRecord::Schema.define(:version => 20101230201409) do
 
   create_table "projects", :force => true do |t|
     t.integer  "client_id"
-    t.integer  "created_by_user_id"
+    t.integer  "created_by"
     t.string   "name"
     t.datetime "closed_at"
-    t.integer  "closed_by_user_id"
-    t.integer  "authorized_by_user_id"
+    t.integer  "closed_by"
+    t.integer  "authorized_by"
     t.datetime "authorized_at"
     t.boolean  "urgent"
     t.datetime "created_at"
@@ -116,7 +117,7 @@ ActiveRecord::Schema.define(:version => 20101230201409) do
 
   create_table "tickets", :force => true do |t|
     t.integer  "project_id"
-    t.integer  "created_by_user_id"
+    t.integer  "created_by"
     t.string   "name"
     t.datetime "closed_at"
     t.integer  "estimated_minutes"

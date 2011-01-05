@@ -1,5 +1,5 @@
 class ClientsController < ApplicationController
-  respond_to :html, :only => [:show, :new, :update]
+  respond_to :html, :only => [:show, :new, :create, :update]
   respond_to :js, :only => [:index, :workables]
 
   load_and_authorize_resource
@@ -10,6 +10,12 @@ class ClientsController < ApplicationController
 
   def new
     @client.address = Address.new
+    @client.user_roles << UserRole.new( :user => current_user, :manageable => @client )
+  end
+
+  def create
+    @client.save
+    respond_with( @client )
   end
 
   def update
