@@ -170,12 +170,15 @@ Feature: manage goals
       | tester        | Goal three | 3        |
     When I log in as "tester"
     And I am on the goals page
-    And I fill in "2" for the "Goal one" priority
-    And I fill in "3" for the "Goal two" priority
-    And I fill in "1" for the "Goal three" priority
-    And I follow "Update goals"
+    And I fill in "2" for the "Goal one" goal priority
+    And I fill in "3" for the "Goal two" goal priority
+    And I fill in "1" for the "Goal three" goal priority
+    And I press "Reprioritize"
     Then I should see the following text in order:
       | text       |
       | Goal three |
       | Goal one   |
       | Goal two   |
+
+  Scenario: I should not be allowed to reprioritize other users' goals
+    pending

@@ -383,4 +383,40 @@ describe Goal do
     goal = Factory.build( :goal, :user => user )
     goal.amount_to_date.should eql( 0 )
   end
+
+  describe "when reprioritizing" do
+    before( :each ) do
+      @goal_one = Factory( :goal, :id => 1, :priority => 1 )
+      @goal_two = Factory( :goal, :id => 2, :priority => 2 )
+      @goal_three = Factory( :goal, :id => 3, :priority => 3 )
+    end
+
+    it "should reprioritize goals" do
+      Goal.reprioritize!( "1" => { "old" => "1", "new" => "2" }, "2" => { "old" => "2", "new" => "1" }, "3" => { "old" => "3", "new" => "3" } )
+      @goal_one.reload.priority.should eql( 2 )
+      @goal_two.reload.priority.should eql( 1 )
+      @goal_three.reload.priority.should eql( 3 )
+    end
+
+    it "should favor the values of changing priorities if they overlap and the changing priorities are decreasing" do
+      Goal.reprioritize!( "1" => { "old" => "1", "new" => "1" }, "2" => { "old" => "2", "new" => "2" }, "3" => { "old" => "3", "new" => "2" } )
+      @goal_one.reload.priority.should eql( 1 )
+      @goal_two.reload.priority.should eql( 3 )
+      @goal_three.reload.priority.should eql( 2 )
+    end
+
+    it "should favor the values of changing priorities if they overlap and the changing priorities are increasing" do
+      Goal.reprioritize!( "1" => { "old" => "1", "new" => "2" }, "2" => { "old" => "2", "new" => "2" }, "3" => { "old" => "3", "new" => "3" } )
+      @goal_one.reload.priority.should eql( 2 )
+      @goal_two.reload.priority.should eql( 1 )
+      @goal_three.reload.priority.should eql( 3 )
+    end
+
+    it "should fill in gaps in priority" do
+      Goal.reprioritize!( "1" => { "old" => "1", "new" => "10" }, "2" => { "old" => "2", "new" => "100" }, "3" => { "old" => "3", "new" => "5" } )
+      @goal_one.reload.priority.should eql( 2 )
+      @goal_two.reload.priority.should eql( 3 )
+      @goal_three.reload.priority.should eql( 1 )
+    end
+  end
 end

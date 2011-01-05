@@ -81,4 +81,80 @@ describe Ticket do
     ticket.billing_rate.dollars.should eql( 100 )
     ticket.billing_rate.units.should eql( "month" )
   end
+
+  it "should generate a full name" do
+    client = Factory( :client, :name => "Test client" )
+    project = Factory( :project, :name => "Test project", :client => client )
+    ticket = Factory( :ticket, :name => "Test ticket", :project => project )
+
+    ticket.full_name.should eql( "Test client - Test project - Test ticket" )
+  end
+
+  it "should return the priority for a specific user" do
+    user = Factory( :user )
+    other_user = Factory( :user )
+    ticket = Factory( :ticket )
+    Factory( :user_role, :user => other_user, :manageable => ticket, :priority => 10 )
+    Factory( :user_role, :user => user, :manageable => ticket, :priority => 5 )
+
+    ticket.priority_for_user( user ).should eql( 5 )
+  end
+
+  describe "when reprioritizing" do
+    before( :each ) do
+      @user = Factory( :user )
+      @ticket_one = Factory( :ticket, :id => 1 )
+      @ticket_two = Factory( :ticket, :id => 2 )
+      @ticket_three = Factory( :ticket, :id => 3 )
+      Factory( :user_role, :user => @user, :manageable => @ticket_one, :priority => 1 )
+      Factory( :user_role, :user => @user, :manageable => @ticket_two, :priority => 2 )
+      Factory( :user_role, :user => @user, :manageable => @ticket_three, :priority => 3 )
+    end
+
+    it "should reprioritize tickets" do
+      Ticket.reprioritize!( @user, { "1" => { "old" => "1", "new" => "2" }, "2" => { "old" => "2", "new" => "1" }, "3" => { "old" => "3", "new" => "3" } } )
+      @ticket_one.reload.priority_for_user( @user ).should eql( 2 )
+      @ticket_two.reload.priority_for_user( @user ).should eql( 1 )
+      @ticket_three.reload.priority_for_user( @user ).should eql( 3 )
+    end
+
+    it "should favor the values of changing priorities if they overlap and the changing priorities are decreasing" do
+      Ticket.reprioritize!( @user, { "1" => { "old" => "1", "new" => "1" }, "2" => { "old" => "2", "new" => "2" }, "3" => { "old" => "3", "new" => "2" } } )
+      @ticket_one.reload.priority_for_user( @user ).should eql( 1 )
+      @ticket_two.reload.priority_for_user( @user ).should eql( 3 )
+      @ticket_three.reload.priority_for_user( @user ).should eql( 2 )
+    end
+
+    it "should favor the values of changing priorities if they overlap and the changing priorities are increasing" do
+      Ticket.reprioritize!( @user, { "1" => { "old" => "1", "new" => "2" }, "2" => { "old" => "2", "new" => "2" }, "3" => { "old" => "3", "new" => "3" } } )
+      @ticket_one.reload.priority_for_user( @user ).should eql( 2 )
+      @ticket_two.reload.priority_for_user( @user ).should eql( 1 )
+      @ticket_three.reload.priority_for_user( @user ).should eql( 3 )
+    end
+
+    it "should fill in gaps in priority" do
+      Ticket.reprioritize!( @user, { "1" => { "old" => "1", "new" => "10" }, "2" => { "old" => "2", "new" => "100" }, "3" => { "old" => "3", "new" => "5" } } )
+      @ticket_one.reload.priority_for_user( @user ).should eql( 2 )
+      @ticket_two.reload.priority_for_user( @user ).should eql( 3 )
+      @ticket_three.reload.priority_for_user( @user ).should eql( 1 )
+    end
+
+    it "should not reprioritize other users' tickets" do
+      other_user = Factory( :user )
+      other_user_role = Factory( :user_role, :user => other_user, :manageable => @ticket_one, :priority => 999 )
+      Ticket.reprioritize!( @user, { "1" => { "old" => "1", "new" => "2" }, "2" => { "old" => "2", "new" => "1" }, "3" => { "old" => "3", "new" => "3" } } )
+
+      other_user_role.priority.should eql( 999 )
+    end
+
+    it "should assign priority-less (new) tickets lowest priority" do
+      ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => @user.id } } )
+      ticket.reload.priority_for_user( @user ).should eql( 4 )
+    end
+
+    it "should not overwrite priorities if they exist" do
+      ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => @user.id, :priority => 10 } } )
+      ticket.reload.priority_for_user( @user ).should eql( 10 )
+    end
+  end
 end

@@ -15,8 +15,30 @@ class Ticket < ActiveRecord::Base
 
   accepts_nested_attributes_for :user_roles, :billing_rate
 
-  before_validation :populate_billing_rate
+  before_validation :populate_billing_rate, :populate_user_priorities
   after_save :generate_alerts
+
+  def full_name
+    "#{project.client.name} - #{project.name} - #{name}"
+  end
+
+  def priority_for_user( user )
+    user_roles.where( :user_id => user.id ).first.priority
+  end
+
+  def self.reprioritize!( user, priority_array )
+    priority_array.each do |ticket_id, priority_hash|
+      order = priority_hash["new"].to_f
+      order = order - 0.5 if( priority_hash["old"] > priority_hash["new"] )
+      order = order + 0.5 if( priority_hash["old"] < priority_hash["new"] )
+      priority_hash["order"] = order
+    end
+    priority_array.to_a.sort { |x,y| x[1]["order"] <=> y[1]["order"] }.each_with_index do |ticket_array, index|
+      user_role = UserRole.where( :user_id => user.id, :manageable_type => "Ticket", :manageable_id => ticket_array[0] ).first
+      user_role.priority = index + 1
+      user_role.save( :validate => false )
+    end
+  end
 
   private
     def generate_alerts
@@ -27,5 +49,11 @@ class Ticket < ActiveRecord::Base
 
     def populate_billing_rate
       self.billing_rate = BillingRate.new( :dollars => project.billing_rate.dollars, :units => project.billing_rate.units ) if( billing_rate.nil? && project )
+    end
+
+    def populate_user_priorities
+      user_roles.each do |role|
+        role.priority = UserRole.where( :user_id => role.user_id, :manageable_type => "Ticket" ).order( :priority ).last.priority + 1 unless( role.priority )
+      end
     end
 end

@@ -95,6 +95,20 @@ class Goal < ActiveRecord::Base
     end
   end
 
+  def self.reprioritize!( priority_array )
+    priority_array.each do |goal_id, priority_hash|
+      order = priority_hash["new"].to_f
+      order = order - 0.5 if( priority_hash["old"] > priority_hash["new"] )
+      order = order + 0.5 if( priority_hash["old"] < priority_hash["new"] )
+      priority_hash["order"] = order
+    end
+    priority_array.to_a.sort { |x,y| x[1]["order"] <=> y[1]["order"] }.each_with_index do |goal_array, index|
+      goal = Goal.find( goal_array[0] )
+      goal.priority = index + 1
+      goal.save( :validate => false )
+    end
+  end
+
   private
     def period_unit
       case period

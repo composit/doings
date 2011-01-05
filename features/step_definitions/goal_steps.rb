@@ -13,6 +13,7 @@ When /^I follow "([^"]*)" for the "([^"]*)" goal$/ do |link, goal_name|
   end
 end
 
-When /^I fill in "([^"]*)" for the "([^"]*)" priority$/ do |priority, goal_name|
-  goal = Goal.find_by_name
+When /^I fill in "([^"]*)" for the "([^"]*)" goal priority$/ do |priority, goal_name|
+  goal = Goal.find_by_name( goal_name )
+  fill_in( "goal_priorities_#{goal.id}_new", :with => priority )
 end

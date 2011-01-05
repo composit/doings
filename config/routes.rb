@@ -5,11 +5,14 @@ Doings::Application.routes.draw do
   resources :projects, :only => [:index, :show, :create] do
     collection { get :workables }
   end
-  resources :tickets, :only => [:create, :update] do
+  resources :tickets, :only => [:index, :create, :update] do
     collection { get :workables }
+    collection { post :prioritize }
   end
   resources :ticket_times, :only => [:create, :update]
-  resources :goals, :only => [:index, :create, :destroy]
+  resources :goals, :only => [:index, :create, :destroy] do
+    collection { post :prioritize }
+  end
   resources :workweeks, :only => :create
 
   devise_for :users

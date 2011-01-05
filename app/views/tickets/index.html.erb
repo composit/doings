@@ -1,0 +1,14 @@
+<%= content_for( :header ) do %>
+  <h1>Tickets</h1>
+<% end %>
+
+<%= form_tag "/tickets/prioritize" do %>
+  <% for ticket in @tickets %>
+    <div class="ticket clear" id="ticket-<%= ticket.id %>">
+      <%= hidden_field_tag "ticket_priorities[#{ticket.id}][old]", ticket.priority_for_user( current_user ) %>
+      <%= text_field_tag "ticket_priorities[#{ticket.id}][new]", ticket.priority_for_user( current_user ), :size => 2 %>
+      <%= ticket.full_name %>
+    </div>
+  <% end %>
+  <%= submit_tag "Reprioritize" %>
+<% end %>

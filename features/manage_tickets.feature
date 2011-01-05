@@ -1,7 +1,7 @@
 Feature: manage tickets
 
   @javascript
-  Scenario: I should see a project's tickets that I'm attached to when I click "tickets"
+  Scenario: I should see a project's tickets that I'm attached to when I click "tickets" on the projects page
     Given the following confirmed_user records:
       | username |
       | tester   |
@@ -33,7 +33,7 @@ Feature: manage tickets
     Then I should see "Test ticket"
     And I should not see "Other ticket"
 
-  Scenario: The "tickets" and "collapse" links should show and hide appropriately
+  Scenario: The "tickets" and "collapse" links should show and hide appropriately on the projects page
     Given the following confirmed_user records:
       | username |
       | tester   |
@@ -61,7 +61,7 @@ Feature: manage tickets
     Then "collapse" should not be visible
 
   @javascript
-  Scenario: I should be able to hide a project's tickets when I click "collapse"
+  Scenario: I should be able to hide a project's tickets when I click "collapse" on the projects page
     Given the following confirmed_user records:
       | username |
       | tester   |
@@ -377,3 +377,46 @@ Feature: manage tickets
     And I follow "new ticket"
     Then the "Finances" checkbox in the roles for "tester" should be disabled
     And the "Finances" checkbox in the roles for "other" should be disabled
+
+  Scenario: I should be able to get to the ticket priority page by clicking "Ticket priorities"
+    When I log in as "tester"
+    And I follow "Ticket priorities"
+    Then I should be on the tickets page
+
+  Scenario: I should not see other users' tickets on the ticket priority page
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following tickets:
+      | name        |
+      | Good ticket |
+      | Bad ticket  |
+    And the following user roles:
+      | user_username | ticket_name |
+      | tester        | Good ticket |
+    When I log in as "tester"
+    And I am on the tickets page
+    Then I should see "Good ticket"
+    And I should not see "Bad ticket"
+
+  Scenario: I should be able to prioritize tickets
+    Given the following worker records:
+      | username |
+      | tester   |
+    And the following ticket records:
+      | name         |
+      | Ticket one   |
+      | Ticket two   |
+    And the following user roles:
+      | user_username | ticket_name  | priority |
+      | tester        | Ticket one   | 1        |
+      | tester        | Ticket two   | 2        |
+    When I log in as "tester"
+    And I am on the tickets page
+    And I fill in "2" for the "Ticket one" ticket priority
+    And I fill in "1" for the "Ticket two" ticket priority
+    And I press "Reprioritize"
+    Then I should see the following text in order:
+      | text       |
+      | Ticket two |
+      | Ticket one |

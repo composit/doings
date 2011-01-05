@@ -17,3 +17,8 @@ When /^I follow "([^"]*)" for the "([^"]*)" ticket$/ do |link, ticket_name|
     click_link( link )
   end
 end
+
+When /^I fill in "([^"]*)" for the "([^"]*)" ticket priority$/ do |priority, ticket_name|
+  ticket = Ticket.find_by_name( ticket_name )
+  fill_in( "ticket_priorities_#{ticket.id}_new", :with => priority )
+end

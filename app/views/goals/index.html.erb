@@ -3,9 +3,14 @@
 <% end %>
 
 <div id="goals">
-  <%= render( :partial => "line", :collection => @goals ) %>
+  <%= form_tag "/goals/prioritize" do %>
+    <%= render( :partial => "line", :collection => @goals ) %>
+    <%= submit_tag "Reprioritize" %>
+  <% end %>
 </div>
+
 <%= link_to "new goal", "#", :id => "new-goal" %>
+
 <div id="new-goal-form">
   <%= render( :partial => "new_goal_form", :object => current_user.goals.build ) %>
 </div>
