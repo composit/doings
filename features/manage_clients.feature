@@ -59,6 +59,7 @@ Feature: manage clients
     Then I should see "Test project"
     And I should not see "Other project"
 
+  @current
   Scenario: I should be able to edit client information if I have admin access to that client
     Given the following confirmed_user records:
       | username |
@@ -126,23 +127,40 @@ Feature: manage clients
     And the "Billing rate" field should contain "10"
     And the "per" field should contain "hour"
 
-  @current
   Scenario: I should be able to create new clients
     When I log in as "tester"
     And I follow "New client"
     And I fill in "Name" with "Test client"
+    And I fill in "Billing rate" with "100"
     And I press "Create client"
     And I am on the panel page
     Then I should see "Test client"
 
-  @current
   Scenario: I should be back on the new page if the client fails validation
-    pending
+    When I log in as "tester"
+    And I follow "New client"
+    And I fill in "Name" with "Test client"
+    And I press "Create client"
+    Then I should be on the new client page
+    And I should see "Billing rate dollars is not a number"
 
-  @current
   Scenario: I should have admin permissions on a client I create
-    pending
+    When I log in as "tester"
+    And I follow "New client"
+    And I fill in "Name" with "Test client"
+    And I fill in "Billing rate" with "100"
+    And I press "Create client"
+    And I am on the panel page
+    And I follow "Test client"
+    Then the "Admin" checkbox should be checked
 
-  @current
   Scenario: I should be able to give myself worker, etc. permissions on newly created clients
-    pending
+    When I log in as "tester"
+    And I follow "New client"
+    And I fill in "Name" with "Test client"
+    And I fill in "Billing rate" with "100"
+    And I check "Worker"
+    And I press "Create client"
+    And I am on the panel page
+    And I follow "Test client"
+    Then the "Worker" checkbox should be checked

@@ -10,11 +10,13 @@ class ClientsController < ApplicationController
 
   def new
     @client.address = Address.new
-    @client.user_roles << UserRole.new( :user => current_user, :manageable => @client )
+    @client.user_roles << UserRole.new( :user => current_user, :manageable => @client, :admin => true )
+    @client.billing_rate = BillingRate.new
+    @client.created_by_user_id = current_user.id
   end
 
   def create
-    @client.save
+    flash[:notice] = 'Client was successfully created' if( @client.save )
     respond_with( @client )
   end
 

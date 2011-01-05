@@ -44,11 +44,11 @@ class User < ActiveRecord::Base
     minutes_percentage = daily_percentage( "minutes" )
     dollars_percentage = daily_percentage( "dollars" )
     if( dollars_percentage == 0 )
-      ( daily_percentage( "minutes" ) * 100 ).round
+      ( minutes_percentage * 100 ).round
     elsif( minutes_percentage == 0 )
-      ( daily_percentage( "dollars" ) * 100 ).round
+      ( dollars_percentage * 100 ).round
     else
-      ( ( daily_percentage( "minutes" ) + daily_percentage( "dollars" ) ) * 50 ).round
+      ( ( minutes_percentage + dollars_percentage ) * 50 ).round
     end
   end
 

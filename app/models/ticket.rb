@@ -15,8 +15,8 @@ class Ticket < ActiveRecord::Base
 
   accepts_nested_attributes_for :user_roles, :billing_rate
 
-  before_validation :populate_billing_rate, :populate_user_priorities
-  after_save :generate_alerts
+  before_validation :populate_billing_rate
+  after_save :generate_alerts, :populate_user_priorities
 
   def full_name
     "#{project.client.name} - #{project.name} - #{name}"
@@ -53,7 +53,10 @@ class Ticket < ActiveRecord::Base
 
     def populate_user_priorities
       user_roles.each do |role|
-        role.priority = UserRole.where( :user_id => role.user_id, :manageable_type => "Ticket" ).order( :priority ).last.priority + 1 unless( role.priority )
+        unless( role.priority )
+          role.priority = UserRole.where( :user_id => role.user_id, :manageable_type => "Ticket" ).order( :priority ).last.priority.to_i + 1
+          role.save( :validate => false )
+        end
       end
     end
 end

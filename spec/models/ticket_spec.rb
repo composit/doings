@@ -156,5 +156,11 @@ describe Ticket do
       ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => @user.id, :priority => 10 } } )
       ticket.reload.priority_for_user( @user ).should eql( 10 )
     end
+
+    it "should automatically set the first created ticket's priority to 1" do
+      user = Factory( :user )
+      ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => user.id } } )
+      ticket.reload.priority_for_user( user ).should eql( 1 )
+    end
   end
 end
