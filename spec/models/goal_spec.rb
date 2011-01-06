@@ -273,11 +273,11 @@ describe Goal do
   describe "with a user with a workweek, a goal and time worked" do
     before( :each ) do
       Timecop.freeze( Time.parse( "2010-12-29 12:00:00" ) ) #wednesday
-      user = Factory( :worker )
-      Factory( :workweek, :worker => user, :monday => true, :friday => true )
-      @goal = Factory( :goal, :period => "Weekly", :user => user, :units => "minutes", :amount => 240 )
-      Factory( :ticket_time, :worker => user, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
-      Factory( :ticket_time, :worker => user, :started_at => 30.minutes.ago, :ended_at => Time.zone.now )
+      @user = Factory( :worker )
+      Factory( :workweek, :worker => @user, :monday => true, :friday => true )
+      @goal = Factory( :goal, :period => "Weekly", :user => @user, :units => "minutes", :amount => 240 )
+      Factory( :ticket_time, :worker => @user, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
+      Factory( :ticket_time, :worker => @user, :started_at => 30.minutes.ago, :ended_at => Time.zone.now )
       @goal.save!
     end
 
@@ -295,6 +295,11 @@ describe Goal do
 
     it "should set the daily amount to be completed during that day" do
       @goal.reload.daily_goal_amount.should eql( 60.0 ) # 240/2 - 60
+    end
+
+    it "should set negative daily goal amounts to zero" do
+      Factory( :ticket_time, :worker => @user, :started_at => 2.days.ago, :ended_at => 1.day.ago )
+      @goal.reload.daily_goal_amount.should eql( 0.0 )
     end
   end
 

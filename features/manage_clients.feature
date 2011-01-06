@@ -59,7 +59,6 @@ Feature: manage clients
     Then I should see "Test project"
     And I should not see "Other project"
 
-  @current
   Scenario: I should be able to edit client information if I have admin access to that client
     Given the following confirmed_user records:
       | username |
@@ -136,13 +135,12 @@ Feature: manage clients
     And I am on the panel page
     Then I should see "Test client"
 
-  Scenario: I should be back on the new page if the client fails validation
+  Scenario: I should be alerted if the client fails validation
     When I log in as "tester"
     And I follow "New client"
     And I fill in "Name" with "Test client"
     And I press "Create client"
-    Then I should be on the new client page
-    And I should see "Billing rate dollars is not a number"
+    Then I should see "Billing rate dollars is not a number"
 
   Scenario: I should have admin permissions on a client I create
     When I log in as "tester"

@@ -182,3 +182,7 @@ hr {
 form#new_ticket_time {
   display: inline;
 }
+
+#daily-goals {
+  display: none;
+}

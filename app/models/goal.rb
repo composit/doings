@@ -77,7 +77,8 @@ class Goal < ActiveRecord::Base
 
   def update_daily_values
     self.daily_date = Time.zone.now
-    self.daily_goal_amount = amount_to_date - amount_complete( :end_time => Time.zone.now.beginning_of_day )
+    daily_amount = amount_to_date - amount_complete( :end_time => Time.zone.now.beginning_of_day )
+    self.daily_goal_amount = ( daily_amount < 0 ? 0 : daily_amount )
   end
 
   def best_available_ticket

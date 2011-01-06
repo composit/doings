@@ -63,4 +63,8 @@ $( document ).ready( function() {
     value = parseInt( $( this ).attr( "data-percent-complete" ) );
     $( this ).progressbar( { value: value } );
   } );
+  $( "#view-daily-goals" ).live( "click", function() {
+    $( "#daily-goals" ).toggle();
+    return false;
+  } );
 } );

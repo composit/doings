@@ -16,8 +16,7 @@ describe User do
     Factory( :user, :email => "test@example.com" )
     user = Factory.build( :user, :email => "test@example.com" )
     user.save
-
-    user.errors.should eql( :email => ["has already been taken"] )
+user.errors.should eql( :email => ["has already been taken"] )
   end
 
   it "should require a username" do
@@ -186,6 +185,22 @@ describe User do
       # daily percentage completed = 60/140 = .4286
 
       @user.daily_percentage_complete.should eql( 43 )
+    end
+
+    it "should calculate daily minutes remaining" do
+      Factory( :goal, :user => @user, :period => "Weekly", :units => "minutes", :amount => 400 )
+      # daily goal amounts = 200 - 60 = 140
+      # daily amounts complete = 40
+      # daily minutes remaining = 140 - 40 = 100
+      @user.daily_minutes_remaining.should eql( 100 )
+    end
+
+    it "should calculate daily dollars remaining" do
+      Factory( :goal, :user => @user, :period => "Weekly", :units => "dollars", :amount => 400 )
+      # daily goal amounts = 200 - 100 = 100
+      # daily amounts complete = 66.6666 
+      # daily dollars remaining = 100 - 66.6666 = 33.3333
+      @user.daily_dollars_remaining.should eql( 33 )
     end
   end
 
