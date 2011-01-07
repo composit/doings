@@ -23,5 +23,9 @@ describe BillingRate do
     billing_rate.description.should eql( "$10/hour" )
   end
 
+  it "should automatically assign the estimated_hourly_rate for hourly billing rates" do
+    billing_rate = Factory( :billing_rate, :dollars => 10, :units => "hour" )
 
+    billing_rate.estimated_hourly_rate.should eql( 10.0 )
+  end
 end

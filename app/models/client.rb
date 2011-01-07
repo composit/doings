@@ -9,6 +9,7 @@ class Client < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => true
   validates :web_address, :format => { :with => URI::regexp( %w( http https ) ) }, :allow_blank => true
   validates :billing_rate, :presence => true
+  validates :created_by_user_id, :presence => true
 
   accepts_nested_attributes_for :address, :billing_rate, :user_roles
 

@@ -5,6 +5,10 @@
       <%= rate.text_field :dollars, :size => 10 %>
       <%= rate.label :units, "per" %>
       <%= rate.select :units, BillingRate::UNIT_OPTIONS %>
+      <span class="estimated-hourly" style="display:<%= rate.object.units == "hour" ? "none" : "block" %>">
+        <%= rate.label :estimated_hourly_rate %>
+        <%= rate.text_field :estimated_hourly_rate, :size => 5 %>
+      </span>
     </div>
   </div>
 <% end %>

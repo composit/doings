@@ -6,6 +6,8 @@ class BillingRate < ActiveRecord::Base
   validates :dollars, :numericality => true
   validates :units, :inclusion => { :in => UNIT_OPTIONS, :message => "are not included in the list" }
 
+  before_validation :assign_estimated_hourly_rate
+
   def description
     "$#{formatted_dollars}/#{units}"
   end
@@ -17,5 +19,9 @@ class BillingRate < ActiveRecord::Base
       else
         return( sprintf( "%.2f", dollars ) )
       end
+    end
+
+    def assign_estimated_hourly_rate
+      self.estimated_hourly_rate = dollars if( units == "hour" )
     end
 end
