@@ -26,10 +26,6 @@
         <div id='controls'>
           <p><%= link_to "Panel", panel_path %></p>
           <p><%= link_to "Ticket priorities", tickets_path %></p>
-          <p class="client" id="client-all">
-            All clients -
-            <%= link_to "projects", projects_path %>
-          </p>
           <% for client in @nav_clients %>
             <p class="client" id="client-<%= client.id %>">
               <%= link_to client.name, client %> -

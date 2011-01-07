@@ -5,12 +5,18 @@ Feature: manage ticket times
     Given the following confirmed_user records:
       | username |
       | tester   |
-    And the following project records:
-      | name         |
-      | Test project |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
     And the following tickets:
       | name        | project_name |
       | Test ticket | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | worker |
       | tester        | Test project | true   |
@@ -18,22 +24,28 @@ Feature: manage ticket times
       | user_username | ticket_name |
       | tester        | Test ticket |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket"
     And I should not see "start"
 
-  @javascript
+  @javascript @current
   Scenario: I should be able to create a new ticket time by clicking "start" for a ticket
     Given the following confirmed_user records:
       | username |
       | tester   |
-    And the following project records:
-      | name         |
-      | Test project |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
     And the following tickets:
       | name        | project_name |
       | Test ticket | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name |
       | tester        | Test project |
@@ -41,7 +53,7 @@ Feature: manage ticket times
       | user_username | ticket_name | worker |
       | tester        | Test ticket | true   |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "start" for the "Test ticket" ticket
     Then I should see "Test ticket" within "#current-ticket"
@@ -78,12 +90,18 @@ Feature: manage ticket times
     Given the following confirmed_user records:
       | username |
       | tester   |
-    And the following project records:
-      | name         |
-      | Test project |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
     And the following tickets:
       | name        | project_name |
       | Test ticket | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name |
       | tester        | Test project |
@@ -94,12 +112,12 @@ Feature: manage ticket times
       | worker_username | ticket_name | started_at |
       | tester          | Test ticket | 2999-01-01 |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "start" for the "Test ticket" ticket
     Then I should see "Worker has a currently open ticket time with a future start date. Please close it before opening a new ticket."
 
-  @javascript
+  @javascript @current
   Scenario: If I stop a current ticket time, it should disappear from the current-ticket box
     Given the following confirmed_user records:
       | username |
@@ -114,7 +132,7 @@ Feature: manage ticket times
     And I press "Stop now"
     Then I should not see "Test ticket" within "#current-ticket"
 
-  @javascript
+  @javascript @current
   Scenario: I should be able to start my best available ticket straight from the panel
     Given the following worker records:
       | username |

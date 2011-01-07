@@ -1,39 +1,11 @@
 <% for ticket in details.tickets.accessible_by( Ability.new( current_user ) ) %>
   <div class="ticket" id="ticket-<%= ticket.id %>">
-    <%= ticket.name %><span class="sidenote"><%= ticket.billing_rate.description if( can?( :read, ticket.billing_rate ) ) %> created by <%= ticket.created_by_user.username %></span><br />
-    <%= render( :partial => "ticket_times/starter", :object => ticket ) %>
+    <%= render( :partial => "tickets/line", :object => ticket ) %>
   </div>
 <% end %>
 <% if( can?( :update, details ) ) %>
   <%= link_to "new ticket", "#", :class => "new-ticket" %>
   <div class="new-ticket-form">
-    <%= form_for( generate_new_ticket( details ), :remote => true ) do |f| %>
-      <%= render( "shared/error_messages", :target => f.object ) %>
-      <%= f.label :name %>
-      <%= f.text_field :name %>
-      <%= f.hidden_field :project_id %><br />
-      <%= f.hidden_field :created_by_user_id %><br />
-      <% if( can?( :create, f.object.project.billing_rate ) ) %>
-        <%= f.fields_for :billing_rate do |rate| %>
-          <%= rate.label :dollars, "Billing rate" %>
-          <%= rate.text_field :dollars, :size => 10 %>
-          <%= rate.label :units, "per" %>
-          <%= rate.select :units, BillingRate::UNIT_OPTIONS %><br />
-        <% end %>
-      <% end %>
-      <%= f.fields_for :user_roles do |role| %>
-        <div class="user-role">
-          <%= role.hidden_field :user_id %>
-          <%= role.object.user.username %>
-          <%= role.label :admin %>
-          <%= role.check_box :admin, :disabled => ( role.object.user_id == f.object.created_by_user_id ) %>
-          <%= role.label :worker %>
-          <%= role.check_box :worker %>
-          <%= role.label :finances %>
-          <%= role.check_box :finances, :disabled => !can?( :update, f.object.project.billing_rate ) %>
-        </div>
-      <% end %>
-      <%= f.submit "Create ticket" %>
-    <% end %>
+    <%= render( :partial => "tickets/form", :object => generate_new_ticket( details ) ) %>
   </div>
 <% end %>

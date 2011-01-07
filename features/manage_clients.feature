@@ -14,7 +14,7 @@ Feature: manage clients
       | tester        | Test client  |
       | other         | Other client |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     Then I should see "Test client"
     And I should not see "Other client"
 
@@ -29,7 +29,7 @@ Feature: manage clients
       | user_username | client_name |
       | tester        | Test client |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "Test client"
     Then I should be on the client page for "Test client"
 
@@ -54,7 +54,7 @@ Feature: manage clients
       | tester        | Test project  |
       | tester        | Other project |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     When I follow "projects" for the "Test client" client
     Then I should see "Test project"
     And I should not see "Other project"
@@ -162,3 +162,6 @@ Feature: manage clients
     And I am on the panel page
     And I follow "Test client"
     Then the "Worker" checkbox should be checked
+
+  Scenario: It should keep track of who created a client
+    pending

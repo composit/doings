@@ -20,6 +20,9 @@ module NavigationHelpers
     when /^the client page for "([^"]*)"$/
       client_path( Client.find_by_name( $1 ) )
 
+    when /^the projects page for "([^"]*)"$/
+      client_projects_path( :client_id => Client.find_by_name( $1 ).id )
+
     else
       begin
         page_name =~ /the (.*) page/

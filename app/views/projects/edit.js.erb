@@ -1,4 +1,1 @@
-$( "#projects" ).append( "<%= escape_javascript( render( :partial => "line", :object => @project ) ) %>" );
-$( "#new-project" ).show();
-$( "#new-project-form" ).hide();
-$( "#new-project-form" ).html( "<%= escape_javascript( render( :partial => "new_project_form", :object => generate_new_project( @project.client ) ) ) %>" );
+$( "#project-<%= @project.id %>" ).html( "<%= escape_javascript( render( :partial => "form", :object => @project ) ) %>" );

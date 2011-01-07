@@ -13,10 +13,14 @@ class Ticket < ActiveRecord::Base
   validates :billing_rate, :presence => true
   validates :project, :presence => true
 
+  attr_accessor :updated_by_user_id
+
   accepts_nested_attributes_for :user_roles, :billing_rate
 
   before_validation :populate_billing_rate
-  after_save :generate_alerts, :populate_user_priorities
+  after_save :populate_user_priorities
+  after_create :generate_creation_alerts
+  after_update :generate_update_alerts
 
   def full_name
     "#{project.client.name} - #{project.name} - #{name}"
@@ -41,9 +45,17 @@ class Ticket < ActiveRecord::Base
   end
 
   private
-    def generate_alerts
+    def generate_creation_alerts
+      generate_alerts( "created" )
+    end
+
+    def generate_update_alerts
+      generate_alerts( "updated" )
+    end
+
+    def generate_alerts( term )
       user_roles.each do |role|
-        user_activity_alerts.create!( :user => role.user, :alertable => self, :content => "#{created_by_user.username} created a new ticket called #{name}" ) unless( role.user_id == created_by_user_id )
+        user_activity_alerts.create!( :user => role.user, :alertable => self, :content => "#{User.find( @updated_by_user_id ).username} #{term} a ticket called #{name}" ) unless( role.user_id == @updated_by_user_id.to_i )
       end
     end
 

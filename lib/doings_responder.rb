@@ -18,7 +18,7 @@ class DoingsResponder < ActionController::Responder
     elsif( has_errors? )
       render( :action => ( post? ? :new : :edit ) )
     else
-      render( :action => :edit )
+      render( :action => :show )
     end
   end
 end

@@ -424,4 +424,30 @@ describe Goal do
       @goal_three.reload.priority.should eql( 1 )
     end
   end
+
+  describe "when working with priorities" do
+    before( :each ) do
+      @user = Factory( :worker )
+      Factory( :goal, :user => @user, :priority => 1 )
+      Factory( :goal, :user => @user, :priority => 2 )
+      Factory( :goal, :user => @user, :priority => 3 )
+      Factory( :goal, :priority => 10 )
+    end
+
+    it "should assign priority-less (new) goals lowest priority" do
+      goal = Factory( :goal, :user => @user )
+      goal.reload.priority.should eql( 4 )
+    end
+
+    it "should not overwrite priorities if they exist" do
+      goal = Factory( :goal, :user => @user, :priority => 10 )
+      goal.reload.priority.should eql( 10 )
+    end
+
+    it "should automatically set the first created goal's priority to 1" do
+      user = Factory( :worker )
+      goal = Factory( :goal, :user => user )
+      goal.reload.priority.should eql( 1 )
+    end
+  end
 end

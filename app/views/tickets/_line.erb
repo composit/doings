@@ -1,0 +1,7 @@
+<%= line.name %>
+<span class="sidenote">
+  <%= line.billing_rate.description if( can?( :read, line.billing_rate ) ) %> created by <%= line.created_by_user.username %>
+</span>
+<%= link_to "edit", "#", :class => "edit-ticket", "data-ticket-id" => line.id if( can?( :update, line ) ) %>
+<br />
+<%= render( :partial => "ticket_times/starter", :object => line ) %>

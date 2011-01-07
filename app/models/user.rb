@@ -5,7 +5,6 @@ class User < ActiveRecord::Base
 
   has_many :comments, :as => :commenter
   has_many :invoices, :as => :created_by_user
-  has_many :office_hours, :as => :worker
   has_many :created_projects, :class_name => 'Project', :as => :created_by_user
   has_many :closed_projects, :class_name => 'Project', :as => :closed_by_user
   has_many :authorized_projects, :class_name => 'Project', :as => :authorized_by_user

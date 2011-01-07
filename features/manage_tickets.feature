@@ -7,11 +7,12 @@ Feature: manage tickets
       | tester   |
     And the following client records:
       | name         |
+      | Test client  |
       | Other client |
     And the following projects:
-      | name          |
-      | Test project  |
-      | Other project |
+      | name          | client_name |
+      | Test project  | Test client |
+      | Other project | Test client |
     And the following tickets:
       | name           | project_name  |
       | Test ticket    | Test project  |
@@ -19,6 +20,7 @@ Feature: manage tickets
       | Other ticket 2 | Test project  |
     And the following user roles:
       | user_username | client_name  |
+      | tester        | Test client  |
       | tester        | Other client |
     And the following user roles:
       | user_username | project_name |
@@ -28,7 +30,7 @@ Feature: manage tickets
       | tester        | Test ticket    |
       | tester        | Other ticket 1 |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects" for the "Test client" client
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket"
     And I should not see "Other ticket"
@@ -37,12 +39,18 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
     And the following tickets:
       | name           | project_name |
       | Test ticket    | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name |
       | tester        | Test project |
@@ -50,7 +58,7 @@ Feature: manage tickets
       | user_username | ticket_name |
       | tester        | Test ticket |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     Then "tickets" should be visible
     Then "collapse" should not be visible
     When I follow "tickets"
@@ -65,12 +73,18 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
     And the following tickets:
       | name           | project_name |
       | Test ticket    | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name |
       | tester        | Test project |
@@ -78,7 +92,7 @@ Feature: manage tickets
       | user_username | ticket_name |
       | tester        | Test ticket |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket"
     When I follow "collapse"
@@ -89,14 +103,20 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin |
       | tester        | Test project | false |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should not see "new ticket"
 
@@ -105,35 +125,75 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin |
       | tester        | Test project | true  |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     And I fill in "Name" with "Test ticket"
     And I press "Create ticket"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket"
+
+  @javascript
+  Scenario: I should be able to cancel out of new ticket creation
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    When I log in as "tester"
+    And I follow "projects"
+    And I follow "tickets" for the "Test project" project
+    And I follow "new ticket" for the "Test project" project
+    And I fill in "Name" with "Test ticket"
+    And I follow "cancel"
+    Then "Name" should not be visible
+    When I follow "projects"
+    And I follow "tickets" for the "Test project" project
+    Then I should not see "Test ticket"
 
   @javascript
   Scenario: If I try to create an invalid ticket, I should see an alert
     Given the following confirmed_user records:
       | username |
       | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin |
       | tester        | Test project | true  |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     And I press "Create ticket"
@@ -144,14 +204,20 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin |
       | tester        | Test project | true  |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     And I fill in "Name" with "Test ticket"
@@ -160,7 +226,7 @@ Feature: manage tickets
     And I follow "new ticket" for the "Test project" project
     And I fill in "Name" with "Test ticket 2"
     And I press "Create ticket"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket 2"
 
@@ -171,16 +237,22 @@ Feature: manage tickets
       | tester   |
       | other    |
       | another  |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin |
       | tester        | Test project | true  |
       | other         | Test project | true  |
       | another       | Test project | false |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     And I fill in "Name" with "Test ticket"
@@ -199,15 +271,21 @@ Feature: manage tickets
       | username |
       | tester   |
       | other    |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin | worker |
       | tester        | Test project | true  | false  |
       | other         | Test project | false | true   |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     Then the "Admin" checkbox in the roles for "tester" should be checked
@@ -221,14 +299,20 @@ Feature: manage tickets
       | username |
       | tester   |
       | other    |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin |
       | tester        | Test project | true  |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     Then the "Admin" checkbox in the roles for "tester" should be disabled
@@ -238,19 +322,25 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin |
       | tester        | Test project | true  |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     And I fill in "Name" with "Test ticket"
     And I press "Create ticket"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should see "created by tester"
 
@@ -259,21 +349,27 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin | finances |
       | tester        | Test project | true  | true     |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     And I fill in "Name" with "Test ticket"
     And I fill in "Billing rate" with "10"
     And I select "hour" from "per"
     And I press "Create ticket"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should see "$10/hour" within ".ticket"
 
@@ -282,17 +378,23 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
     And the following projects:
-      | name         |
-      | Test project |
+      | name         | client_name |
+      | Test project | Test client |
     And the following billing rates:
       | project_name | dollars | units |
       | Test project | 100     | month |
     And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
       | user_username | project_name | admin | finances |
       | tester        | Test project | true  | true     |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket" for the "Test project" project
     Then the "Billing rate" field should contain "100"
@@ -303,9 +405,12 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
-    And the following project records:
-      | name         |
-      | Test project |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
     And the following tickets:
       | name        | project_name |
       | Test ticket | Test project |
@@ -313,13 +418,16 @@ Feature: manage tickets
       | ticket_name | dollars | units |
       | Test ticket | 100     | hour  |
     And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
       | user_username | project_name |
       | tester        | Test project |
     And the following user roles:
       | user_username | ticket_name | finances |
       | tester        | Test ticket | false    |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should not see "$100/hour" within ".ticket"
 
@@ -328,14 +436,20 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
-    And the following project records:
-      | name         |
-      | Test project |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name  | admin | finances |
       | tester        | Test project  | true  | false    |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket"
     Then I should not see a field labeled "Billing rate"
@@ -346,14 +460,20 @@ Feature: manage tickets
     Given the following confirmed_user records:
       | username |
       | tester   |
-    And the following project records:
-      | name         |
-      | Test project |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name  | admin | finances |
       | tester        | Test project  | true  | true     |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket"
     Then the "Finances" checkbox in the roles for "tester" should not be disabled
@@ -364,15 +484,21 @@ Feature: manage tickets
       | username |
       | tester   |
       | other    |
-    And the following project records:
-      | name         |
-      | Test project |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name | admin | finances |
       | tester        | Test project | true  | false    |
       | other         | Test project | true  | false    |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     And I follow "new ticket"
     Then the "Finances" checkbox in the roles for "tester" should be disabled
@@ -420,3 +546,132 @@ Feature: manage tickets
       | text       |
       | Ticket two |
       | Ticket one |
+
+  @javascript
+  Scenario: I should be able to edit tickets
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following tickets:
+      | name        | project_name |
+      | Test ticket | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    And the following user roles:
+      | user_username | ticket_name | admin |
+      | tester        | Test ticket | true  |
+    When I log in as "tester"
+    And I follow "projects"
+    And I follow "tickets" for the "Test project" project
+    And I follow "edit" for the "Test ticket" ticket
+    And I wait for 1 second
+    And I fill in "Name" with "New name"
+    And I press "Update ticket"
+    And I follow "projects" for the "Test client" client
+    And I follow "tickets" for the "Test project" project
+    Then I should see "New name"
+
+  @javascript
+  Scenario: I should be able to cancel out of the edit form without saving my changes
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following tickets:
+      | name        | project_name |
+      | Test ticket | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    And the following user roles:
+      | user_username | ticket_name | admin |
+      | tester        | Test ticket | true  |
+    When I log in as "tester"
+    And I follow "projects" for the "Test client" client
+    And I follow "tickets" for the "Test project" project
+    And I follow "edit" for the "Test ticket" ticket
+    And I wait for 1 second
+    And I fill in "Name" with "New name"
+    And I follow "cancel"
+    Then "Name" should not be visible
+    When I follow "projects" for the "Test client" client
+    And I follow "tickets" for the "Test project" project
+    Then I should not see "New name"
+
+  @javascript
+  Scenario: I should see validation errors if a ticket I am editing fails validation
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following tickets:
+      | name        | project_name |
+      | Test ticket | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    And the following user roles:
+      | user_username | ticket_name | admin |
+      | tester        | Test ticket | true  |
+    When I log in as "tester"
+    And I follow "projects"
+    And I follow "tickets" for the "Test project" project
+    And I follow "edit" for the "Test ticket" ticket
+    And I wait for 1 second
+    And I fill in "Name" with ""
+    And I press "Update ticket"
+    Then I should see "t be blank"
+
+  @javascript
+  Scenario: I should not be able to edit tickets I do not have admin access to
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following tickets:
+      | name        | project_name | id |
+      | Test ticket | Test project | 1  |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    And the following user roles:
+      | user_username | ticket_name | admin |
+      | tester        | Test ticket | false |
+    When I log in as "tester"
+    And I follow "projects"
+    And I follow "tickets" for the "Test project" project
+    Then I should not see "edit" within "#ticket-1"

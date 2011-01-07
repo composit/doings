@@ -14,7 +14,7 @@ class Goal < ActiveRecord::Base
   validates :units, :presence => true, :inclusion => { :in => UNIT_OPTIONS }
   validates :user_id, :presence => true
 
-  before_validation :update_daily_values
+  before_validation :update_daily_values, :generate_priorities
 
   def full_description
     desc = "#{name}: #{amount_string}/#{period_unit}"
@@ -132,5 +132,12 @@ class Goal < ActiveRecord::Base
         str = "#{formatted_amount} #{amount == 1 ? 'minute' : 'minutes'}"
       end
       return( str )
+    end
+
+    def generate_priorities
+      unless( priority )
+        goals = user.goals.order( :priority )
+        self.priority = ( goals.empty? ? 1 : goals.last.priority.to_i + 1 )
+      end
     end
 end

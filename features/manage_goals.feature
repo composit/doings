@@ -179,7 +179,7 @@ Feature: manage goals
       | Goal one   |
       | Goal two   |
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to see my daily goals
     Given the following worker records:
       | username |
