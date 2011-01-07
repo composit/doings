@@ -2,7 +2,6 @@ class Client < ActiveRecord::Base
   belongs_to :address, :dependent => :destroy
   has_one :billing_rate, :as => :billable, :dependent => :destroy
   has_many :invoices
-  has_many :office_hours, :as => :workable
   has_many :projects
   has_many :user_roles, :as => :manageable
 
@@ -10,7 +9,7 @@ class Client < ActiveRecord::Base
   validates :web_address, :format => { :with => URI::regexp( %w( http https ) ) }, :allow_blank => true
   validates :billing_rate, :presence => true
 
-  accepts_nested_attributes_for :address, :billing_rate
+  accepts_nested_attributes_for :address, :billing_rate, :user_roles
 
   def build_inherited_project( created_by_user_id )
     project = projects.new( :created_by_user_id => created_by_user_id )

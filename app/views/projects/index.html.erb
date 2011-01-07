@@ -8,6 +8,6 @@
 <% if( @client && can?( :update, @client ) ) %>
   <%= link_to "new project", "#", :id => "new-project" %>
   <div id="new-project-form">
-    <%= render( :partial => "new_project_form", :object => generate_new_project( @client ) ) %>
+    <%= render( :partial => "form", :object => generate_new_project( @client ) ) %>
   </div>
 <% end %>

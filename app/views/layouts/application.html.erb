@@ -26,16 +26,13 @@
         <div id='controls'>
           <p><%= link_to "Panel", panel_path %></p>
           <p><%= link_to "Ticket priorities", tickets_path %></p>
-          <p class="client" id="client-all">
-            All clients -
-            <%= link_to "projects", projects_path %>
-          </p>
           <% for client in @nav_clients %>
             <p class="client" id="client-<%= client.id %>">
               <%= link_to client.name, client %> -
               <%= link_to "projects", client_projects_path( :client_id => client.id ) %>
             </p>
           <% end %>
+          <p><%= link_to "New client", new_client_path %></p>
           <% if( current_user.is_worker? ) %>
             <p><%= link_to "Manage goals", goals_path %></p>
             <p><%= link_to "Manage self", edit_user_registration_path %></p>

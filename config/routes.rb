@@ -1,11 +1,11 @@
 Doings::Application.routes.draw do
-  resources :clients, :only => [:show, :update] do
+  resources :clients, :only => [:show, :new, :create, :update] do
     collection { get :workables }
   end
-  resources :projects, :only => [:index, :show, :create] do
+  resources :projects, :only => [:index, :show, :create, :edit, :update] do
     collection { get :workables }
   end
-  resources :tickets, :only => [:index, :create, :update] do
+  resources :tickets, :only => [:index, :show, :create, :edit, :update] do
     collection { get :workables }
     collection { post :prioritize }
   end

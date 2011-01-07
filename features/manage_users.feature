@@ -21,7 +21,7 @@ Feature: manage users
 
   Scenario: I should be able to get to my panel through the sidebar link
     When I log in as "tester"
-    And I am on the projects page
+    And I am on the new client page
     And I follow "Panel"
     Then I should be on the panel page
 

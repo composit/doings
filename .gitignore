@@ -3,5 +3,6 @@ config/database.yml
 log/*.log
 tmp/**/*
 .rvmrc
+.watchr
 config/initializers/action_mailer.rb
 config/setup_load_paths.rb

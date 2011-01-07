@@ -1,1 +1,1 @@
-$( "#project-<%= @ticket.project.id %> .details" ).html( "<%= escape_javascript( render( :partial => "/projects/details", :object => @ticket.project ) ) %>" );
+$( "#ticket-<%= @ticket.id %>" ).html( "<%= escape_javascript( render( :partial => "form", :object => @ticket ) ) %>" );

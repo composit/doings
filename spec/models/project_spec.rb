@@ -74,15 +74,24 @@ describe Project do
   it "should generate user activity alerts when created" do
     user_one = Factory( :user, :username => "tester" )
     user_two = Factory( :user )
-    project = Factory( :project, :name => "Test project", :created_by_user => user_one, :user_roles_attributes => [{ :user => user_two }] )
+    project = Factory( :project, :name => "Test project", :updated_by_user_id => user_one.id, :user_roles_attributes => [{ :user => user_two }] )
 
-    user_two.user_activity_alerts.first.content.should eql( "tester created a new project called Test project" )
+    user_two.user_activity_alerts.first.content.should eql( "tester created a project called Test project" )
+  end
+
+  it "should generate user activity alerts when updated" do
+    user_one = Factory( :user, :username => "tester" )
+    user_two = Factory( :user, :username => "other" )
+    project = Factory( :project, :name => "Test project", :updated_by_user_id => user_one.id, :user_roles_attributes => [{ :user => user_two }, { :user => user_one }] )
+    project.update_attributes!( :name => "New name", :updated_by_user_id => user_two.id )
+
+    user_one.user_activity_alerts.first.content.should eql( "other updated a project called New name" )
   end
 
   it "should not generate user activity alerts for people not associated with that project" do
     user_one = Factory( :user, :username => "tester" )
     user_two = Factory( :user )
-    project = Factory( :project, :name => "Test project", :created_by_user => user_one, :user_roles_attributes => [{ :user => user_one }] )
+    project = Factory( :project, :name => "Test project", :created_by_user => user_one, :updated_by_user_id => user_one.id, :user_roles_attributes => [{ :user => user_one }] )
 
     user_two.user_activity_alerts.should be_empty
   end

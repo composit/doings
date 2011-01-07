@@ -54,3 +54,19 @@
   <div class="title"><%= f.label :active %></div>
   <div class="content"><%= f.check_box :active %></div>
 </div>
+<%= f.fields_for :user_roles do |role| %>
+  <div class="row clear">
+    <div class="title">
+      <%= role.hidden_field :user_id %>
+      <%= role.object.user.username %>
+    </div>
+    <div class="content">
+      <%= role.label :admin %>
+      <%= role.check_box :admin, :disabled => ( role.object.user_id == f.object.created_by_user_id ) %>
+      <%= role.label :worker %>
+      <%= role.check_box :worker %>
+      <%= role.label :finances %>
+      <%= role.check_box :finances %>
+    </div>
+  </div>
+<% end %>

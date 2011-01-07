@@ -3,8 +3,6 @@
 
 $( document ).ready( function() {
   $( ".expand-project-details" ).live( "click", function() {
-    $( this ).hide();
-    $( this ).parents( ".project" ).children( ".collapse-project-details" ).show();
     $( this ).parents( ".project" ).children( ".details" ).html( "<img src='/images/ajax-loader.gif' />" );
     $.get( "/projects/" + $( this ).attr( "data-project-id" ) );
     return false;
@@ -15,6 +13,21 @@ $( document ).ready( function() {
     $( this ).parents( ".project" ).children( ".details" ).html( "" );
     return false;
   } );
+  $( ".edit-project" ).live( "click", function() {
+    $( this ).html( "<img src='/images/ajax-loader.gif' />" );
+    $.get( "/projects/" + $( this ).attr( "data-project-id" ) + "/edit" );
+    return false;
+  } );
+  $( ".cancel-new-project" ).live( "click", function() {
+    $( "#new-project" ).show();
+    $( "#new-project-form" ).hide();
+    return false;
+  } );
+  $( ".cancel-edit-project" ).live( "click", function() {
+    $( this ).html( "<img src='/images/ajax-loader.gif' />" );
+    $.get( "/projects/" + $( this ).attr( "data-project-id" ) );
+    return false;
+  } );
   $( ".submitter" ).live( "click", function() {
     $( this ).parents( "form" ).submit();
     return false;
@@ -22,6 +35,21 @@ $( document ).ready( function() {
   $( ".new-ticket" ).live( "click", function() {
     $( this ).hide();
     $( this ).parents( ".project" ).children( ".details" ).children( ".new-ticket-form" ).show();
+    return false;
+  } );
+  $( ".edit-ticket" ).live( "click", function() {
+    $( this ).html( "<img src='/images/ajax-loader.gif' />" );
+    $.get( "/tickets/" + $( this ).attr( "data-ticket-id" ) + "/edit" );
+    return false;
+  } );
+  $( ".cancel-new-ticket" ).live( "click", function() {
+    $( this ).parents( ".details" ).children( ".new-ticket" ).show();
+    $( this ).parents( ".new-ticket-form" ).hide();
+    return false;
+  } );
+  $( ".cancel-edit-ticket" ).live( "click", function() {
+    $( this ).html( "<img src='/images/ajax-loader.gif' />" );
+    $.get( "/tickets/" + $( this ).attr( "data-ticket-id" ) );
     return false;
   } );
   $( "#new-project" ).live( "click", function() {
@@ -62,5 +90,9 @@ $( document ).ready( function() {
   $( ".progressbar" ).each( function() {
     value = parseInt( $( this ).attr( "data-percent-complete" ) );
     $( this ).progressbar( { value: value } );
+  } );
+  $( "#view-daily-goals" ).live( "click", function() {
+    $( "#daily-goals" ).toggle();
+    return false;
   } );
 } );

@@ -5,7 +5,6 @@ class User < ActiveRecord::Base
 
   has_many :comments, :as => :commenter
   has_many :invoices, :as => :created_by_user
-  has_many :office_hours, :as => :worker
   has_many :created_projects, :class_name => 'Project', :as => :created_by_user
   has_many :closed_projects, :class_name => 'Project', :as => :closed_by_user
   has_many :authorized_projects, :class_name => 'Project', :as => :authorized_by_user
@@ -34,22 +33,32 @@ class User < ActiveRecord::Base
   end
 
   def daily_goals!
-    goals.each do |goal|
+    goals.order( :priority ).each do |goal|
       # update the daily values
       goal.save! if( goal.daily_date.nil? || goal.daily_date < Time.zone.now.to_date )
     end
   end
 
   def daily_percentage_complete
-    minutes_percentage = daily_percentage( "minutes" )
-    dollars_percentage = daily_percentage( "dollars" )
-    if( dollars_percentage == 0 )
-      ( daily_percentage( "minutes" ) * 100 ).round
-    elsif( minutes_percentage == 0 )
-      ( daily_percentage( "dollars" ) * 100 ).round
+    minutes_values = daily_values( "minutes" )
+    dollars_values = daily_values( "dollars" )
+    if( dollars_values[1] == 0 )
+      ( minutes_values[2] * 100 ).round
+    elsif( minutes_values[1] == 0 )
+      ( dollars_values[2] * 100 ).round
     else
-      ( ( daily_percentage( "minutes" ) + daily_percentage( "dollars" ) ) * 50 ).round
+      ( ( minutes_values[2] + dollars_values[2] ) * 50 ).round
     end
+  end
+
+  def daily_minutes_remaining
+    minutes_values = daily_values( "minutes" )
+    ( minutes_values[1] - minutes_values[0] ).round
+  end
+
+  def daily_dollars_remaining
+    dollars_values = daily_values( "dollars" )
+    ( dollars_values[1] - dollars_values[0] ).round
   end
 
   def best_available_ticket
@@ -60,16 +69,16 @@ class User < ActiveRecord::Base
   end
 
   private
-    def daily_percentage( units )
+    def daily_values( units )
       goal_array = goals.where( :units => units ).inject( [0, 0] ) do |sum, goal|
         [
           sum[0] + ( goal.amount_complete_today > goal.daily_goal_amount ? goal.daily_goal_amount : goal.amount_complete_today ),
           sum[1] + goal.daily_goal_amount] 
       end
       if( goal_array.nil? || goal_array[1] == 0 )
-        0
+        [0, 0, 0]
       else
-        goal_array[0] / goal_array[1]
+        [goal_array[0], goal_array[1], goal_array[0] / goal_array[1]] #[complete, total, percentage]
       end
     end
 end

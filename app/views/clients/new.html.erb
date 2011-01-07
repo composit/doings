@@ -1,0 +1,15 @@
+<%= content_for :header do %>
+  <h1>Client</h1>
+<% end %>
+
+<%= form_for( @client ) do |f| %>
+  <%= render( "shared/error_messages", :target => f.object ) %>
+  <%= render( :partial => "form", :locals => { :f => f } ) %>
+  <div class="row clear">
+    <div class="title"> </div>
+    <div class="content">
+      <%= f.hidden_field :created_by_user_id %>
+      <%= f.submit "Create client" %>
+    </div>
+  </div>
+<% end %>

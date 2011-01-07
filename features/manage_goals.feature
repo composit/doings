@@ -158,7 +158,6 @@ Feature: manage goals
     Then I should not see "Test goal"
     And I should see "Other goal"
 
-  @current
   Scenario: I should be able to reprioritize goals
     Given the following worker records:
       | username |
@@ -180,5 +179,19 @@ Feature: manage goals
       | Goal one   |
       | Goal two   |
 
-  Scenario: I should not be allowed to reprioritize other users' goals
-    pending
+  @javascript
+  Scenario: I should be able to see my daily goals
+    Given the following worker records:
+      | username |
+      | tester   |
+    And the following goals:
+      | user_username | name       | priority | units   | amount | period | relative_weekday |
+      | tester        | Goal one   | 1        | minutes | 100    | Daily  | today            |
+      | tester        | Goal two   | 2        | dollars | 50     | Daily  | today            |
+    When I log in as "tester"
+    And I am on the panel page
+    And I follow "view daily goals"
+    Then I should see "Goal one: 0/100 minutes"
+    And I should see "Goal two: 0/50 dollars"
+    And I should see "100 minutes to go"
+    And I should see "50 dollars to go"

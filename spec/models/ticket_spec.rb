@@ -61,15 +61,24 @@ describe Ticket do
   it "should generate user activity alerts when created" do
     user_one = Factory( :user, :username => "tester" )
     user_two = Factory( :user )
-    ticket = Factory( :ticket, :name => "Test ticket", :created_by_user => user_one, :user_roles_attributes => [{ :user => user_two }] )
+    ticket = Factory( :ticket, :name => "Test ticket", :updated_by_user_id => user_one.id, :user_roles_attributes => [{ :user => user_two }] )
 
-    user_two.user_activity_alerts.first.content.should eql( "tester created a new ticket called Test ticket" )
+    user_two.user_activity_alerts.first.content.should eql( "tester created a ticket called Test ticket" )
+  end
+
+  it "should generate user activity alerts when updated" do
+    user_one = Factory( :user, :username => "tester" )
+    user_two = Factory( :user, :username => "other" )
+    ticket = Factory( :ticket, :name => "Test ticket", :updated_by_user_id => user_one.id, :user_roles_attributes => [{ :user => user_two }, { :user => user_one }] )
+    ticket.update_attributes!( :name => "New name", :updated_by_user_id => user_two.id )
+
+    user_one.user_activity_alerts.first.content.should eql( "other updated a ticket called New name" )
   end
 
   it "should not generate user activity alerts for people not associated with the ticket" do
     user_one = Factory( :user, :username => "tester" )
     user_two = Factory( :user )
-    ticket = Factory( :ticket, :name => "Test ticket", :created_by_user => user_one, :user_roles_attributes => [{ :user => user_one }] )
+    ticket = Factory( :ticket, :name => "Test ticket", :updated_by_user_id => user_one.id, :user_roles_attributes => [{ :user => user_one }] )
 
     user_two.user_activity_alerts.should be_empty
   end
@@ -148,13 +157,19 @@ describe Ticket do
     end
 
     it "should assign priority-less (new) tickets lowest priority" do
-      ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => @user.id } } )
+      ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => @user.id } }, :updated_by_user_id => @user.id )
       ticket.reload.priority_for_user( @user ).should eql( 4 )
     end
 
     it "should not overwrite priorities if they exist" do
-      ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => @user.id, :priority => 10 } } )
+      ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => @user.id, :priority => 10 } }, :updated_by_user_id => @user.id )
       ticket.reload.priority_for_user( @user ).should eql( 10 )
+    end
+
+    it "should automatically set the first created ticket's priority to 1" do
+      user = Factory( :user )
+      ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => user.id } }, :updated_by_user_id => @user.id )
+      ticket.reload.priority_for_user( user ).should eql( 1 )
     end
   end
 end

@@ -1,0 +1,11 @@
+<% for daily_goal in daily_goals %>
+  <div>
+    <%= "#{daily_goal.name}: #{daily_goal.amount_complete_today.round}/#{daily_goal.daily_goal_amount.round} #{daily_goal.units}"%>
+  </div>
+<% end %>
+<% if( current_user.daily_minutes_remaining > 0 ) %>
+  <div><%= current_user.daily_minutes_remaining %> minutes to go</div>
+<% end %>
+<% if( current_user.daily_dollars_remaining > 0 ) %>
+  <div><%= current_user.daily_dollars_remaining %> dollars to go</div>
+<% end %>

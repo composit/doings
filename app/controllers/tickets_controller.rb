@@ -1,6 +1,6 @@
 class TicketsController < ApplicationController
   respond_to :html, :only => :index
-  respond_to :js, :only => [:create, :workables]
+  respond_to :js, :only => [:show, :create, :edit, :update, :workables]
 
   load_and_authorize_resource
 
@@ -8,8 +8,19 @@ class TicketsController < ApplicationController
     @tickets = @tickets.includes( :user_roles ).order( :priority )
   end
 
+  def show
+  end
+
   def create
     @ticket.save
+    respond_with( @ticket )
+  end
+
+  def edit
+  end
+
+  def update
+    @ticket.update_attributes( params[:ticket] )
     respond_with( @ticket )
   end
 

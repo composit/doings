@@ -14,7 +14,7 @@ Feature: manage clients
       | tester        | Test client  |
       | other         | Other client |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     Then I should see "Test client"
     And I should not see "Other client"
 
@@ -29,7 +29,7 @@ Feature: manage clients
       | user_username | client_name |
       | tester        | Test client |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "Test client"
     Then I should be on the client page for "Test client"
 
@@ -54,7 +54,7 @@ Feature: manage clients
       | tester        | Test project  |
       | tester        | Other project |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     When I follow "projects" for the "Test client" client
     Then I should see "Test project"
     And I should not see "Other project"
@@ -125,3 +125,43 @@ Feature: manage clients
     Then I should see "Client was successfully updated"
     And the "Billing rate" field should contain "10"
     And the "per" field should contain "hour"
+
+  Scenario: I should be able to create new clients
+    When I log in as "tester"
+    And I follow "New client"
+    And I fill in "Name" with "Test client"
+    And I fill in "Billing rate" with "100"
+    And I press "Create client"
+    And I am on the panel page
+    Then I should see "Test client"
+
+  Scenario: I should be alerted if the client fails validation
+    When I log in as "tester"
+    And I follow "New client"
+    And I fill in "Name" with "Test client"
+    And I press "Create client"
+    Then I should see "Billing rate dollars is not a number"
+
+  Scenario: I should have admin permissions on a client I create
+    When I log in as "tester"
+    And I follow "New client"
+    And I fill in "Name" with "Test client"
+    And I fill in "Billing rate" with "100"
+    And I press "Create client"
+    And I am on the panel page
+    And I follow "Test client"
+    Then the "Admin" checkbox should be checked
+
+  Scenario: I should be able to give myself worker, etc. permissions on newly created clients
+    When I log in as "tester"
+    And I follow "New client"
+    And I fill in "Name" with "Test client"
+    And I fill in "Billing rate" with "100"
+    And I check "Worker"
+    And I press "Create client"
+    And I am on the panel page
+    And I follow "Test client"
+    Then the "Worker" checkbox should be checked
+
+  Scenario: It should keep track of who created a client
+    pending

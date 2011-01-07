@@ -1,7 +1,10 @@
 Feature: manage projects
 
   Scenario: I should not be able to get to the projects page if I am not logged in
-    When I am on the projects page
+    Given the following client records:
+      | name        |
+      | Test client |
+    When I am on the projects page for "Test client"
     Then I should see "You need to sign in or sign up before continuing."
     And I should be on the new user session page
 
@@ -10,55 +13,24 @@ Feature: manage projects
       | username |
       | tester   |
       | other    |
-    And the following project records:
-      | name          |
-      | Test project  |
-      | Other project |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name          | client_name |
+      | Test project  | Test client |
+      | Other project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
     And the following user roles:
       | user_username | project_name  |
       | tester        | Test project  |
       | other         | Other project |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     Then I should see "Test project"
     And I should not see "Other project"
-
-  Scenario: I should be able to see all projects by clicking the "projects" link associated with "All clients"
-    Given the following confirmed_user records:
-      | username |
-      | tester   |
-    And the following client records:
-      | name         |
-      | Other client |
-    And the following projects:
-      | name          |
-      | Test project  |
-    And the following user roles:
-      | user_username | client_name  |
-      | tester        | Other client |
-    And the following user roles:
-      | user_username | project_name |
-      | tester        | Test project |
-    When I log in as "tester"
-    And I am on the projects page
-    And I follow "projects" for the "Other client" client
-    Then I should not see "Test project"
-    When I follow "projects" for the "All clients" client
-    Then I should see "Test project"
-
-  Scenario: I should not be able to add new projects from the general projects page
-    Given the following confirmed_user records:
-      | username |
-      | tester   |
-    And the following client records:
-      | name         |
-      | Other client |
-    And the following user roles:
-      | user_username | client_name  |
-      | tester        | Other client |
-    When I log in as "tester"
-    And I am on the projects page
-    Then I should not see "new project"
 
   Scenario: I should not be able to add new projects to clients I don't have admin access to
     Given the following confirmed_user records:
@@ -71,7 +43,6 @@ Feature: manage projects
       | user_username | client_name  |
       | tester        | Other client |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Other client" client
     Then I should not see "new project"
 
@@ -87,12 +58,10 @@ Feature: manage projects
       | user_username | client_name  | admin |
       | tester        | Test client  | true  |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     And I fill in "Name" with "Test project"
     And I press "Create project"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     Then I should see "Test project"
 
@@ -108,7 +77,6 @@ Feature: manage projects
       | user_username | client_name  | admin |
       | tester        | Test client  | true  |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     And I press "Create project"
@@ -126,16 +94,14 @@ Feature: manage projects
       | user_username | client_name  | admin |
       | tester        | Test client  | true  |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     And I fill in "Name" with "Test project"
     And I press "Create project"
     And I wait for 1 second
     And I follow "new project"
-    And I fill in "Name" with "Test project 2"
+    And I fill in "project_name" with "Test project 2"
     And I press "Create project"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     Then I should see "Test project 2"
 
@@ -155,7 +121,6 @@ Feature: manage projects
       | other         | Test client | true  |
       | another       | Test client | false |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     And I fill in "Name" with "Test project"
@@ -182,7 +147,6 @@ Feature: manage projects
       | tester        | Test client | true  | false  |
       | other         | Test client | false | true   |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     Then the "Admin" checkbox in the roles for "tester" should be checked
@@ -202,7 +166,6 @@ Feature: manage projects
       | user_username | client_name | admin |
       | tester        | Test client | true  |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     Then the "Admin" checkbox in the roles for "tester" should be disabled
@@ -216,15 +179,13 @@ Feature: manage projects
       | name         |
       | Test client  |
     And the following user roles:
-      | user_username | client_name  | admin |
-      | tester        | Test client  | true  |
+      | user_username | client_name | admin |
+      | tester        | Test client | true  |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     And I fill in "Name" with "Test project"
     And I press "Create project"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     Then I should see "created by tester"
 
@@ -237,22 +198,40 @@ Feature: manage projects
       | name         |
       | Test client  |
     And the following user roles:
-      | user_username | client_name  | admin |
-      | tester        | Test client  | true  |
+      | user_username | client_name | admin |
+      | tester        | Test client | true  |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     And I fill in "Name" with "Test project"
     And I press "Create project"
     And I wait for 1 second
-    And I follow "tickets" for the "Test project" project
     And I follow "new ticket"
     And I fill in "Name" with "Test ticket"
     And I press "Create ticket"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should see "Test ticket"
+
+  @javascript
+  Scenario: I should be able to cancel out of creating a new project
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following user roles:
+      | user_username | client_name | admin |
+      | tester        | Test client | true  |
+    When I log in as "tester"
+    And I follow "projects" for the "Test client" client
+    And I follow "new project"
+    And I fill in "Name" with "Test project"
+    And I follow "cancel"
+    Then "Name" should not be visible
+    When I follow "projects" for the "Test client" client
+    Then I should not see "Test project"
 
   @javascript
   Scenario: I should be able to enter billing rate info when entering a new project
@@ -266,14 +245,13 @@ Feature: manage projects
       | user_username | client_name  | admin | finances |
       | tester        | Test client  | true  | true     |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     And I fill in "Name" with "Test project"
     And I fill in "Billing rate" with "10"
     And I select "hour" from "per"
     And I press "Create project"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     Then I should see "$10/hour"
 
@@ -292,7 +270,6 @@ Feature: manage projects
       | user_username | client_name  | admin | finances |
       | tester        | Test client  | true  | true     |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     Then the "Billing rate" field should contain "100"
@@ -302,17 +279,23 @@ Feature: manage projects
     Given the following confirmed_user records:
       | username |
       | tester   |
-    And the following project records:
-      | name         |
-      | Test project |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
     And the following billing rates:
       | project_name | dollars | units |
       | Test project | 100     | hour  |
     And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
       | user_username | project_name | finances |
       | tester        | Test project | false    |
     When I log in as "tester"
-    And I am on the projects page
+    And I follow "projects"
     Then I should not see "$100/hour"
 
   @javascript
@@ -327,7 +310,6 @@ Feature: manage projects
       | user_username | client_name  | admin | finances |
       | tester        | Test client  | true  | false    |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     Then I should not see a field labeled "Billing rate"
@@ -345,7 +327,6 @@ Feature: manage projects
       | user_username | client_name  | admin | finances |
       | tester        | Test client  | true  | true     |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     Then the "Finances" checkbox in the roles for "tester" should not be disabled
@@ -364,8 +345,103 @@ Feature: manage projects
       | tester        | Test client  | true  | false    |
       | other         | Test client  | true  | false    |
     When I log in as "tester"
-    And I am on the projects page
     And I follow "projects" for the "Test client" client
     And I follow "new project"
     Then the "Finances" checkbox in the roles for "tester" should be disabled
     And the "Finances" checkbox in the roles for "other" should be disabled
+
+  @javascript
+  Scenario: I should be able to edit projects
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    When I log in as "tester"
+    And I follow "projects" for the "Test client" client
+    And I follow "edit" for the "Test project" project
+    And I fill in "Name" with "New name"
+    And I press "Update project"
+    And I follow "projects" for the "Test client" client
+    Then I should see "New name"
+
+  @javascript
+  Scenario: I should be able to cancel out of the edit form without saving my changes
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    When I log in as "tester"
+    And I follow "projects" for the "Test client" client
+    And I follow "edit" for the "Test project" project
+    And I fill in "Name" with "New name"
+    And I follow "cancel"
+    Then "Name" should not be visible
+    When I follow "projects" for the "Test client" client
+    Then I should see "Test project"
+
+  @javascript
+  Scenario: I should see validation errors if a project I am editing fails validation
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    When I log in as "tester"
+    And I follow "projects" for the "Test client" client
+    And I follow "edit" for the "Test project" project
+    And I fill in "Name" with ""
+    And I press "Update project"
+    Then I should see "t be blank"
+
+  @javascript
+  Scenario: I should not be able to edit projects I do not have admin access to
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | false |
+    When I log in as "tester"
+    And I follow "projects" for the "Test client" client
+    Then I should not see "edit"

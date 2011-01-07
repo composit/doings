@@ -1,5 +1,5 @@
 class ClientsController < ApplicationController
-  respond_to :html, :only => [:show, :new, :update]
+  respond_to :html, :only => [:show, :new, :create, :update]
   respond_to :js, :only => [:index, :workables]
 
   load_and_authorize_resource
@@ -10,6 +10,14 @@ class ClientsController < ApplicationController
 
   def new
     @client.address = Address.new
+    @client.user_roles << UserRole.new( :user => current_user, :manageable => @client, :admin => true )
+    @client.billing_rate = BillingRate.new
+    @client.created_by_user_id = current_user.id
+  end
+
+  def create
+    flash[:notice] = 'Client was successfully created' if( @client.save )
+    respond_with( @client )
   end
 
   def update
