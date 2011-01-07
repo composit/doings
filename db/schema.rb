@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110106172902) do
+ActiveRecord::Schema.define(:version => 20110107174948) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -26,11 +26,12 @@ ActiveRecord::Schema.define(:version => 20110106172902) do
 
   create_table "billing_rates", :force => true do |t|
     t.integer  "billable_id"
-    t.decimal  "dollars",       :precision => 10, :scale => 2
+    t.decimal  "dollars",               :precision => 10, :scale => 2
     t.string   "units"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "billable_type"
+    t.decimal  "estimated_hourly_rate", :precision => 10, :scale => 2
   end
 
   create_table "clients", :force => true do |t|

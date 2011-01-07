@@ -22,4 +22,6 @@ describe BillingRate do
 
     billing_rate.description.should eql( "$10/hour" )
   end
+
+
 end

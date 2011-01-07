@@ -113,6 +113,10 @@ describe TicketTime do
 
     sprintf( "%.2f", TicketTime.batch_dollars_earned( [ticket_time_one, ticket_time_two] ) ).should eql( "3.33" )
   end
+
+  pending "should calculate dollars earned for a batch of ticket times with monthly rates"
+
+  pending "should calculate dollars earned for a batch of ticket times with project rates"
   
   describe "that wraps multiple days" do
     before( :each ) do

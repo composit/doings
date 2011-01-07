@@ -1,0 +1,10 @@
+<%= f.fields_for :billing_rate do |rate| %>
+  <div class="row clear">
+    <div class="title"><%= rate.label :dollars, "Billing rate" %></div>
+    <div class="content">
+      <%= rate.text_field :dollars, :size => 10 %>
+      <%= rate.label :units, "per" %>
+      <%= rate.select :units, BillingRate::UNIT_OPTIONS %>
+    </div>
+  </div>
+<% end %>

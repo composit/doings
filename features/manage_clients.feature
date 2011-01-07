@@ -164,4 +164,11 @@ Feature: manage clients
     Then the "Worker" checkbox should be checked
 
   Scenario: It should keep track of who created a client
-    pending
+    When I log in as "tester"
+    And I follow "New client"
+    And I fill in "Name" with "Test client"
+    And I fill in "Billing rate" with "100"
+    And I press "Create client"
+    And I am on the panel page
+    And I follow "Test client"
+    Then I should see "created by tester"
