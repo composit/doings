@@ -4,3 +4,4 @@ log/*.log
 tmp/**/*
 .rvmrc
 config/initializers/action_mailer.rb
+config/setup_load_paths.rb
