@@ -196,8 +196,6 @@ describe Goal do
     goal.amount_complete.should eql( 50.0 )
   end
 
-  pending "should calculate hourly rates when calculating amount completion for a dollar-based goal with monthly, project, etc. billing rates"
-
   it "should calculate percent completion for a dollar-based goal" do
     user = Factory( :worker )
     goal = Factory( :goal, :user => user, :units => "dollars", :amount => 100 )
@@ -337,8 +335,6 @@ describe Goal do
 
       goal.best_available_ticket.should eql( @middle_ticket )
     end
-
-    pending "should favor tickets with higher hourly rates for dollar-based goals and monthly, project rates"
 
     it "should order tickets by priority for dollar-based goals where rates are the same" do
       @last_ticket.billing_rate.update_attributes!( :dollars => 100, :units => "hour" )

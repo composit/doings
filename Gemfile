@@ -7,7 +7,7 @@ gem 'rails', '3.0.3'
 
 gem 'mysql2', '>=0.2.6'
 gem 'devise', '>=1.1.5'
-gem 'cancan', '>=1.4.1'
+gem 'cancan', '>=1.5.0'
 
 group :development do
   gem 'ruby-debug19', '>=0.11.6'
@@ -21,13 +21,13 @@ group :test do
   gem 'rspec-rails', '>=2.4.1'
   gem 'spork', '>=0.9.0.rc2'
   gem 'rb-inotify', '>=0.8.4'
-  gem 'libnotify'
+  gem 'libnotify', '0.3.0'
   gem 'guard-spork', '>=0.1.3'
   gem 'launchy', '>=0.3.7'
   gem 'factory_girl_rails', '>=1.0.1'
   gem 'timecop', '>=0.3.5'
-  gem 'rev'
-  gem 'watchr'
+  gem 'rev', '>=0.3.2'
+  gem 'watchr', '>=0.7'
 end
 
 # Use unicorn as the web server

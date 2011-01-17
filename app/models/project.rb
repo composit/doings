@@ -1,7 +1,8 @@
 class Project < ActiveRecord::Base
   belongs_to :client
   belongs_to :created_by_user, :class_name => 'User'
-  has_one :billing_rate, :as => :billable, :dependent => :destroy
+  belongs_to :billing_rate, :dependent => :destroy
+  has_many :billable_billing_rates, :class_name => 'BillingRate', :as => :billable, :dependent => :destroy
   has_many :tickets
   has_many :user_roles, :as => :manageable
   has_many :user_activity_alerts, :as => :alertable

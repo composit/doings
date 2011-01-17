@@ -94,14 +94,14 @@ describe TicketTime do
     ticket_time_one = Factory( :ticket_time, :started_at => 30.minutes.ago, :ended_at => 20.minutes.ago )
     ticket_time_two = Factory( :ticket_time, :started_at => 10.minutes.ago, :ended_at => 5.minutes.ago )
 
-    TicketTime.batch_minutes_worked( [ticket_time_one, ticket_time_two] ).round.should eql( 15 )
+    TicketTime.batch_seconds_worked( [ticket_time_one, ticket_time_two] ).round.should eql( 900 )
   end
 
   it "should calculate minutes worked for a batch of ticket times including an open ticket time" do
     ticket_time_one = Factory( :ticket_time, :started_at => 30.minutes.ago, :ended_at => 20.minutes.ago )
     ticket_time_two = Factory( :ticket_time, :started_at => 10.minutes.ago )
 
-    TicketTime.batch_minutes_worked( [ticket_time_one, ticket_time_two] ).round.should eql( 20 )
+    TicketTime.batch_seconds_worked( [ticket_time_one, ticket_time_two] ).round.should eql( 1200 )
   end
 
   it "should calculate dollars earned for a batch of ticket times with hourly rates" do
@@ -114,10 +114,16 @@ describe TicketTime do
     sprintf( "%.2f", TicketTime.batch_dollars_earned( [ticket_time_one, ticket_time_two] ) ).should eql( "3.33" )
   end
 
-  pending "should calculate dollars earned for a batch of ticket times with monthly rates"
+  it "should calculate dollars earned for a batch of ticket times with monthly and project rates" do
+    ticket_one = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 1000, :units => "month", :hourly_rate_for_calculations => 60 ) )
+    ticket_two = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 500, :units => "project", :hourly_rate_for_calculations => 80 ) )
 
-  pending "should calculate dollars earned for a batch of ticket times with project rates"
-  
+    ticket_time_one = Factory( :ticket_time, :ticket => ticket_one, :started_at => 30.minutes.ago, :ended_at => Time.zone.now )
+    ticket_time_two = Factory( :ticket_time, :ticket => ticket_two, :started_at => 2.hours.ago, :ended_at => 1.hour.ago )
+
+    sprintf( "%.2f", TicketTime.batch_dollars_earned( [ticket_time_one, ticket_time_two] ) ).should eql( "110.00" ) # .5 * 60 + 1 * 80
+  end
+
   describe "that wraps multiple days" do
     before( :each ) do
       @ticket_time = Factory( :ticket_time, :started_at => "2010-12-28 23:00:00", :ended_at => "2010-12-30 01:00:00" )
@@ -173,5 +179,23 @@ describe TicketTime do
         @last_ticket_time.ticket_id.should eql( @ticket_time.ticket_id )
       end
     end
+  end
+
+  describe "with a non-dollar rate" do
+    before( :each ) do
+      client = Factory( :client )
+    end
+
+    describe "when calculating previous_earned_for_rate_billable" do
+      pending "should calculate total previous earned for project rates"
+
+      pending "should not include dollars earned before the current month for month rates"
+    end
+
+    it "should return 0 dollars earned if the previous earned is greater than the rate" do
+      pending
+    end
+
+    pending "should cap the dollars earned at the project rate"
   end
 end

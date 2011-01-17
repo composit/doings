@@ -6,8 +6,8 @@
       <%= rate.label :units, "per" %>
       <%= rate.select :units, BillingRate::UNIT_OPTIONS %>
       <span class="estimated-hourly" style="display:<%= rate.object.units == "hour" ? "none" : "block" %>">
-        <%= rate.label :estimated_hourly_rate %>
-        <%= rate.text_field :estimated_hourly_rate, :size => 5 %>
+        <%= rate.label :hourly_rate_for_calculations %>
+        <%= rate.text_field :hourly_rate_for_calculations, :size => 5 %>
       </span>
     </div>
   </div>

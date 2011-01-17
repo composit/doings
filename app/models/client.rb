@@ -1,7 +1,8 @@
 class Client < ActiveRecord::Base
   belongs_to :address, :dependent => :destroy
   belongs_to :created_by_user, :class_name => "User"
-  has_one :billing_rate, :as => :billable, :dependent => :destroy
+  belongs_to :billing_rate, :dependent => :destroy
+  has_many :billable_billing_rates, :class_name => 'BillingRate', :as => :billable, :dependent => :destroy
   has_many :invoices
   has_many :projects
   has_many :user_roles, :as => :manageable

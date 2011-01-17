@@ -24,7 +24,7 @@ class Goal < ActiveRecord::Base
 
   def amount_complete( opts = {} )
     if( units == "minutes" )
-      TicketTime.batch_minutes_worked( applicable_ticket_times( opts ) )
+      TicketTime.batch_seconds_worked( applicable_ticket_times( opts ) ).to_f / 60
     elsif( units == "dollars" )
       TicketTime.batch_dollars_earned( applicable_ticket_times( opts ) )
     else # to not crash validations without units
