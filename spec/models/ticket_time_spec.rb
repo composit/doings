@@ -114,9 +114,9 @@ describe TicketTime do
     sprintf( "%.2f", TicketTime.batch_dollars_earned( [ticket_time_one, ticket_time_two] ) ).should eql( "3.33" )
   end
 
-  it "should calculate dollars earned for a batch of ticket times with monthly and project rates" do
+  it "should calculate dollars earned for a batch of ticket times with monthly and total rates" do
     ticket_one = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 1000, :units => "month", :hourly_rate_for_calculations => 60 ) )
-    ticket_two = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 500, :units => "project", :hourly_rate_for_calculations => 80 ) )
+    ticket_two = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 500, :units => "total", :hourly_rate_for_calculations => 80 ) )
 
     ticket_time_one = Factory( :ticket_time, :ticket => ticket_one, :started_at => 30.minutes.ago, :ended_at => Time.zone.now )
     ticket_time_two = Factory( :ticket_time, :ticket => ticket_two, :started_at => 2.hours.ago, :ended_at => 1.hour.ago )
@@ -183,19 +183,25 @@ describe TicketTime do
 
   describe "with a non-dollar rate" do
     before( :each ) do
-      client = Factory( :client )
+      Timecop.freeze
+      @ticket = Factory( :ticket )
+      @ticket.billing_rate.update_attributes!( :dollars => 80, :units => "total", :billable => @ticket, :hourly_rate_for_calculations => 100 )
     end
 
-    describe "when calculating previous_earned_for_rate_billable" do
-      pending "should calculate total previous earned for project rates"
-
-      pending "should not include dollars earned before the current month for month rates"
+    after( :each ) do
+      Timecop.return
     end
 
     it "should return 0 dollars earned if the previous earned is greater than the rate" do
-      pending
+      Factory( :ticket_time, :ticket => @ticket, :started_at => 2.hours.ago, :ended_at => 1.hour.ago )
+      ticket_time = Factory( :ticket_time, :ticket => @ticket, :started_at => 1.hour.ago, :ended_at => Time.zone.now )
+      ticket_time.dollars_earned.should eql( 0.0 )
     end
 
-    pending "should cap the dollars earned at the project rate"
+    it "should only return the part of the dollars earned that falls below the total rate" do
+      Factory( :ticket_time, :ticket => @ticket, :started_at => 2.hours.ago, :ended_at => 90.minutes.ago )
+      ticket_time = Factory( :ticket_time, :ticket => @ticket, :started_at => 1.hour.ago, :ended_at => Time.zone.now )
+      ticket_time.dollars_earned.should eql( 30.0 )
+    end
   end
 end
