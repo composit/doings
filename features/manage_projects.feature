@@ -275,7 +275,7 @@ Feature: manage projects
     Then the "Billing rate" field should contain "100"
     And the "per" field should contain "month"
 
-  Scenario: I should not see the billing rate if I do not have "finances" access to the project
+  Scenario: I should not see the billing rate if I do not have "finances" access to the project, even if I have it for the client
     Given the following confirmed_user records:
       | username |
       | tester   |
@@ -289,8 +289,8 @@ Feature: manage projects
       | project_name | dollars | units |
       | Test project | 100     | hour  |
     And the following user roles:
-      | user_username | client_name |
-      | tester        | Test client |
+      | user_username | client_name | finances |
+      | tester        | Test client | true     |
     And the following user roles:
       | user_username | project_name | finances |
       | tester        | Test project | false    |
@@ -298,7 +298,7 @@ Feature: manage projects
     And I follow "projects"
     Then I should not see "$100/hour"
 
-  @javascript
+  @javascript @current
   Scenario: I should not be able to update a billing rate for a project if I don't have "finances" and "admin" access to the project
     Given the following confirmed_user records:
       | username |
@@ -331,7 +331,7 @@ Feature: manage projects
     And I follow "new project"
     Then the "Finances" checkbox in the roles for "tester" should not be disabled
 
-  @javascript
+  @javascript @current
   Scenario: I should not be able to assign financial roles if I don't have the financial role
     Given the following confirmed_user records:
       | username |

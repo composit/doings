@@ -401,7 +401,7 @@ Feature: manage tickets
     And the "per" field should contain "month"
 
   @javascript
-  Scenario: I should not see the billing rate if I do not have "finances" access to the ticket
+  Scenario: I should not see the billing rate if I do not have "finances" access to the ticket, even if I have it for the project
     Given the following confirmed_user records:
       | username |
       | tester   |
@@ -421,8 +421,8 @@ Feature: manage tickets
       | user_username | client_name |
       | tester        | Test client |
     And the following user roles:
-      | user_username | project_name |
-      | tester        | Test project |
+      | user_username | project_name | finances |
+      | tester        | Test project | true     |
     And the following user roles:
       | user_username | ticket_name | finances |
       | tester        | Test ticket | false    |

@@ -5,7 +5,7 @@
   <%= f.hidden_field :client_id %>
   <%= f.hidden_field :created_by_user_id %>
   <%= f.hidden_field :updated_by_user_id, :value => current_user.id %><br />
-  <%= render( :partial => "billing_rates/form", :locals => { :f => f } ) if( can?( :create, f.object.client.billing_rate ) ) %>
+  <%= render( :partial => "billing_rates/form", :locals => { :f => f } ) if( can?( :manage_finances, f.object.client ) ) %>
   <%= f.fields_for :user_roles do |role| %>
     <div class="user-role">
       <%= role.hidden_field :user_id %>
@@ -15,7 +15,7 @@
       <%= role.label :worker %>
       <%= role.check_box :worker %>
       <%= role.label :finances %>
-      <%= role.check_box :finances, :disabled => !can?( :update, f.object.client.billing_rate ) %>
+      <%= role.check_box :finances, :disabled => !can?( :manage_finances, f.object.client ) %>
     </div>
   <% end %>
   <% if( form.new_record? ) %>
