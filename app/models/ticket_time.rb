@@ -33,7 +33,8 @@ class TicketTime < ActiveRecord::Base
     if( ticket.billing_rate.units == "hour" )
       return( earned )
     else
-      return( earned > ticket.billing_rate.dollars_remaining ? ticket.billing_rate.dollars_remaining : earned )
+      dollars_remaining = ticket.billing_rate.dollars_remaining( started_at )
+      return( earned > dollars_remaining ? dollars_remaining : earned )
     end
   end
 

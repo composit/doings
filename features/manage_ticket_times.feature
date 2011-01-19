@@ -1,6 +1,6 @@
 Feature: manage ticket times
 
-  @javascript
+  @javascript @current
   Scenario: I should not see the "start" link for a ticket if I am not a worker for that ticket
     Given the following confirmed_user records:
       | username |
@@ -85,7 +85,7 @@ Feature: manage ticket times
     When I log in as "tester"
     Then I should not see "Other ticket" within "#current-ticket"
 
-  @javascript
+  @javascript @current
   Scenario: If I try to start a new ticket and the open ticket has a start time in the future, I should see a validation errror
     Given the following confirmed_user records:
       | username |
@@ -117,7 +117,7 @@ Feature: manage ticket times
     And I follow "start" for the "Test ticket" ticket
     Then I should see "Worker has a currently open ticket time with a future start date. Please close it before opening a new ticket."
 
-  @javascript @current
+  @javascript
   Scenario: If I stop a current ticket time, it should disappear from the current-ticket box
     Given the following confirmed_user records:
       | username |
@@ -132,7 +132,7 @@ Feature: manage ticket times
     And I press "Stop now"
     Then I should not see "Test ticket" within "#current-ticket"
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to start my best available ticket straight from the panel
     Given the following worker records:
       | username |

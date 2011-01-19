@@ -115,8 +115,8 @@ describe TicketTime do
   end
 
   it "should calculate dollars earned for a batch of ticket times with monthly and total rates" do
-    ticket_one = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 1000, :units => "month", :hourly_rate_for_calculations => 60 ) )
-    ticket_two = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 500, :units => "total", :hourly_rate_for_calculations => 80 ) )
+    ticket_one = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 1000, :units => "month", :hourly_rate_for_calculations => 60, :billable => Factory( :client ) ) )
+    ticket_two = Factory( :ticket, :billing_rate => Factory( :billing_rate, :dollars => 500, :units => "total", :hourly_rate_for_calculations => 80, :billable => Factory( :client ) ) )
 
     ticket_time_one = Factory( :ticket_time, :ticket => ticket_one, :started_at => 30.minutes.ago, :ended_at => Time.zone.now )
     ticket_time_two = Factory( :ticket_time, :ticket => ticket_two, :started_at => 2.hours.ago, :ended_at => 1.hour.ago )

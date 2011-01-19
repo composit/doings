@@ -55,8 +55,10 @@ class Ticket < ActiveRecord::Base
     end
 
     def generate_alerts( term )
-      user_roles.each do |role|
-        user_activity_alerts.create!( :user => role.user, :alertable => self, :content => "#{User.find( @updated_by_user_id ).username} #{term} a ticket called #{name}" ) unless( role.user_id == @updated_by_user_id.to_i )
+      if( @updated_by_user_id ) # this is not set in rake tasks, etc.
+        user_roles.each do |role|
+          user_activity_alerts.create!( :user => role.user, :alertable => self, :content => "#{User.find( @updated_by_user_id ).username} #{term} a ticket called #{name}" ) unless( role.user_id == @updated_by_user_id.to_i )
+        end
       end
     end
 
