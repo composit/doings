@@ -1,12 +1,15 @@
 class BillingRate < ActiveRecord::Base
   belongs_to :billable, :polymorphic => true
+  has_one :client
+  has_one :project
+  has_one :ticket
 
   UNIT_OPTIONS = ["hour", "month", "total"]
 
   validates :dollars, :numericality => true
   validates :units, :inclusion => { :in => UNIT_OPTIONS, :message => "are not included in the list" }
 
-  before_validation :assign_hourly_rate_for_calculations
+  before_validation :assign_hourly_rate_for_calculations, :assign_billable
 
   def description
     desc_string = "$#{formatted_dollars}"
@@ -34,5 +37,13 @@ class BillingRate < ActiveRecord::Base
 
     def assign_hourly_rate_for_calculations
       self.hourly_rate_for_calculations = dollars if( units == "hour" )
+    end
+
+    def assign_billable
+      unless( billable )
+        self.billable = client if client
+        self.billable = project if project
+        self.billable = ticket if ticket
+      end
     end
 end

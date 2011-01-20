@@ -104,4 +104,17 @@ describe BillingRate do
       @billing_rate.dollars_remaining.should eql( 0.0 )
     end
   end
+
+  it "should assign the billable to the current object if it does not exist" do
+    client = Factory( :client )
+
+    client.billing_rate.billable.should eql( client )
+  end
+
+  it "should not overwrite the billable if it exists" do
+    client = Factory( :client )
+    project = Factory( :project, :billing_rate => Factory( :billing_rate, :billable => client ) )
+
+    project.billing_rate.billable.should_not eql( project )
+  end
 end
