@@ -9,7 +9,10 @@ class BillingRate < ActiveRecord::Base
   before_validation :assign_hourly_rate_for_calculations
 
   def description
-    "$#{formatted_dollars}/#{units}"
+    desc_string = "$#{formatted_dollars}"
+    desc_string += "/#{units}" unless( units == "total" )
+    desc_string += " for #{billable.name}" unless( units == "hour" )
+    return( desc_string )
   end
 
   def dollars_remaining( time = Time.zone.now )

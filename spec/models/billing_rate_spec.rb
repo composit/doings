@@ -17,10 +17,24 @@ describe BillingRate do
     billing_rate.errors.should eql( :units => ["are not included in the list"] )
   end
 
-  it "should return a description" do
+  it "should return an hourly description" do
     billing_rate = Factory( :billing_rate, :dollars => 10, :units => "hour" )
 
     billing_rate.description.should eql( "$10/hour" )
+  end
+
+  it "should return a monthly description" do
+    client = Factory( :client, :name => "Test client" )
+    billing_rate = Factory( :billing_rate, :dollars => 99, :units => "month", :billable => client )
+
+    billing_rate.description.should eql( "$99/month for Test client" )
+  end
+
+  it "should return a total description" do
+    project = Factory( :project, :name => "Test project" )
+    billing_rate = Factory( :billing_rate, :dollars => 1000, :units => "total", :billable => project )
+
+    billing_rate.description.should eql( "$1000 for Test project" )
   end
 
   it "should automatically assign the hourly_rate_for_goals for hourly billing rates" do
