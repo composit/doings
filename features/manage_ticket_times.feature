@@ -1,6 +1,6 @@
 Feature: manage ticket times
 
-  @javascript @current
+  @javascript
   Scenario: I should not see the "start" link for a ticket if I am not a worker for that ticket
     Given the following confirmed_user records:
       | username |
@@ -29,7 +29,7 @@ Feature: manage ticket times
     Then I should see "Test ticket"
     And I should not see "start"
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to create a new ticket time by clicking "start" for a ticket
     Given the following confirmed_user records:
       | username |
@@ -85,7 +85,7 @@ Feature: manage ticket times
     When I log in as "tester"
     Then I should not see "Other ticket" within "#current-ticket"
 
-  @javascript @current
+  @javascript
   Scenario: If I try to start a new ticket and the open ticket has a start time in the future, I should see a validation errror
     Given the following confirmed_user records:
       | username |

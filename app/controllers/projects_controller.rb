@@ -26,7 +26,7 @@ class ProjectsController < ApplicationController
   end
 
   def workables
-    @workables = Project.includes( :user_roles ).where( :user_roles => { :user_id => current_user.id, :worker => true }, :closed_at => nil )
+    @workables = Project.accessible_by( current_ability, :workables )
     render( "/shared/workables" )
   end
 end

@@ -5,7 +5,7 @@
 <div id="projects">
   <%= render( :partial => "line", :collection => @projects ) %>
 </div>
-<% if( new_project = generate_new_project( @client ) && can?( :create, new_project ) ) %>
+<% if( can?( :create, new_project = generate_new_project( @client ) ) ) %>
   <%= link_to "new project", "#", :id => "new-project" %>
   <div id="new-project-form">
     <%= render( :partial => "form", :object => new_project ) %>
