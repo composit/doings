@@ -95,4 +95,16 @@ $( document ).ready( function() {
     $( "#daily-goals" ).toggle();
     return false;
   } );
+  $( ".billing-rate-units" ).live( "change", function() {
+    if( $( this ).val() == "hour" ) {
+      $( this ).next( ".non-hourly-options" ).hide();
+      $( this ).next( ".non-hourly-options" ).children( ".hourly-rate-for-calculations" ).attr( "disabled", true );
+      $( this ).next( ".non-hourly-options" ).children( ".billable-choice" ).attr( "disabled", true );
+    } else {
+      $( this ).next( ".non-hourly-options" ).children( ".hourly-rate-for-calculations" ).attr( "disabled", false );
+      $( this ).next( ".non-hourly-options" ).children( ".billable-choice" ).attr( "disabled", false );
+      $( this ).next( ".non-hourly-options" ).show();
+    }
+    return false;
+  } );
 } );

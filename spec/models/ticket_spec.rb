@@ -83,12 +83,26 @@ describe Ticket do
     user_two.user_activity_alerts.should be_empty
   end
 
-  it "should automatically adopt the project's billing rate if no billing rate is set" do
-    project = Factory( :project, :billing_rate => Factory( :billing_rate, :dollars => 100, :units => "month" ) )
-    ticket = Factory( :ticket, :project => project, :billing_rate => nil )
+  it "should determine billable options" do
+    client = Factory( :client, :name => "Test client", :id => 456 )
+    project = Factory( :project, :client => client, :name => "Test project", :id => 883 )
+    ticket = Factory( :ticket, :project => project, :name => "Test ticket", :id => 585 )
 
-    ticket.billing_rate.dollars.should eql( 100 )
-    ticket.billing_rate.units.should eql( "month" )
+    ticket.billable_options.should eql( [["Test ticket","Ticket:585"],["Test project","Project:883"],["Test client","Client:456"]] )
+  end
+
+  it "should include a generic 'this ticket' in the billable options of a new ticket" do
+    client = Factory( :client, :name => "Test client", :id => 456 )
+    project = Factory( :project, :client => client, :name => "Test project", :id => 883 )
+    ticket = Ticket.new( :project => project )
+
+    ticket.billable_options.should eql( [["this ticket","Ticket:"],["Test project","Project:883"],["Test client","Client:456"]] )
+  end
+
+  it "should set itself as the billable for its billing rate if it is not set" do
+    ticket = Ticket.create( :name => "Test ticket", :created_by_user => Factory( :user ), :project => Factory( :project ), :billing_rate_attributes => { :units => "month", :dollars => 100 } )
+
+    ticket.billing_rate.reload.billable.should eql( ticket )
   end
 
   it "should generate a full name" do
@@ -171,5 +185,39 @@ describe Ticket do
       ticket = Factory( :ticket, :user_roles_attributes => { "0" => { :user_id => user.id } }, :updated_by_user_id => @user.id )
       ticket.reload.priority_for_user( user ).should eql( 1 )
     end
+  end
+
+  it "should close if its project is closed" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project, :closed_at => "2001-01-01 01:01:01" )
+    ticket = Factory( :ticket, :project => project )
+
+    ticket.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+    Timecop.return
+  end
+
+  it "should not automatically close if project is not closed" do
+    project = Factory( :project )
+    ticket = Factory( :ticket, :project => project )
+
+    ticket.closed_at.should be_nil
+  end
+
+  it "should set closed_at to the current time when 'close ticket' is set to 1" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    ticket = Factory( :ticket )
+
+    ticket.update_attributes!( :close_ticket => "1" )
+    ticket.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+    Timecop.return
+  end
+
+  it "should not set closed_at if 'close ticket' is not set to 1" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    ticket = Factory( :ticket )
+
+    ticket.update_attributes!( :close_ticket => "0" )
+    ticket.reload.closed_at.should be_nil
+    Timecop.return
   end
 end

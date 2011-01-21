@@ -26,7 +26,7 @@ class ClientsController < ApplicationController
   end
 
   def workables
-    @workables = Client.includes( :user_roles ).where( :user_roles => { :user_id => current_user.id, :worker => true } )
+    @workables = Client.accessible_by( current_ability, :workables )
     render( "/shared/workables" )
   end
 end

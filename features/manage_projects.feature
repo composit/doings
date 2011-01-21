@@ -275,7 +275,7 @@ Feature: manage projects
     Then the "Billing rate" field should contain "100"
     And the "per" field should contain "month"
 
-  Scenario: I should not see the billing rate if I do not have "finances" access to the project
+  Scenario: I should not see the billing rate if I do not have "finances" access to the project, even if I have it for the client
     Given the following confirmed_user records:
       | username |
       | tester   |
@@ -289,8 +289,8 @@ Feature: manage projects
       | project_name | dollars | units |
       | Test project | 100     | hour  |
     And the following user roles:
-      | user_username | client_name |
-      | tester        | Test client |
+      | user_username | client_name | finances |
+      | tester        | Test client | true     |
     And the following user roles:
       | user_username | project_name | finances |
       | tester        | Test project | false    |
@@ -445,3 +445,47 @@ Feature: manage projects
     When I log in as "tester"
     And I follow "projects" for the "Test client" client
     Then I should not see "edit"
+
+  @javascript
+  Scenario: I should be able to close a project
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    When I log in as "tester"
+    And I follow "projects" for the "Test client" client
+    And I follow "edit" for the "Test project" project
+    And I check "Close project"
+    And I press "Update project"
+    Then I should see "Test project has been closed"
+
+  Scenario: I should not see closed projects when I load a client's projects page
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name | closed_at           |
+      | Test project | Test client | 2001-02-03 04:05:06 |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    When I log in as "tester"
+    And I follow "projects" for the "Test client" client
+    Then I should not see "Test project"

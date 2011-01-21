@@ -401,7 +401,7 @@ Feature: manage tickets
     And the "per" field should contain "month"
 
   @javascript
-  Scenario: I should not see the billing rate if I do not have "finances" access to the ticket
+  Scenario: I should not see the billing rate if I do not have "finances" access to the ticket, even if I have it for the project
     Given the following confirmed_user records:
       | username |
       | tester   |
@@ -421,8 +421,8 @@ Feature: manage tickets
       | user_username | client_name |
       | tester        | Test client |
     And the following user roles:
-      | user_username | project_name |
-      | tester        | Test project |
+      | user_username | project_name | finances |
+      | tester        | Test project | true     |
     And the following user roles:
       | user_username | ticket_name | finances |
       | tester        | Test ticket | false    |
@@ -675,3 +675,64 @@ Feature: manage tickets
     And I follow "projects"
     And I follow "tickets" for the "Test project" project
     Then I should not see "edit" within "#ticket-1"
+
+  @javascript @current
+  Scenario: I should be able to close a ticket
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following tickets:
+      | name        | project_name |
+      | Test ticket | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    And the following user roles:
+      | user_username | ticket_name | admin |
+      | tester        | Test ticket | true  |
+    When I log in as "tester"
+    And I follow "projects"
+    And I follow "tickets" for the "Test project" project
+    And I follow "edit" for the "Test ticket" ticket
+    And I check "Close ticket"
+    And I press "Update ticket"
+    And I wait for 1 second
+    Then I should not see "Test ticket"
+
+  @javascript @current
+  Scenario: I should not see closed tickets when I expand the tickets for a project
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following tickets:
+      | name        | project_name | closed_at           |
+      | Test ticket | Test project | 2001-02-03 04:05:06 |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name | admin |
+      | tester        | Test project | true  |
+    And the following user roles:
+      | user_username | ticket_name | admin |
+      | tester        | Test ticket | true  |
+    When I log in as "tester"
+    And I follow "projects"
+    And I follow "tickets" for the "Test project" project
+    And I wait for 1 second
+    Then I should not see "Test ticket"

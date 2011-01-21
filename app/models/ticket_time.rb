@@ -29,14 +29,17 @@ class TicketTime < ActiveRecord::Base
   end
 
   def dollars_earned
+    earned = seconds_worked * ticket.billing_rate.hourly_rate_for_calculations / 3600
     if( ticket.billing_rate.units == "hour" )
-      earned = seconds_worked * ticket.billing_rate.dollars / 3600
+      return( earned )
+    else
+      dollars_remaining = ticket.billing_rate.dollars_remaining( started_at )
+      return( earned > dollars_remaining ? dollars_remaining : earned )
     end
-    return( earned )
   end
 
-  def self.batch_minutes_worked( times )
-    times.inject( 0 ) { |sum, time| sum + time.seconds_worked } / 60
+  def self.batch_seconds_worked( times )
+    times.inject( 0 ) { |sum, time| sum + time.seconds_worked }
   end
 
   def self.batch_dollars_earned( times )

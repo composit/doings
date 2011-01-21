@@ -5,14 +5,7 @@
   <%= f.hidden_field :client_id %>
   <%= f.hidden_field :created_by_user_id %>
   <%= f.hidden_field :updated_by_user_id, :value => current_user.id %><br />
-  <% if( can?( :create, f.object.client.billing_rate ) ) %>
-    <%= f.fields_for :billing_rate do |rate| %>
-      <%= rate.label :dollars, "Billing rate" %>
-      <%= rate.text_field :dollars, :size => 10 %>
-      <%= rate.label :units, "per" %>
-      <%= rate.select :units, BillingRate::UNIT_OPTIONS %><br />
-    <% end %>
-  <% end %>
+  <%= render( :partial => "billing_rates/form", :locals => { :f => f } ) if( can?( :manage_finances, f.object.client ) ) %>
   <%= f.fields_for :user_roles do |role| %>
     <div class="user-role">
       <%= role.hidden_field :user_id %>
@@ -22,13 +15,16 @@
       <%= role.label :worker %>
       <%= role.check_box :worker %>
       <%= role.label :finances %>
-      <%= role.check_box :finances, :disabled => !can?( :update, f.object.client.billing_rate ) %>
+      <%= role.check_box :finances, :disabled => !can?( :manage_finances, f.object.client ) %>
     </div>
   <% end %>
   <% if( form.new_record? ) %>
     <%= f.submit "Create project" %>
     <%= link_to "cancel", "#", :class => "cancel-new-project" %>
   <% else %>
+    <div>
+      <%= f.check_box :close_project %> <%= f.label :close_project %>
+    </div>
     <%= f.submit "Update project" %>
     <%= link_to "cancel", "#", :class => "cancel-edit-project", "data-project-id" => form.id %>
   <% end %>

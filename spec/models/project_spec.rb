@@ -64,11 +64,13 @@ describe Project do
 
   it "should build a ticket with inherited billing rate" do
     user = Factory( :user )
-    project = Factory( :project, :billing_rate => Factory( :billing_rate, :dollars => 10, :units => "hour" ) )
+    project = Factory( :project )
+    project.billing_rate.update_attributes!( :dollars => 10, :units => "hour", :billable => project )
     ticket = project.build_inherited_ticket( user.id )
 
     ticket.billing_rate.dollars.should eql( 10 )
     ticket.billing_rate.units.should eql( "hour" )
+    ticket.billing_rate.billable.should eql( project )
   end
 
   it "should generate user activity alerts when created" do
@@ -107,11 +109,70 @@ describe Project do
     project.ticket_times.collect { |ticket_time| ticket_time.id }.should eql( [ticket_time.id, other_ticket_time.id] )
   end
 
-  it "should automatically adopt the client's billing rate if no billing rate is set" do
-    client = Factory( :client, :billing_rate => Factory( :billing_rate, :dollars => 100, :units => "month" ) )
-    project = Factory( :project, :client => client, :billing_rate => nil )
+  it "should determine billable options" do
+    client = Factory( :client, :name => "Test client", :id => 456 )
+    project = Factory( :project, :client => client, :name => "Test project", :id => 987 )
 
-    project.billing_rate.dollars.should eql( 100 )
-    project.billing_rate.units.should eql( "month" )
+    project.billable_options.should eql( [["Test project", "Project:987"],["Test client", "Client:456"]] )
+  end
+
+  it "should include a generic 'this project' option in the billable options for new project records" do
+    client = Factory( :client, :name => "Test client", :id => 456 )
+    project = Project.new( :client => client )
+
+    project.billable_options.should eql( [["this project", "Project:"],["Test client", "Client:456"]] )
+  end
+
+  it "should set itself as the billable for its billing rate if it is not set" do
+    project = Project.create( :name => "Test project", :created_by_user => Factory( :user ), :client => Factory( :client ), :billing_rate_attributes => { :units => "month", :dollars => 100 } )
+
+    project.billing_rate.reload.billable.should eql( project )
+  end
+
+  it "should set closed_at to the current time when 'close project' is set to 1" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project )
+
+    project.update_attributes!( :close_project => "1" )
+    project.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+  end
+
+  it "should not set closed_at if 'close project' is not set to 1" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project )
+
+    project.update_attributes!( :close_project => "0" )
+    project.reload.closed_at.should be_nil
+    Timecop.return
+  end
+
+  it "should close all of its tickets when it closes" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project )
+    ticket_one = Factory( :ticket, :project => project )
+    ticket_two = Factory( :ticket, :project => project )
+
+    project.update_attributes!( :closed_at => Time.zone.now )
+    ticket_one.reload.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+    ticket_two.reload.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+    Timecop.return
+  end
+
+  it "should not close other tickets when it closes" do
+    project = Factory( :project )
+    ticket = Factory( :ticket )
+
+    project.update_attributes!( :closed_at => Time.zone.now )
+    ticket.reload.closed_at.should be_nil
+  end
+
+  it "should not update the closed_at times of already-closed tickets when it closes" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project )
+    ticket = Factory( :ticket, :project => project, :closed_at => "2001-01-01 01:01:01" )
+
+    project.update_attributes!( :closed_at => Time.zone.now )
+    ticket.reload.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-01-01 01:01:01" )
+    Timecop.return
   end
 end

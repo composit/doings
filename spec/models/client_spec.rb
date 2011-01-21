@@ -61,11 +61,13 @@ describe Client do
 
   it "should build a project with inherited billing rate" do
     user = Factory( :user )
-    client = Factory( :client, :billing_rate => Factory( :billing_rate, :dollars => 10, :units => "hour" ) )
+    client = Factory( :client )
+    client.billing_rate.update_attributes!( :dollars => 10, :units => "hour", :billable => client )
     project = client.build_inherited_project( user.id )
 
     project.billing_rate.dollars.should eql( 10 )
     project.billing_rate.units.should eql( "hour" )
+    project.billing_rate.billable.should eql( client )
   end
 
   it "should return ticket times associated with it" do
@@ -90,5 +92,21 @@ describe Client do
     Factory( :ticket )
 
     client.tickets.collect { |ticket| ticket.id }.should eql( [ticket.id, other_ticket.id] )
+  end
+
+  it "should determine billable options" do
+    client = Factory( :client, :name => "Test client", :id => 345 )
+    
+    client.billable_options.should eql( [["Test client","Client:345"]] )
+  end
+
+  it "should include a generic 'this client' option in the billable options for new client records" do
+    Client.new.billable_options.should eql( [["this client","Client:"]] )
+  end
+
+  it "should set itself as the billable for its billing rate if it is not set" do
+    client = Client.create( :name => "Test client", :created_by_user => Factory( :user ), :billing_rate_attributes => { :units => "month", :dollars => 100 } )
+
+    client.billing_rate.reload.billable.should eql( client )
   end
 end

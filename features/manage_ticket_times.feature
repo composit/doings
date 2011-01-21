@@ -29,7 +29,7 @@ Feature: manage ticket times
     Then I should see "Test ticket"
     And I should not see "start"
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to create a new ticket time by clicking "start" for a ticket
     Given the following confirmed_user records:
       | username |
@@ -117,7 +117,7 @@ Feature: manage ticket times
     And I follow "start" for the "Test ticket" ticket
     Then I should see "Worker has a currently open ticket time with a future start date. Please close it before opening a new ticket."
 
-  @javascript @current
+  @javascript
   Scenario: If I stop a current ticket time, it should disappear from the current-ticket box
     Given the following confirmed_user records:
       | username |
@@ -132,7 +132,7 @@ Feature: manage ticket times
     And I press "Stop now"
     Then I should not see "Test ticket" within "#current-ticket"
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to start my best available ticket straight from the panel
     Given the following worker records:
       | username |

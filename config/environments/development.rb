@@ -24,5 +24,7 @@ Doings::Application.configure do
   config.action_dispatch.best_standards_support = :builtin
 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+
+  ActiveRecord::Base.logger = Logger.new( STDOUT ) if( defined?( Rails::Console ) )
 end
 

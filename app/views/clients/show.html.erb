@@ -2,6 +2,8 @@
   <h1>Client</h1>
 <% end %>
 
+<p>created by <%= @client.created_by_user.username %></p>
+
 <% if( can?( :update, @client ) ) %>
   <%= form_for( @client ) do |f| %>
     <%= render( :partial => "form", :locals => { :f => f } ) %>

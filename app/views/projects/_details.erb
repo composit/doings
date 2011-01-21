@@ -1,4 +1,4 @@
-<% for ticket in details.tickets.accessible_by( Ability.new( current_user ) ) %>
+<% for ticket in details.tickets.where( :closed_at => nil ).accessible_by( Ability.new( current_user ) ) %>
   <div class="ticket" id="ticket-<%= ticket.id %>">
     <%= render( :partial => "tickets/line", :object => ticket ) %>
   </div>

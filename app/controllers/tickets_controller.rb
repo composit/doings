@@ -25,7 +25,7 @@ class TicketsController < ApplicationController
   end
 
   def workables
-    @workables = Ticket.includes( :user_roles ).where( :user_roles => { :user_id => current_user.id, :worker => true }, :closed_at => nil )
+    @workables = Ticket.accessible_by( current_ability, :workables )
     render( "/shared/workables" )
   end
 

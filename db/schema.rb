@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110106172902) do
+ActiveRecord::Schema.define(:version => 20110116213535) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -26,11 +26,12 @@ ActiveRecord::Schema.define(:version => 20110106172902) do
 
   create_table "billing_rates", :force => true do |t|
     t.integer  "billable_id"
-    t.decimal  "dollars",       :precision => 10, :scale => 2
+    t.decimal  "dollars",                      :precision => 10, :scale => 2
     t.string   "units"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "billable_type"
+    t.decimal  "hourly_rate_for_calculations", :precision => 10, :scale => 2
   end
 
   create_table "clients", :force => true do |t|
@@ -42,6 +43,7 @@ ActiveRecord::Schema.define(:version => 20110106172902) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "created_by_user_id"
+    t.integer  "billing_rate_id"
   end
 
   create_table "comments", :force => true do |t|
@@ -90,6 +92,7 @@ ActiveRecord::Schema.define(:version => 20110106172902) do
     t.boolean  "urgent"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "billing_rate_id"
   end
 
   create_table "ticket_times", :force => true do |t|
@@ -112,6 +115,7 @@ ActiveRecord::Schema.define(:version => 20110106172902) do
     t.integer  "estimated_minutes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "billing_rate_id"
   end
 
   create_table "user_activity_alerts", :force => true do |t|

@@ -47,8 +47,8 @@ Feature: manage goals
       | username |
       | tester   |
     And the following client records:
-      | name        |
-      | Test client |
+      | name        | active |
+      | Test client | true   |
     And the following user roles:
       | user_username | client_name | worker |
       | tester        | Test client | true   |

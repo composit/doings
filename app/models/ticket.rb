@@ -1,5 +1,6 @@
 class Ticket < ActiveRecord::Base
-  has_one :billing_rate, :as => :billable, :dependent => :destroy
+  belongs_to :billing_rate, :dependent => :destroy
+  has_many :billable_billing_rates, :class_name => 'BillingRate', :as => :billable, :dependent => :destroy
   has_many :comments, :as => :commentable
   has_many :ticket_times
   has_many :user_roles, :as => :manageable
@@ -13,12 +14,12 @@ class Ticket < ActiveRecord::Base
   validates :billing_rate, :presence => true
   validates :project, :presence => true
 
-  attr_accessor :updated_by_user_id
+  attr_accessor :updated_by_user_id, :close_ticket
 
   accepts_nested_attributes_for :user_roles, :billing_rate
 
-  before_validation :populate_billing_rate
-  after_save :populate_user_priorities
+  before_validation :populate_billing_rate, :check_project_closed_status
+  after_save :populate_user_priorities, :set_billing_rate_billable
   after_create :generate_creation_alerts
   after_update :generate_update_alerts
 
@@ -44,6 +45,14 @@ class Ticket < ActiveRecord::Base
     end
   end
 
+  def billable_options
+    [[( new_record? ? "this ticket" : name ), "Ticket:#{id}"],[project.name,"Project:#{project.id}"],[project.client.name,"Client:#{project.client.id}"]]
+  end
+
+  def close_ticket=( closer )
+    self.closed_at = Time.zone.now if( closer == "1" )
+  end
+
   private
     def generate_creation_alerts
       generate_alerts( "created" )
@@ -54,8 +63,10 @@ class Ticket < ActiveRecord::Base
     end
 
     def generate_alerts( term )
-      user_roles.each do |role|
-        user_activity_alerts.create!( :user => role.user, :alertable => self, :content => "#{User.find( @updated_by_user_id ).username} #{term} a ticket called #{name}" ) unless( role.user_id == @updated_by_user_id.to_i )
+      if( @updated_by_user_id ) # this is not set in rake tasks, etc.
+        user_roles.each do |role|
+          user_activity_alerts.create!( :user => role.user, :alertable => self, :content => "#{User.find( @updated_by_user_id ).username} #{term} a ticket called #{name}" ) unless( role.user_id == @updated_by_user_id.to_i )
+        end
       end
     end
 
@@ -70,5 +81,13 @@ class Ticket < ActiveRecord::Base
           role.save( :validate => false )
         end
       end
+    end
+
+    def set_billing_rate_billable
+      billing_rate.update_attributes!( :billable => self ) unless( billing_rate.billable )
+    end
+
+    def check_project_closed_status
+      self.closed_at = Time.zone.now if( project && project.closed_at )
     end
 end
