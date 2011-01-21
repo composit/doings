@@ -14,11 +14,11 @@ class Ticket < ActiveRecord::Base
   validates :billing_rate, :presence => true
   validates :project, :presence => true
 
-  attr_accessor :updated_by_user_id
+  attr_accessor :updated_by_user_id, :close_ticket
 
   accepts_nested_attributes_for :user_roles, :billing_rate
 
-  before_validation :populate_billing_rate
+  before_validation :populate_billing_rate, :check_project_closed_status
   after_save :populate_user_priorities, :set_billing_rate_billable
   after_create :generate_creation_alerts
   after_update :generate_update_alerts
@@ -47,6 +47,10 @@ class Ticket < ActiveRecord::Base
 
   def billable_options
     [[( new_record? ? "this ticket" : name ), "Ticket:#{id}"],[project.name,"Project:#{project.id}"],[project.client.name,"Client:#{project.client.id}"]]
+  end
+
+  def close_ticket=( closer )
+    self.closed_at = Time.zone.now if( closer == "1" )
   end
 
   private
@@ -81,5 +85,9 @@ class Ticket < ActiveRecord::Base
 
     def set_billing_rate_billable
       billing_rate.update_attributes!( :billable => self ) unless( billing_rate.billable )
+    end
+
+    def check_project_closed_status
+      self.closed_at = Time.zone.now if( project && project.closed_at )
     end
 end

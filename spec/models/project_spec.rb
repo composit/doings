@@ -128,4 +128,51 @@ describe Project do
 
     project.billing_rate.reload.billable.should eql( project )
   end
+
+  it "should set closed_at to the current time when 'close project' is set to 1" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project )
+
+    project.update_attributes!( :close_project => "1" )
+    project.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+  end
+
+  it "should not set closed_at if 'close project' is not set to 1" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project )
+
+    project.update_attributes!( :close_project => "0" )
+    project.reload.closed_at.should be_nil
+    Timecop.return
+  end
+
+  it "should close all of its tickets when it closes" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project )
+    ticket_one = Factory( :ticket, :project => project )
+    ticket_two = Factory( :ticket, :project => project )
+
+    project.update_attributes!( :closed_at => Time.zone.now )
+    ticket_one.reload.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+    ticket_two.reload.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+    Timecop.return
+  end
+
+  it "should not close other tickets when it closes" do
+    project = Factory( :project )
+    ticket = Factory( :ticket )
+
+    project.update_attributes!( :closed_at => Time.zone.now )
+    ticket.reload.closed_at.should be_nil
+  end
+
+  it "should not update the closed_at times of already-closed tickets when it closes" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project )
+    ticket = Factory( :ticket, :project => project, :closed_at => "2001-01-01 01:01:01" )
+
+    project.update_attributes!( :closed_at => Time.zone.now )
+    ticket.reload.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-01-01 01:01:01" )
+    Timecop.return
+  end
 end

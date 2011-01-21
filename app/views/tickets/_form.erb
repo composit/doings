@@ -22,6 +22,9 @@
     <%= f.submit "Create ticket" %>
     <%= link_to "cancel", "#", :class => "cancel-new-ticket" %>
   <% else %>
+    <div>
+      <%= f.check_box :close_ticket %> <%= f.label :close_ticket %>
+    </div>
     <%= f.submit "Update ticket" %>
     <%= link_to "cancel", "#", :class => "cancel-edit-ticket", "data-ticket-id" => form.id %>
   <% end %>

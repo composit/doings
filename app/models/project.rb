@@ -12,11 +12,12 @@ class Project < ActiveRecord::Base
   validates :billing_rate, :presence => true
   validates :client, :presence => true
 
-  attr_accessor :updated_by_user_id
+  attr_accessor :updated_by_user_id, :close_project
 
   accepts_nested_attributes_for :user_roles, :billing_rate
 
   before_validation :populate_billing_rate
+  before_save :close_tickets_if_applicable
   after_create :generate_creation_alerts
   after_update :generate_update_alerts
   after_save :set_billing_rate_billable
@@ -38,7 +39,19 @@ class Project < ActiveRecord::Base
     [[( new_record? ? "this project" : name ),"Project:#{id}"],[client.name,"Client:#{client.id}"]]
   end
 
+  def close_project=( closer )
+    self.closed_at = Time.zone.now if( closer == "1" )
+  end
+
   private
+    def close_tickets_if_applicable
+      if( closed_at )
+        tickets.each do |ticket|
+          ticket.update_attributes!( :closed_at => Time.zone.now ) unless( ticket.closed_at )
+        end
+      end
+    end
+
     def generate_creation_alerts
       generate_alerts( "created" )
     end

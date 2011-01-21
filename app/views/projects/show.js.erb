@@ -1,5 +1,9 @@
 if( document.getElementById( "project-<%= @project.id %>" ) ) {
-  $( "#project-<%= @project.id %>" ).html( "<%= escape_javascript( render( :partial => "line", :object => @project ) ) %>" );
+  <% if( @project.closed_at ) %>
+    $( "#project-<%= @project.id %>" ).html( "<%= @project.name %> has been closed" );
+  <% else %>
+    $( "#project-<%= @project.id %>" ).html( "<%= escape_javascript( render( :partial => "line", :object => @project ) ) %>" );
+  <% end %>
 } else {
   $( "#projects" ).append( "<%= escape_javascript( render( :partial => "line", :object => @project ) ) %>" );
   $( "#new-project" ).show();

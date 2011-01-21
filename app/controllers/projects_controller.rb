@@ -6,7 +6,7 @@ class ProjectsController < ApplicationController
 
   def index
     @client = Client.find( params[:client_id] )
-    @projects = @projects.where( :client_id => @client.id )
+    @projects = @projects.where( :client_id => @client.id, :closed_at => nil )
   end
 
   def show

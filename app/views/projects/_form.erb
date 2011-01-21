@@ -22,6 +22,9 @@
     <%= f.submit "Create project" %>
     <%= link_to "cancel", "#", :class => "cancel-new-project" %>
   <% else %>
+    <div>
+      <%= f.check_box :close_project %> <%= f.label :close_project %>
+    </div>
     <%= f.submit "Update project" %>
     <%= link_to "cancel", "#", :class => "cancel-edit-project", "data-project-id" => form.id %>
   <% end %>

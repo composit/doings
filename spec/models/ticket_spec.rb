@@ -186,4 +186,38 @@ describe Ticket do
       ticket.reload.priority_for_user( user ).should eql( 1 )
     end
   end
+
+  it "should close if its project is closed" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    project = Factory( :project, :closed_at => "2001-01-01 01:01:01" )
+    ticket = Factory( :ticket, :project => project )
+
+    ticket.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+    Timecop.return
+  end
+
+  it "should not automatically close if project is not closed" do
+    project = Factory( :project )
+    ticket = Factory( :ticket, :project => project )
+
+    ticket.closed_at.should be_nil
+  end
+
+  it "should set closed_at to the current time when 'close ticket' is set to 1" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    ticket = Factory( :ticket )
+
+    ticket.update_attributes!( :close_ticket => "1" )
+    ticket.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
+    Timecop.return
+  end
+
+  it "should not set closed_at if 'close ticket' is not set to 1" do
+    Timecop.freeze( Time.parse( "2001-02-03 04:05:06" ) )
+    ticket = Factory( :ticket )
+
+    ticket.update_attributes!( :close_ticket => "0" )
+    ticket.reload.closed_at.should be_nil
+    Timecop.return
+  end
 end
