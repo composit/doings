@@ -1,6 +1,6 @@
 if( document.getElementById( "project-<%= @project.id %>" ) ) {
   <% if( @project.closed_at ) %>
-    $( "#project-<%= @project.id %>" ).html( "<%= @project.name %> has been closed" );
+    $( "#project-<%= @project.id %>" ).html( "<%= @project.name %> has been closed<hr />" );
   <% else %>
     $( "#project-<%= @project.id %>" ).html( "<%= escape_javascript( render( :partial => "line", :object => @project ) ) %>" );
   <% end %>
