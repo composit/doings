@@ -7,7 +7,7 @@ gem 'rails', '3.0.3'
 
 gem 'mysql2', '>=0.2.6'
 gem 'devise', '>=1.1.5'
-gem 'cancan', '>=1.5.0'
+gem 'cancan', '>=1.5.1'
 
 group :development do
   gem 'ruby-debug19', '>=0.11.6'
@@ -15,7 +15,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara', '>=0.4.0'
+  gem 'capybara', '>=0.4.1'
   gem 'database_cleaner', '>=0.6.0'
   gem 'cucumber-rails', '>=0.3.2'
   gem 'rspec-rails', '>=2.4.1'

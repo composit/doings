@@ -19,18 +19,23 @@ class Project < ActiveRecord::Base
   before_validation :populate_billing_rate
   after_create :generate_creation_alerts
   after_update :generate_update_alerts
+  after_save :set_billing_rate_billable
 
   def build_inherited_ticket( user_id )
     ticket = tickets.new( :created_by_user_id => user_id )
     user_roles.each do |role|
       ticket.user_roles << UserRole.new( role.attributes.reject { |key, value| ["id", "created_at", "updated_at", "manageable_id", "manageable_type"].include?( key ) } )
     end
-    ticket.billing_rate = BillingRate.new( :dollars => billing_rate.dollars, :units => billing_rate.units )
+    ticket.billing_rate = BillingRate.new( :dollars => billing_rate.dollars, :units => billing_rate.units, :billable => billing_rate.billable )
     ticket
   end
 
   def ticket_times
     TicketTime.joins( :ticket ).where( :tickets => { :project_id => id } )
+  end
+
+  def billable_options
+    [[( new_record? ? "this project" : name ),"Project:#{id}"],[client.name,"Client:#{client.id}"]]
   end
 
   private
@@ -52,5 +57,9 @@ class Project < ActiveRecord::Base
 
     def populate_billing_rate
       self.billing_rate = BillingRate.new( :dollars => client.billing_rate.dollars, :units => client.billing_rate.units ) if( billing_rate.nil? && client )
+    end
+
+    def set_billing_rate_billable
+      billing_rate.update_attributes!( :billable => self ) unless( billing_rate.billable )
     end
 end

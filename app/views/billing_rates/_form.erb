@@ -4,10 +4,12 @@
     <div class="content">
       <%= rate.text_field :dollars, :size => 10 %>
       <%= rate.label :units, "per" %>
-      <%= rate.select :units, BillingRate::UNIT_OPTIONS %>
-      <span class="estimated-hourly" style="display:<%= rate.object.units == "hour" ? "none" : "block" %>">
+      <%= rate.select :units, BillingRate::UNIT_OPTIONS, {}, { :class => "billing-rate-units" } %>
+      <span class="non-hourly-options" style="display:<%= ["month", "total"].include?( rate.object.units ) ? "block" : "none" %>">
+        <%= rate.label :billable_choice, "for" %>
+        <%= rate.select :billable_choice, f.object.billable_options, {}, { :class => "billable-choice" } %>
         <%= rate.label :hourly_rate_for_calculations %>
-        <%= rate.text_field :hourly_rate_for_calculations, :size => 5 %>
+        <%= rate.text_field :hourly_rate_for_calculations, :size => 5, :class => "hourly-rate-for-calculations" %>
       </span>
     </div>
   </div>

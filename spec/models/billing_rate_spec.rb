@@ -105,16 +105,19 @@ describe BillingRate do
     end
   end
 
-  it "should assign the billable to the current object if it does not exist" do
-    client = Factory( :client )
+  describe "when dealing with the billable choice" do
+    before( :each ) do
+      @client = Factory( :client, :id => 595 )
+      @project = Factory( :project )
+      @project.billing_rate.update_attributes!( :billable_choice => "Client:595" )
+    end
 
-    client.billing_rate.billable.should eql( client )
-  end
+    it "should set the billable via the billable_choice" do
+      @project.billing_rate.billable.should eql( @client )
+    end
 
-  it "should not overwrite the billable if it exists" do
-    client = Factory( :client )
-    project = Factory( :project, :billing_rate => Factory( :billing_rate, :billable => client ) )
-
-    project.billing_rate.billable.should_not eql( project )
+    it "should return the billable_choice formated for the select dropdown" do
+      @project.billing_rate.reload.billable_choice.should eql( "Client:595" )
+    end
   end
 end

@@ -64,11 +64,13 @@ describe Project do
 
   it "should build a ticket with inherited billing rate" do
     user = Factory( :user )
-    project = Factory( :project, :billing_rate => Factory( :billing_rate, :dollars => 10, :units => "hour" ) )
+    project = Factory( :project )
+    project.billing_rate.update_attributes!( :dollars => 10, :units => "hour", :billable => project )
     ticket = project.build_inherited_ticket( user.id )
 
     ticket.billing_rate.dollars.should eql( 10 )
     ticket.billing_rate.units.should eql( "hour" )
+    ticket.billing_rate.billable.should eql( project )
   end
 
   it "should generate user activity alerts when created" do
@@ -107,11 +109,23 @@ describe Project do
     project.ticket_times.collect { |ticket_time| ticket_time.id }.should eql( [ticket_time.id, other_ticket_time.id] )
   end
 
-  it "should automatically adopt the client's billing rate if no billing rate is set" do
-    client = Factory( :client, :billing_rate => Factory( :billing_rate, :dollars => 100, :units => "month" ) )
-    project = Factory( :project, :client => client, :billing_rate => nil )
+  it "should determine billable options" do
+    client = Factory( :client, :name => "Test client", :id => 456 )
+    project = Factory( :project, :client => client, :name => "Test project", :id => 987 )
 
-    project.billing_rate.dollars.should eql( 100 )
-    project.billing_rate.units.should eql( "month" )
+    project.billable_options.should eql( [["Test project", "Project:987"],["Test client", "Client:456"]] )
+  end
+
+  it "should include a generic 'this project' option in the billable options for new project records" do
+    client = Factory( :client, :name => "Test client", :id => 456 )
+    project = Project.new( :client => client )
+
+    project.billable_options.should eql( [["this project", "Project:"],["Test client", "Client:456"]] )
+  end
+
+  it "should set itself as the billable for its billing rate if it is not set" do
+    project = Project.create( :name => "Test project", :created_by_user => Factory( :user ), :client => Factory( :client ), :billing_rate_attributes => { :units => "month", :dollars => 100 } )
+
+    project.billing_rate.reload.billable.should eql( project )
   end
 end

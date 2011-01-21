@@ -14,12 +14,14 @@ class Client < ActiveRecord::Base
 
   accepts_nested_attributes_for :address, :billing_rate, :user_roles
 
+  after_save :set_billing_rate_billable
+
   def build_inherited_project( created_by_user_id )
     project = projects.new( :created_by_user_id => created_by_user_id )
     user_roles.each do |role|
       project.user_roles << UserRole.new( role.attributes.reject { |key, value| ["id", "created_at", "updated_at", "manageable_id", "manageable_type"].include?( key ) } )
     end
-    project.billing_rate = BillingRate.new( :dollars => billing_rate.dollars, :units => billing_rate.units )
+    project.billing_rate = BillingRate.new( :dollars => billing_rate.dollars, :units => billing_rate.units, :billable => billing_rate.billable )
     project
   end
 
@@ -30,4 +32,13 @@ class Client < ActiveRecord::Base
   def ticket_times
     TicketTime.joins( :ticket => :project ).where( :projects => { :client_id => id } )
   end
+
+  def billable_options
+    [[( new_record? ? "this client" : name ),"Client:#{id}"]]
+  end
+
+  private
+    def set_billing_rate_billable
+      billing_rate.update_attributes!( :billable => self ) unless( billing_rate.billable )
+    end
 end

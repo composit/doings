@@ -9,6 +9,8 @@ class BillingRate < ActiveRecord::Base
   validates :dollars, :numericality => true
   validates :units, :inclusion => { :in => UNIT_OPTIONS, :message => "are not included in the list" }
 
+  attr_accessor :billable_choice
+
   before_validation :assign_hourly_rate_for_calculations, :assign_billable
 
   def description
@@ -24,6 +26,17 @@ class BillingRate < ActiveRecord::Base
     calculated_total = TicketTime.batch_seconds_worked( applicable_ticket_times ) / 3600 * hourly_rate_for_calculations
     raw_remaining = dollars - calculated_total
     return( raw_remaining > 0 ? raw_remaining : 0.0 )
+  end
+
+  def billable_choice=( choice )
+    parsed_choice = choice.split( ":" )
+    unless( parsed_choice[1].blank? )
+      self.billable = eval( "#{parsed_choice[0]}.find( #{parsed_choice[1]} )" )
+    end
+  end
+
+  def billable_choice
+    "#{billable_type}:#{billable_id}"
   end
 
   private

@@ -19,7 +19,7 @@ class Ticket < ActiveRecord::Base
   accepts_nested_attributes_for :user_roles, :billing_rate
 
   before_validation :populate_billing_rate
-  after_save :populate_user_priorities
+  after_save :populate_user_priorities, :set_billing_rate_billable
   after_create :generate_creation_alerts
   after_update :generate_update_alerts
 
@@ -43,6 +43,10 @@ class Ticket < ActiveRecord::Base
       user_role.priority = index + 1
       user_role.save( :validate => false )
     end
+  end
+
+  def billable_options
+    [[( new_record? ? "this ticket" : name ), "Ticket:#{id}"],[project.name,"Project:#{project.id}"],[project.client.name,"Client:#{project.client.id}"]]
   end
 
   private
@@ -73,5 +77,9 @@ class Ticket < ActiveRecord::Base
           role.save( :validate => false )
         end
       end
+    end
+
+    def set_billing_rate_billable
+      billing_rate.update_attributes!( :billable => self ) unless( billing_rate.billable )
     end
 end
