@@ -260,6 +260,15 @@ describe Goal do
     goal.amount_complete( :end_time => Time.zone.now.beginning_of_day ).should eql( 60.0 )
   end
 
+  it "should take into account projects with monthly rates that are over their rate" do
+    user = Factory( :worker )
+    goal = Factory( :goal, :user => user, :units => "dollars", :amount => 100, :period => "Yearly" )
+    ticket = Factory( :ticket, :billing_rate => Factory( :billing_rate, :units => "month", :dollars => 50, :hourly_rate_for_calculations => 80 ) )
+    Factory( :ticket_time, :ticket => ticket, :worker => user, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
+
+    goal.amount_complete( :end_time => Time.zone.now ).should eql( 50.0 )
+  end
+
   it "should calculate amount completion after a specific time" do
     user = Factory( :worker )
     goal = Factory( :goal, :user => user, :units => "minutes", :amount => 100, :period => "Yearly" )
@@ -336,6 +345,15 @@ describe Goal do
       goal.best_available_ticket.should eql( @middle_ticket )
     end
 
+    it "should consider hourly_rates_for_calculations, not dollars when figuring dollar-based goals" do
+      @last_ticket.billing_rate.update_attributes!( :dollars => 80, :units => "total", :hourly_rate_for_calculations => 1 )
+      @first_ticket.billing_rate.update_attributes!( :dollars => 60, :units => "total", :hourly_rate_for_calculations => 10 )
+      @middle_ticket.billing_rate.update_attributes!( :dollars => 100, :units => "total", :hourly_rate_for_calculations => 5 )
+      goal = Factory( :goal, :user => @user, :units => "dollars", :amount => 1 )
+
+      goal.best_available_ticket.should eql( @first_ticket )
+    end
+
     it "should order tickets by priority for dollar-based goals where rates are the same" do
       @last_ticket.billing_rate.update_attributes!( :dollars => 100, :units => "hour" )
       @first_ticket.billing_rate.update_attributes!( :dollars => 100, :units => "hour" )
@@ -370,6 +388,16 @@ describe Goal do
     it "should ignore closed tickets" do
       @first_ticket.update_attributes!( :closed_at => Time.zone.now )
       goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 1 )
+
+      goal.best_available_ticket.should eql( @middle_ticket )
+    end
+
+    it "should ignore tickets whose calculated work is greater than their monthly/total rate for a dollar-based goal" do
+      @last_ticket.billing_rate.update_attributes!( :dollars => 80, :units => "total", :hourly_rate_for_calculations => 1 )
+      @first_ticket.billing_rate.update_attributes!( :dollars => 10, :units => "total", :hourly_rate_for_calculations => 10 )
+      @middle_ticket.billing_rate.update_attributes!( :dollars => 100, :units => "total", :hourly_rate_for_calculations => 5 )
+      Factory( :ticket_time, :ticket => @first_ticket, :worker => @user, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
+      goal = Factory( :goal, :user => @user, :units => "dollars", :amount => 1000 )
 
       goal.best_available_ticket.should eql( @middle_ticket )
     end

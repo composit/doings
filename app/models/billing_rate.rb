@@ -39,6 +39,10 @@ class BillingRate < ActiveRecord::Base
     "#{billable_type}:#{billable_id}"
   end
 
+  def marginal_hourly_rate
+    hourly_rate_for_calculations > dollars_remaining ? dollars_remaining : hourly_rate_for_calculations
+  end
+
   private
     def formatted_dollars
       if( dollars % 1 == 0 )

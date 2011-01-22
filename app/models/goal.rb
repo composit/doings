@@ -90,7 +90,7 @@ class Goal < ActiveRecord::Base
       if( units == "minutes" )
         tickets = tickets.order( :priority )
       elsif( units == "dollars" )
-        tickets = tickets.joins( :billing_rate ).order( "dollars desc, priority" )
+        tickets = tickets.order( :priority ).sort { |x,y| y.billing_rate.marginal_hourly_rate <=> x.billing_rate.marginal_hourly_rate }
       end
       return( tickets.first )
     end

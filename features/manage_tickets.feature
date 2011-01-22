@@ -676,7 +676,7 @@ Feature: manage tickets
     And I follow "tickets" for the "Test project" project
     Then I should not see "edit" within "#ticket-1"
 
-  @javascript @current
+  @javascript
   Scenario: I should be able to close a ticket
     Given the following confirmed_user records:
       | username |
@@ -708,7 +708,7 @@ Feature: manage tickets
     And I wait for 1 second
     Then I should not see "Test ticket"
 
-  @javascript @current
+  @javascript
   Scenario: I should not see closed tickets when I expand the tickets for a project
     Given the following confirmed_user records:
       | username |
@@ -736,3 +736,40 @@ Feature: manage tickets
     And I follow "tickets" for the "Test project" project
     And I wait for 1 second
     Then I should not see "Test ticket"
+
+  @javascript
+  Scenario: Tickets should be ordered by priority
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following tickets:
+      | name          | project_name |
+      | Middle ticket | Test project |
+      | Top ticket    | Test project |
+      | Bottom ticket | Test project |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following user roles:
+      | user_username | project_name |
+      | tester        | Test project |
+    And the following user roles:
+      | user_username | ticket_name   | priority |
+      | tester        | Middle ticket | 2        |
+      | tester        | Top ticket    | 1        |
+      | tester        | Bottom ticket | 3        |
+    When I log in as "tester"
+    And I follow "projects"
+    And I follow "tickets" for the "Test project" project
+    And I wait for 1 second
+    Then I should see the following text in order:
+      | text          |
+      | Top ticket    |
+      | Middle ticket |
+      | Bottom ticket |

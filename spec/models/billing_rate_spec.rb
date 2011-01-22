@@ -120,4 +120,15 @@ describe BillingRate do
       @project.billing_rate.reload.billable_choice.should eql( "Client:595" )
     end
   end
+
+  it "should return its marginal hourly rate, based on how close dollars earned are to the total" do
+    ticket = Factory( :ticket )
+    ticket.billing_rate.update_attributes!( :units => "total", :dollars => 100, :hourly_rate_for_calculations => 70, :billable => ticket )
+    Factory( :ticket_time, :ticket => ticket, :started_at => 2.hours.ago, :ended_at => 1.hour.ago )
+
+    ticket.billing_rate.marginal_hourly_rate.should eql( 30.0 )
+    Factory( :ticket_time, :ticket => ticket, :started_at => 2.hours.ago, :ended_at => 1.hour.ago )
+
+    ticket.billing_rate.marginal_hourly_rate.should eql( 0.0 )
+  end
 end
