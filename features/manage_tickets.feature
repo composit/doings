@@ -773,3 +773,23 @@ Feature: manage tickets
       | Top ticket    |
       | Middle ticket |
       | Bottom ticket |
+
+  @current
+  Scenario: Prioritization page should not show closed tickets
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following tickets:
+      | name        |
+      | Test ticket |
+    And the following tickets:
+      | name          | closed_at           |
+      | Closed ticket | 2001-01-01 01:01:01 |
+    And the following user roles:
+      | user_username | ticket_name   |
+      | tester        | Test ticket   |
+      | tester        | Closed ticket |
+    When I log in as "tester"
+    And I am on the tickets page
+    Then I should see "Test ticket"
+    And I should not see "Closed ticket"

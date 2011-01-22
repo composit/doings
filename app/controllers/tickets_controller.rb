@@ -5,7 +5,7 @@ class TicketsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @tickets = @tickets.includes( :user_roles ).order( :priority )
+    @tickets = @tickets.includes( :user_roles ).where( :closed_at => nil ).order( :priority )
   end
 
   def show
