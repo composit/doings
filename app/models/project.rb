@@ -43,6 +43,14 @@ class Project < ActiveRecord::Base
     self.closed_at = Time.zone.now if( closer == "1" )
   end
 
+  def estimated_minutes
+    tickets.inject( 0.0 ) { |sum, ticket| sum + ticket.estimated_minutes }
+  end
+
+  def minutes_worked
+    TicketTime.batch_seconds_worked( ticket_times ) / 60
+  end
+
   private
     def close_tickets_if_applicable
       if( closed_at )

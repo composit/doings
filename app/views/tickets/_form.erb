@@ -5,6 +5,8 @@
   <%= f.hidden_field :project_id %>
   <%= f.hidden_field :created_by_user_id %>
   <%= f.hidden_field :updated_by_user_id, :value => current_user.id %><br />
+  <%= f.label :estimated_minutes %>
+  <%= f.text_field :estimated_minutes, :size => 5 %><br />
   <%= render( :partial => "billing_rates/form", :locals => { :f => f } ) if( can?( :manage_finances, f.object ) ) %>
   <%= f.fields_for :user_roles do |role| %>
     <div class="user-role">

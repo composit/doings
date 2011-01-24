@@ -220,4 +220,22 @@ describe Ticket do
     ticket.reload.closed_at.should be_nil
     Timecop.return
   end
+
+  describe "when determining minutes worked" do
+    before( :each ) do
+      @ticket = Factory( :ticket )
+    end
+
+    it "should include minutes worked for that ticket" do
+      Factory( :ticket_time, :ticket => @ticket, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
+
+      @ticket.minutes_worked.should eql( 60.0 )
+    end
+
+    it "should not include minutes worked for other tickets" do
+      Factory( :ticket_time, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
+
+      @ticket.minutes_worked.should eql( 0.0 )
+    end
+  end
 end

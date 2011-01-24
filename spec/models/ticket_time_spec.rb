@@ -98,10 +98,12 @@ describe TicketTime do
   end
 
   it "should calculate minutes worked for a batch of ticket times including an open ticket time" do
+    Timecop.freeze
     ticket_time_one = Factory( :ticket_time, :started_at => 30.minutes.ago, :ended_at => 20.minutes.ago )
     ticket_time_two = Factory( :ticket_time, :started_at => 10.minutes.ago )
 
     TicketTime.batch_seconds_worked( [ticket_time_one, ticket_time_two] ).round.should eql( 1200 )
+    Timecop.return
   end
 
   it "should calculate dollars earned for a batch of ticket times with hourly rates" do

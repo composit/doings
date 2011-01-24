@@ -175,4 +175,35 @@ describe Project do
     ticket.reload.closed_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-01-01 01:01:01" )
     Timecop.return
   end
+
+  describe "when calculating minutes" do
+    before( :each ) do
+      @project = Factory( :project )
+      ticket_one = Factory( :ticket, :project => @project, :estimated_minutes => 100 )
+      ticket_two = Factory( :ticket, :project => @project, :estimated_minutes => 80 )
+      Factory( :ticket_time, :ticket => ticket_one, :started_at => 1.day.ago, :ended_at => 23.hours.ago )
+      Factory( :ticket_time, :ticket => ticket_two, :started_at => 30.minutes.ago, :ended_at => Time.zone.now )
+    end
+
+    it "should add up the estimated minutes for the tickets" do
+      @project.estimated_minutes.should eql( 180.0 )
+    end
+
+    it "should not include estimated minutes for other projects' tickets" do
+      Factory( :ticket, :project => Factory( :project ), :estimated_minutes => 10 )
+
+      @project.estimated_minutes.should eql( 180.0 )
+
+    end
+
+    it "should total the minutes worked for its tickets" do
+      @project.minutes_worked.should eql( 90.0 )
+    end
+
+    it "should not include minutes worked for other tickets" do
+      Factory( :ticket_time, :ticket => Factory( :ticket ), :started_at => 1.day.ago, :ended_at => 1.hour.ago )
+
+      @project.minutes_worked.should eql( 90.0 )
+    end
+  end
 end

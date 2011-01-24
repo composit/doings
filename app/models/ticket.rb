@@ -53,6 +53,10 @@ class Ticket < ActiveRecord::Base
     self.closed_at = Time.zone.now if( closer == "1" )
   end
 
+  def minutes_worked
+    TicketTime.batch_seconds_worked( ticket_times ) / 60
+  end
+
   private
     def generate_creation_alerts
       generate_alerts( "created" )

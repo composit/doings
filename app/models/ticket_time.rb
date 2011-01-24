@@ -39,11 +39,11 @@ class TicketTime < ActiveRecord::Base
   end
 
   def self.batch_seconds_worked( times )
-    times.inject( 0 ) { |sum, time| sum + time.seconds_worked }
+    times.inject( 0.0 ) { |sum, time| sum + time.seconds_worked }
   end
 
   def self.batch_dollars_earned( times )
-    times.inject( 0 ) { |sum, time| sum + time.dollars_earned }
+    times.inject( 0.0 ) { |sum, time| sum + time.dollars_earned }
   end
 
   private

@@ -774,7 +774,6 @@ Feature: manage tickets
       | Middle ticket |
       | Bottom ticket |
 
-  @current
   Scenario: Prioritization page should not show closed tickets
     Given the following confirmed_user records:
       | username |
@@ -793,3 +792,34 @@ Feature: manage tickets
     And I am on the tickets page
     Then I should see "Test ticket"
     And I should not see "Closed ticket"
+
+  @javascript @current
+  Scenario: I should see estimated and worked times
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        |
+      | Test client |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    And the following projects:
+      | name         | client_name |
+      | Test project | Test client |
+    And the following user roles:
+      | user_username | project_name |
+      | tester        | Test project |
+    And the following tickets:
+      | name        | estimated_minutes |
+      | Test ticket | 100               |
+    And the following user roles:
+      | user_username | ticket_name |
+      | tester        | Test ticket |
+    And the following ticket times:
+      | worker_username | ticket_name | started_at_minutes_ago |
+      | tester          | Test ticket | 60                     |
+    When I log in as "tester"
+    And I follow "projects" for the "Test client" client
+    And I follow "tickets" for the "Test project" project
+    Then I should see "60/100"
