@@ -51,13 +51,6 @@ describe Ticket do
     BillingRate.where( :id => billing_rate.id ).should be_empty
   end
 
-  it "should only allow numerical estimated minutes" do
-    ticket = Factory.build( :ticket, :estimated_minutes => "abc" )
-    ticket.save
-
-    ticket.errors.should eql( :estimated_minutes => ["is not a number"] )
-  end
-
   it "should generate user activity alerts when created" do
     user_one = Factory( :user, :username => "tester" )
     user_two = Factory( :user )
@@ -237,5 +230,11 @@ describe Ticket do
 
       @ticket.minutes_worked.should eql( 0.0 )
     end
+  end
+
+  it "should numericalize estimated minutes" do
+    ticket = Factory( :ticket, :estimated_minutes => "abc" )
+
+    ticket.estimated_minutes.should eql( 0 )
   end
 end

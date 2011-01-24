@@ -18,7 +18,7 @@ class Ticket < ActiveRecord::Base
 
   accepts_nested_attributes_for :user_roles, :billing_rate
 
-  before_validation :populate_billing_rate, :check_project_closed_status
+  before_validation :populate_billing_rate, :check_project_closed_status, :numericalize_estimated_minutes
   after_save :populate_user_priorities, :set_billing_rate_billable
   after_create :generate_creation_alerts
   after_update :generate_update_alerts
@@ -93,5 +93,9 @@ class Ticket < ActiveRecord::Base
 
     def check_project_closed_status
       self.closed_at = Time.zone.now if( project && project.closed_at )
+    end
+
+    def numericalize_estimated_minutes
+      self.estimated_minutes = estimated_minutes.to_i
     end
 end

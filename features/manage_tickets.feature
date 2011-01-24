@@ -793,7 +793,7 @@ Feature: manage tickets
     Then I should see "Test ticket"
     And I should not see "Closed ticket"
 
-  @javascript @current
+  @javascript
   Scenario: I should see estimated and worked times
     Given the following confirmed_user records:
       | username |
@@ -811,8 +811,8 @@ Feature: manage tickets
       | user_username | project_name |
       | tester        | Test project |
     And the following tickets:
-      | name        | estimated_minutes |
-      | Test ticket | 100               |
+      | id | name        | project_name | estimated_minutes |
+      | 1  | Test ticket | Test project | 100               |
     And the following user roles:
       | user_username | ticket_name |
       | tester        | Test ticket |
@@ -822,4 +822,4 @@ Feature: manage tickets
     When I log in as "tester"
     And I follow "projects" for the "Test client" client
     And I follow "tickets" for the "Test project" project
-    Then I should see "60/100"
+    Then I should see "60/100" within "#ticket-1"

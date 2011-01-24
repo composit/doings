@@ -490,7 +490,7 @@ Feature: manage projects
     And I follow "projects" for the "Test client" client
     Then I should not see "Test project"
 
-  @javascript @current
+  @javascript
   Scenario: I should see estimated and worked times
     Given the following confirmed_user records:
       | username |
@@ -502,14 +502,14 @@ Feature: manage projects
       | user_username | client_name |
       | tester        | Test client |
     And the following projects:
-      | name         | client_name |
-      | Test project | Test client |
+      | id | name         | client_name |
+      | 1  | Test project | Test client |
     And the following user roles:
       | user_username | project_name |
       | tester        | Test project |
     And the following tickets:
-      | name        | estimated_minutes |
-      | Test ticket | 100               |
+      | name        | project_name | estimated_minutes |
+      | Test ticket | Test project | 100               |
     And the following user roles:
       | user_username | ticket_name |
       | tester        | Test ticket |
@@ -518,4 +518,4 @@ Feature: manage projects
       | tester          | Test ticket | 60                     |
     When I log in as "tester"
     And I follow "projects" for the "Test client" client
-    Then I should see "60/100"
+    Then I should see "60/100" within "#project-1"
