@@ -1,10 +1,13 @@
 class ClientsController < ApplicationController
-  respond_to :html, :only => [:show, :new, :create, :update]
+  respond_to :html, :only => [:edit, :new, :create, :update]
   respond_to :js, :only => [:index, :workables]
 
   load_and_authorize_resource
 
   def show
+  end
+
+  def edit
     @client.address ||= Address.new
   end
 

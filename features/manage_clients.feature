@@ -172,3 +172,38 @@ Feature: manage clients
     And I am on the panel page
     And I follow "Test client"
     Then I should see "created by tester"
+
+  Scenario: Clients in sidebar should display in alphabetical order
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name            |
+      | C Last client   |
+      | A First client  |
+      | B Middle client |
+    And the following user roles:
+      | user_username | client_name   |
+      | tester        | B Middle client |
+      | tester        | A First client  |
+      | tester        | C Last client   |
+    When I log in as "tester"
+    Then I should see the following text in order:
+      | text            |
+      | A First client  |
+      | B Middle client |
+      | C Last client   |
+
+  Scenario: I should be able to view a client even if they don't have an address
+    Given the following confirmed_user records:
+      | username |
+      | tester   |
+    And the following client records:
+      | name        | address_id |
+      | Test client | nil        |
+    And the following user roles:
+      | user_username | client_name |
+      | tester        | Test client |
+    When I log in as "tester"
+    And I follow "Test client"
+    Then I should see "No address on record"

@@ -8,6 +8,7 @@ gem 'rails', '3.0.3'
 gem 'mysql2', '>=0.2.6'
 gem 'devise', '>=1.1.5'
 gem 'cancan', '>=1.5.1'
+gem 'will_paginate', '>=3.0.pre2'
 
 group :development do
   gem 'ruby-debug19', '>=0.11.6'

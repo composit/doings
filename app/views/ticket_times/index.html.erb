@@ -1,0 +1,15 @@
+<%= content_for( :header ) do %>
+  <h1>Ticket times</h1>
+<% end %>
+
+<% for ticket_time in @ticket_times %>
+  <%= ticket_time.ticket.full_name %>
+  <span class="sidenote">
+    <%= ticket_time.started_at.strftime( "%Y-%m-%d %H:%M:%S" ) %> -
+    <%= ticket_time.ended_at? ? ticket_time.ended_at.strftime( "%Y-%m-%d %H:%M:%S" ) : "NOW" %>
+  </span>
+  <%= link_to( "edit", edit_ticket_time_path( ticket_time ) ) %>
+  <br />
+<% end %>
+
+<%= will_paginate @ticket_times %>

@@ -3,9 +3,9 @@ class DoingsResponder < ActionController::Responder
     if( get? )
       render
     elsif( has_errors? )
-      render( :action => ( post? ? :new : :show ) )
+      render( :action => ( post? ? :new : :edit ) )
     else
-      redirect_to( :action => :show, :id => resource.id )
+      redirect_to( :action => :edit, :id => resource.id )
     end
   end
 

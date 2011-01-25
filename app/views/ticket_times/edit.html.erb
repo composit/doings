@@ -1,0 +1,19 @@
+<%= content_for :header do %>
+  <h1>Ticket time</h1>
+<% end %>
+
+<%= @ticket_time.ticket.full_name %><br />
+<%= form_for( @ticket_time ) do |f| %>
+  <div class="row clear">
+    <div class="title"><%= f.label :started_at %></div>
+    <div class="content"><%= f.datetime_select :started_at, :include_seconds => true %></div>
+  </div>
+  <div class="row clear">
+    <div class="title"><%= f.label :ended_at %></div>
+    <div class="content"><%= f.datetime_select :ended_at, :include_seconds => true %></div>
+  </div>
+  <div class="row clear">
+    <div class="title"> </div>
+    <div class="content"><%= f.submit "Update ticket time" %></div>
+  </div>
+<% end %>

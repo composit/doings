@@ -15,6 +15,9 @@ class TicketTime < ActiveRecord::Base
 
   attr_accessor :stop_now
 
+  cattr_reader :per_page
+  @@per_page = 80
+
   def stop_now=( stop )
     self.ended_at = Time.zone.now if( stop == "1" )
   end

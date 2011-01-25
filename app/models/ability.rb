@@ -5,8 +5,8 @@ class Ability
     can :read, Client, :user_roles => { :user_id => user.id }
     can :create, Client
     can :update, Client, :user_roles => { :user_id => user.id, :admin => true }
-    can :read_finances, Client, :user_roles => { :user_id => user.id, :finances => true }
     can :workables, Client, :active => true, :user_roles => { :user_id => user.id, :worker => true }
+    can :read_finances, Client, :user_roles => { :user_id => user.id, :finances => true }
     can :manage_finances, Client, :user_roles => { :user_id => user.id, :finances => true, :admin => true }
 
     can :read, Project, :user_roles => { :user_id => user.id }
@@ -29,5 +29,8 @@ class Ability
     can :manage, Goal, :user_id => user.id
 
     can :manage, Workweek, :worker_id => user.id
+
+    can :read, Invoice, :client => { :user_roles => { :user_id => user.id, :finances => true } }
+    can :manage, Invoice, :client => { :user_roles => { :user_id => user.id, :finances => true, :admin => true } }
   end
 end

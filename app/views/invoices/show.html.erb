@@ -1,0 +1,7 @@
+<%= content_for :header do %>
+  <h1>Invoice</h1>
+<% end %>
+
+<p><%= @invoice.client.name %></p>
+<p><%= @invoice.invoice_date.strftime( "%Y-%m-%d" ) %></p>
+<p><%= @invoice.description %></p>

@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
 
     def set_layout_defaults
       if( current_user )
-        @nav_clients = Client.accessible_by( current_ability )
+        @nav_clients = Client.accessible_by( current_ability ).order( :name )
         @current_ticket_time = current_user.ticket_times.where( :ended_at => nil ).first
       end
     end

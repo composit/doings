@@ -1,19 +1,20 @@
 Doings::Application.routes.draw do
-  resources :clients, :only => [:show, :new, :create, :update] do
+  resources :clients, :only => [:show, :new, :create, :edit, :update] do
     collection { get :workables }
   end
-  resources :projects, :only => [:index, :show, :create, :edit, :update] do
+  resources :projects, :only => [:show, :create, :edit, :update] do
     collection { get :workables }
   end
   resources :tickets, :only => [:index, :show, :create, :edit, :update] do
     collection { get :workables }
     collection { post :prioritize }
   end
-  resources :ticket_times, :only => [:create, :update]
+  resources :ticket_times, :only => [:index, :create, :edit, :update]
   resources :goals, :only => [:index, :create, :destroy] do
     collection { post :prioritize }
   end
   resources :workweeks, :only => :create
+  resources :invoices, :only => [:show, :new, :create, :edit, :update]
 
   devise_for :users
 
@@ -22,6 +23,7 @@ Doings::Application.routes.draw do
   root :to => "panel#index"
 
   match 'client/:client_id/projects', :to => 'projects#index', :as => 'client_projects'
+  match 'client/:client_id/invoices', :to => 'invoices#index', :as => 'client_invoices'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

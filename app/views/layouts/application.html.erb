@@ -28,7 +28,11 @@
           <p><%= link_to "Ticket priorities", tickets_path %></p>
           <% for client in @nav_clients %>
             <p class="client" id="client-<%= client.id %>">
-              <%= link_to client.name, client %> -
+              <% if( can?( :update, client ) ) %>
+                <%= link_to client.name, edit_client_path( client ) %> -
+              <% else %>
+                <%= link_to client.name, client %> -
+              <% end %>
               <%= link_to "projects", client_projects_path( :client_id => client.id ) %>
             </p>
           <% end %>
@@ -36,6 +40,7 @@
           <% if( current_user.is_worker? ) %>
             <p><%= link_to "Manage goals", goals_path %></p>
             <p><%= link_to "Manage self", edit_user_registration_path %></p>
+            <p><%= link_to( "Manage times", ticket_times_path ) unless( current_user.ticket_times.empty? ) %></p>
           <% end %>
           <p><%= link_to "Sign out", destroy_user_session_path %></p>
         </div>
