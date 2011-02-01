@@ -1,0 +1,14 @@
+<%= content_for :header do %>
+  <h1>Invoice for <%= @invoice.client.name %></h1>
+<% end %>
+
+<%= form_for( @invoice ) do |f| %>
+  <%= render( "shared/error_messages", :target => f.object ) %>
+  <%= render( :partial => "form", :locals => { :f => f } ) %>
+  <div class="row clear">
+    <div class="title"> </div>
+    <div class="content">
+      <%= f.submit "Create invoice" %>
+    </div>
+  </div>
+<% end %>

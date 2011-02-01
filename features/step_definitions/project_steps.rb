@@ -6,12 +6,8 @@ When /^the following projects:$/ do |table|
 end
 
 When /^I follow "([^"]*)" for the "([^"]*)" client$/ do |link, client_name|
-  if( client_name == "All clients" )
-    scope = "#client-all"
-  else
-    client = Client.find_by_name( client_name )
-    scope = "#client-#{client.id}"
-  end
+  client = Client.find_by_name( client_name )
+  scope = "#client-#{client.id}"
   with_scope( scope ) do
     click_link( link )
   end

@@ -4,3 +4,11 @@ Given /^the following invoices:$/ do |table|
     Factory( :invoice, hash )
   end
 end
+
+When /^I follow "([^"]*)" for the "([^"]*)" invoice$/ do |link, invoice_date|
+  invoice = Invoice.find_by_invoice_date( invoice_date )
+  scope = "#invoice-#{invoice.id}"
+  with_scope( scope ) do
+    click_link( link )
+  end
+end

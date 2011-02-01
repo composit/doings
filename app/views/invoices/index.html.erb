@@ -8,3 +8,5 @@
     <%= link_to( "edit", edit_invoice_path( invoice ) ) if( can?( :update, invoice ) ) %>
   </div>
 <% end %>
+
+<%= link_to( "New invoice", new_invoice_path( :client_id => @client.id ) ) if( can?( :create, @client.invoices.build ) ) %>

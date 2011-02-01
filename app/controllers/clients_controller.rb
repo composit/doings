@@ -7,10 +7,6 @@ class ClientsController < ApplicationController
   def show
   end
 
-  def edit
-    @client.address ||= Address.new
-  end
-
   def new
     @client.address = Address.new
     @client.user_roles << UserRole.new( :user => current_user, :manageable => @client, :admin => true )
@@ -21,6 +17,10 @@ class ClientsController < ApplicationController
   def create
     flash[:notice] = 'Client was successfully created' if( @client.save )
     respond_with( @client )
+  end
+
+  def edit
+    @client.address ||= Address.new
   end
 
   def update
