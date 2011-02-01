@@ -10,3 +10,16 @@
   <div class="title"><%= f.label :paid_at %></div>
   <div class="content"><%= f.datetime_select :paid_at %></div>
 </div>
+<% for ticket_time in f.object.available_ticket_times %>
+  <%= fields_for "include_ticket_times", ticket_time do |tt| %>
+    <div class="row clear ticket-time">
+      <div class="title"><%= tt.check_box ticket_time.id, {}, ticket_time.invoice_id %></div>
+      <div class="content">
+        <%= ticket_time.worker.username %> :
+        <%= ticket_time.started_at.strftime( "%Y-%m-%d %H:%M:%S" ) %> -
+        <%= ticket_time.ended_at.strftime( "%Y-%m-%d %H:%M:%S" ) %> :
+        <%= number_to_currency( ticket_time.dollars_earned ) %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

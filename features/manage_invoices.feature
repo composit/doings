@@ -163,14 +163,14 @@ Feature: manage invoices
     And the following invoices:
       | client_name | invoice_date | description  |
       | Test client | 2010-01-01   | Test invoice |
-    And the following ticket_times:
+    And the following ticket times:
       | worker_username | invoice_description | started_at          | ended_at            |
       | tester          | Test invoice        | 2001-01-01 01:01:01 | 2001-01-01 02:02:02 |
     When I log in as "tester"
     And I follow "Test client"
     And I follow "invoices"
     And I follow "edit" for the "2010-01-01" invoice
-    Then I should see one ticket time by "tester"
+    Then I should see a ticket time by "tester"
     And the ticket time by "tester" should be checked
 
   Scenario: I should see ticket times not associated with any invoices
@@ -183,23 +183,23 @@ Feature: manage invoices
     And the following user roles:
       | user_username | client_name | finances | admin |
       | tester        | Test client | true     | true  |
-    And the following project records:
+    And the following projects:
       | name         | client_name |
       | Test project | Test client |
-    And the following ticket records:
+    And the following tickets:
       | name        | project_name |
       | Test ticket | Test project |
     And the following invoices:
       | client_name | invoice_date | description  |
       | Test client | 2010-01-01   | Test invoice |
-    And the following ticket_times:
+    And the following ticket times:
       | worker_username | ticket_name | started_at          | ended_at            |
       | tester          | Test ticket | 2001-01-01 01:01:01 | 2001-01-01 02:02:02 |
     When I log in as "tester"
     And I follow "Test client"
     And I follow "invoices"
     And I follow "edit" for the "2010-01-01" invoice
-    Then I should see one ticket time by "tester"
+    Then I should see a ticket time by "tester"
     And the ticket time by "tester" should not be checked
 
   Scenario: I should not see ticket times for other clients
@@ -215,7 +215,7 @@ Feature: manage invoices
     And the following invoices:
       | client_name | invoice_date | description  |
       | Test client | 2010-01-01   | Test invoice |
-    And the following ticket_times:
+    And the following ticket times:
       | worker_username | started_at          | ended_at            |
       | tester          | 2001-01-01 01:01:01 | 2001-01-01 02:02:02 |
     When I log in as "tester"
@@ -235,19 +235,19 @@ Feature: manage invoices
     And the following user roles:
       | user_username | client_name | finances | admin |
       | tester        | Test client | true     | true  |
-    And the following project records:
+    And the following projects:
       | name         | client_name |
       | Test project | Test client |
-    And the following ticket records:
+    And the following tickets:
       | name        | project_name |
       | Test ticket | Test project |
     And the following invoices:
       | client_name | invoice_date | description  |
       | Test client | 2010-01-01   | Test invoice |
-    And the following ticket_times:
+    And the following ticket times:
       | worker_username | ticket_name | started_at          | ended_at            |
       | tester          | Test ticket | 2001-01-01 01:01:01 | 2001-01-01 02:02:02 |
-    And the following ticket_times:
+    And the following ticket times:
       | worker_username | invoice_description | started_at          | ended_at            |
       | other           | Test invoice        | 2001-01-01 01:01:01 | 2001-01-01 02:02:02 |
     When I log in as "tester"
@@ -260,8 +260,8 @@ Feature: manage invoices
     And I follow "Test client"
     And I follow "invoices"
     And I follow "edit" for the "2010-01-01" invoice
-    Then I should see one ticket time by "tester"
-    And I should see one ticket time by "other"
+    Then I should see a ticket time by "tester"
+    And I should see a ticket time by "other"
     And the ticket time by "tester" should be checked
     And the ticket time by "other" should not be checked
 
