@@ -161,6 +161,23 @@ a:hover, a:active {
       border: 2px solid #933;
     }
 
+  .row .project-name {
+    width: 200px;
+  }
+
+  .row .billing-rate {
+    width: 100px;
+  }
+
+  .row .hours-worked {
+    width: 100px;
+  }
+
+  .row .amount {
+    width: 200px;
+  }
+
+
 .sidenote {
   padding-left: 5px;
   font-size: .8em;
@@ -186,3 +203,4 @@ form#new_ticket_time {
 #daily-goals {
   display: none;
 }
+

@@ -4,6 +4,7 @@ class Project < ActiveRecord::Base
   belongs_to :billing_rate, :dependent => :destroy
   has_many :billable_billing_rates, :class_name => 'BillingRate', :as => :billable, :dependent => :destroy
   has_many :tickets
+  has_many :ticket_times, :through => :tickets
   has_many :user_roles, :as => :manageable
   has_many :user_activity_alerts, :as => :alertable
 

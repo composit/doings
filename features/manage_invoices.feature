@@ -288,3 +288,15 @@ Feature: manage invoices
 
   Scenario: I should not see a link to invoices in the sidebar if a client has an overdue invoice if I don't have rights to manage finances
     pending
+
+  Scenario: I should see projects grouped with totals on the view page
+    pending
+
+  Scenario: I should see an invoice total on the view page
+    pending
+
+  Scenario: It should split projects up if ticket_times within have different billing rates
+    pending
+
+  Scenario: It should only show minutes/dollars for a project that are associated with the invoice
+    pending # move the calculations into the invoice model

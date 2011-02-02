@@ -88,13 +88,14 @@ describe Invoice do
     end
   end
 
-  describe "when including ticket times" do
+  describe "when including ticket times on a new invoice" do
     before( :each ) do
-      @invoice = Factory( :invoice )
+      @invoice = Factory.build( :invoice )
       ticket_time_params = { :invoice => @invoice, :started_at => 1.day.ago, :ended_at => 23.hours.ago, :ticket => Factory( :ticket, :project => Factory( :project, :client => @invoice.client ) ) }
       @ticket_time_one = Factory( :ticket_time, ticket_time_params )
       @ticket_time_two = Factory( :ticket_time, ticket_time_params.merge( :invoice => nil ) )
       @invoice.include_ticket_times = { @ticket_time_one.id => "0", @ticket_time_two.id => "1" }
+      @invoice.save!
     end
 
     it "should add ticket times that have been selected" do
@@ -106,4 +107,34 @@ describe Invoice do
     end
 
   end
+  
+  describe "when generating a project list" do
+    before( :each ) do
+      @invoice = Factory( :invoice )
+    end
+
+    it "should include associated projects" do
+      project = Factory( :project )
+      ticket = Factory( :ticket, :project => project )
+      Factory( :ticket_time, :ticket => ticket, :invoice => @invoice )
+
+      @invoice.projects.collect{ |project| project.id }.should eql( [project.id] )
+    end
+
+    it "should only include projects once" do
+      project = Factory( :project )
+      ticket = Factory( :ticket, :project => project )
+      Factory( :ticket_time, :ticket => ticket, :invoice => @invoice )
+      Factory( :ticket_time, :ticket => ticket, :invoice => @invoice )
+
+      @invoice.projects.collect{ |project| project.id }.should eql( [project.id] )
+    end
+
+    it "should not include non-associated projects" do
+      project = Factory( :project )
+
+      @invoice.projects.should be_empty
+    end
+  end
+
 end

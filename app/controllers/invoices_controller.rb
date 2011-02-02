@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  respond_to :html, :only => [:index, :show, :new, :create]
+  respond_to :html, :only => [:index, :show, :new]
 
   load_and_authorize_resource
   skip_load_and_authorize_resource :only => :new
@@ -20,7 +20,7 @@ class InvoicesController < ApplicationController
 
   def create
     flash[:notice] = 'Invoice was successfully created' if( @invoice.save )
-    respond_with( @invoice )
+    redirect_to @invoice
   end
 
   def edit
