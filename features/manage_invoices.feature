@@ -300,3 +300,21 @@ Feature: manage invoices
 
   Scenario: It should only show minutes/dollars for a project that are associated with the invoice
     pending # move the calculations into the invoice model
+
+  Scenario: It should display the bill to client and address
+    pending #clean up address display code
+
+  Scenario: It should display the billing company's name and address
+    pending
+
+  Scenario: It should display the description
+    pending
+
+  Scenario: It should display the invoice date
+    pending
+
+  Scenario: It should display the invoice number
+    pending
+
+  Scenario: It should display the billing company's logo
+    pending #take out the c9 logo from the images

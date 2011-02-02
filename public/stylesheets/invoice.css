@@ -1,0 +1,53 @@
+img#invoice-image {
+  position: absolute;
+  top: 0;
+  left: 440px;
+}
+
+div#addresses {
+  padding: 10px 0;
+  font-size: 1.1em;
+  font-family: Helvetica, Arial, sans-serif;
+  }
+
+  div#addresses div#bill-to {
+    width: 200px;
+    float: left;
+  }
+
+  div#addresses div#remit-to {
+    width: 200px;
+    float: left;
+  }
+
+div#invoice-details {
+  font-size: 1.3em;
+  line-height: 1.4em;
+  font-weight: bold;
+  padding: 10px 0;
+}
+
+div#invoice-body {
+}
+
+  .row .project-name {
+    width: 200px;
+  }
+
+  .row .billing-rate {
+    width: 100px;
+  }
+
+  .row .hours-worked {
+    width: 200px;
+  }
+
+  .row .amount {
+    width: 200px;
+  }
+
+  .total {
+    font-weight: bold;
+    font-size: 1.4em;
+  }
+

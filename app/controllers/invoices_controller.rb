@@ -10,6 +10,7 @@ class InvoicesController < ApplicationController
   end
 
   def show
+    render :layout => "invoice"
   end
 
   def new

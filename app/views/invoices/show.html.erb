@@ -1,30 +1,41 @@
-<%= content_for :header do %>
-  <h1>Invoice #<%= @invoice.id %></h1>
-<% end %>
-
-<p><%= @invoice.client.name %></p>
-<p><%= @invoice.invoice_date.strftime( "%Y-%m-%d" ) %></p>
-<p><%= @invoice.description %></p>
-
-<% for project in @invoice.projects %>
-  <div class="row clear">
-    <div class="project-name">
-      <%= project.name %>
-    </div>
-    <div class="billing-rate">
-      <%= number_to_currency( project.billing_rate.dollars ) %>/<%= project.billing_rate.units %>
-    </div>
-    <div class="hours-worked">
-      x <%= ( TicketTime.batch_seconds_worked( project.ticket_times.where( :invoice_id => @invoice.id ) ) / 360 ).round.to_f / 10 %> hours
-    </div>
-    <div class="amount">
-      <%= number_to_currency( TicketTime.batch_dollars_earned( project.ticket_times.where( :invoice_id => @invoice.id ) ) ) %>
-    </div>
+<div id="addresses" class="clear">
+  <div id="bill-to">
+    <h2>Bill to:</h2>
+    <%= @invoice.client.name %><br />
   </div>
-<% end %>
-<div class="row clear">
-  <div class="project-name"></div>
-  <div class="billing-rate"></div>
-  <div class="hours-worked"><b>Total</div>
-  <div class="amount"><b><%= number_to_currency( TicketTime.batch_dollars_earned( @invoice.ticket_times ) ) %></b></div>
+  <div id="remit-to">
+    <h2>Remit to:</h2>
+    Composition9, LLC<br />
+    1625 W. Elizabeth, #H-6<br />
+    Fort Collins, CO 80521
+  </div>
+</div>
+<div id="invoice-details">
+  Invoice #<%= @invoice.id %> dated <%= @invoice.invoice_date.strftime( "%m.%d.%Y" ) %><br />
+  <%= @invoice.description %>
+</div>
+
+<div id="invoice-body">
+  <% for project in @invoice.projects %>
+    <div class="row clear">
+      <div class="project-name">
+        <%= project.name %>
+      </div>
+      <div class="billing-rate">
+        <%= number_to_currency( project.billing_rate.dollars ) %>/<%= project.billing_rate.units %>
+      </div>
+      <div class="hours-worked">
+        x <%= ( TicketTime.batch_seconds_worked( project.ticket_times.where( :invoice_id => @invoice.id ) ) / 360 ).round.to_f / 10 %> hours
+      </div>
+      <div class="amount">
+        <%= number_to_currency( TicketTime.batch_dollars_earned( project.ticket_times.where( :invoice_id => @invoice.id ) ) ) %>
+      </div>
+    </div>
+  <% end %>
+  <div class="row total clear">
+    <div class="project-name"></div>
+    <div class="billing-rate"></div>
+    <div class="hours-worked"><b>Total</div>
+    <div class="amount"><%= number_to_currency( TicketTime.batch_dollars_earned( @invoice.ticket_times ) ) %></div>
+  </div>
 </div>
