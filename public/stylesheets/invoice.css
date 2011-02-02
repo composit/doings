@@ -1,7 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+}
+
+#wrap {
+  width: 1030px;
+  border: 1px solid red;
+  }
+
+  #wrap #main {
+    border: 0;
+    margin: 0:
+  }
+
 img#invoice-image {
   position: absolute;
   top: 0;
-  left: 440px;
+  left: 540px;
 }
 
 div#addresses {
@@ -25,13 +41,19 @@ div#invoice-details {
   line-height: 1.4em;
   font-weight: bold;
   padding: 10px 0;
+  width: 100%;
+  background-color: #ddd;
 }
 
 div#invoice-body {
 }
 
+.invoice-row {
+  border-bottom: 1px solid #ddd;
+}
+
   .row .project-name {
-    width: 200px;
+    width: 550px;
   }
 
   .row .billing-rate {
@@ -39,11 +61,12 @@ div#invoice-body {
   }
 
   .row .hours-worked {
-    width: 200px;
+    width: 100px;
   }
 
   .row .amount {
-    width: 200px;
+    width: 100px;
+    text-align: right;
   }
 
   .total {

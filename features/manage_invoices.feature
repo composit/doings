@@ -318,3 +318,9 @@ Feature: manage invoices
 
   Scenario: It should display the billing company's logo
     pending #take out the c9 logo from the images
+
+  Scenario: It should display the estimated time for projects
+    pending #what if the project isn't complete or is split between invoices?
+
+  Scenario: It should display the total hours
+    pending
