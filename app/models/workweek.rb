@@ -35,11 +35,12 @@ class Workweek < ActiveRecord::Base
       return( wdays )
     end
 
-    def count_days( start_time, end_time )
+    def count_days( start_time, end_time, weekday = nil )
+      check_days = ( weekday ? [weekday] : weekdays ) 
       if( start_time.year == end_time.year )
-        ( start_time.yday .. end_time.yday ).select { |day| weekdays.include?( Date.ordinal( start_time.year, day ).wday ) }.length
+        ( start_time.yday .. end_time.yday ).select { |day| check_days.include?( Date.ordinal( start_time.year, day ).wday ) }.length
       else
-        ( start_time.yday .. start_time.end_of_year.yday ).select { |day| weekdays.include?( Date.ordinal( start_time.year, day ).wday ) }.length + ( end_time.beginning_of_year.yday .. end_time.yday ).select { |day| weekdays.include?( Date.ordinal( end_time.year, day ).wday ) }.length
+        ( start_time.yday .. start_time.end_of_year.yday ).select { |day| check_days.include?( Date.ordinal( start_time.year, day ).wday ) }.length + ( end_time.beginning_of_year.yday .. end_time.yday ).select { |day| check_days.include?( Date.ordinal( end_time.year, day ).wday ) }.length
       end
     end
 

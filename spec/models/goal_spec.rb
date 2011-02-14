@@ -213,11 +213,10 @@ describe Goal do
     goal.percent_complete.should eql( 100 )
   end
 
-  describe "with a varied set of goals" do
+  describe "for goals with continuous updating" do
     before( :each ) do
       Timecop.freeze( Time.parse( "2010-12-29" ) ) #wednesday
       @user = Factory( :worker )
-      Factory( :workweek, :worker => @user, :sunday => false, :monday => true, :tuesday => true, :wednesday => true, :thursday => true, :friday => true, :saturday => false )
       @daily_monday = Factory( :goal, :user => @user, :units => "minutes", :amount => 10, :period => "Daily", :weekday => 1 )
       @daily_wednesday = Factory( :goal, :user => @user, :units => "minutes", :amount => 20, :period => "Daily", :weekday => 3 )
       @weekly = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly" )
@@ -247,6 +246,61 @@ describe Goal do
 
     it "should calculate the amount to be complete by the end of the day for yearly tasks" do
       ( ( @yearly.amount_to_date * 100 ).round.to_f / 100 ).should eql( 49.62 )
+    end
+  end
+
+  describe "with a specified update day" do
+    before( :each ) do
+      @user = Factory( :worker )
+      Timecop.freeze( Time.parse( "2010-12-29" ) ) #wednesday
+    end
+
+    after( :each ) do
+      Timecop.return
+    end
+
+    describe "for daily goals" do
+      it "should not validate if it is a daily goal with an update day" do
+        goal = Factory.build( :goal, :user => @user, :update_day => 2, :period => "Daily" )
+        goal.save
+
+        goal.errors.should eql( { :update_day => ["cannot be set for a daily goal"] } )
+      end
+    end
+
+    describe "for weekly goals" do
+      it "should not show any amount before the update day" do
+        goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly", :update_day => 4 )
+
+        goal.amount_to_date.should eql( 0 )
+      end
+
+      it "should show full amount for the week on the update day" do
+        goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly", :update_day => 3 )
+
+        goal.amount_to_date.should eql( 30 )
+      end
+
+      it "should show full amount for the week after the update day before the end of the week" do
+        goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly", :update_day => 1 )
+
+        goal.amount_to_date.should eql( 30 )
+      end
+    end
+
+    describe "for monthly goals" do
+      it "should multiply the number of previous update dates in that month by the monthly amount divided by the number of workdays in that month times the number of workdays in that week" do
+        goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 40, :period => "Monthly", :update_day => 3 )
+
+        goal.amount_to_date.should eql( 43.48 )
+      end
+    end
+
+    describe "for yearly goals" do
+      it "should multiply the number of previous update dates in that year by the yearly amount divided by the number of workdays in that year times the number of workdays in that week" do
+        @yearly = Factory( :goal, :user => @user, :units => "minutes", :amount => 50, :period => "Yearly" )
+        true.should eql( false )
+      end
     end
   end
 

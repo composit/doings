@@ -13,6 +13,7 @@ class Goal < ActiveRecord::Base
   validates :period, :presence => true, :inclusion => { :in => PERIOD_OPTIONS }
   validates :units, :presence => true, :inclusion => { :in => UNIT_OPTIONS }
   validates :user_id, :presence => true
+  validates :update_day, :not_daily => true
 
   before_validation :update_daily_values, :generate_priorities
 
@@ -61,10 +62,12 @@ class Goal < ActiveRecord::Base
   end
 
   def amount_to_date
+    workweek = user.current_workweek
     if( period == "Daily" && Time.zone.now.wday != weekday )
       0
+    elsif( update_day )
+      Time.zone.now.wday >= update_day ? amount : 0
     else
-      workweek = user.current_workweek
       total_days = workweek.workday_count( :period => period )
       days_to_current = workweek.workday_count( :period => period, :end_time => Time.zone.now )
       total_days > 0 ? amount.to_f / total_days * days_to_current : 0

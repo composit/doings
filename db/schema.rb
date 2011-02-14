@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110116213535) do
+ActiveRecord::Schema.define(:version => 20110214031959) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(:version => 20110116213535) do
     t.date     "daily_date"
     t.float    "daily_goal_amount"
     t.integer  "priority"
+    t.integer  "update_day"
   end
 
   create_table "invoices", :force => true do |t|
