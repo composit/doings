@@ -5,7 +5,7 @@
 <% if( current_user.is_worker? ) %>
   <div>
     <% if( ticket = current_user.best_available_ticket ) %>
-      Best available ticket: <%= ticket.name %>
+      Best available ticket: <%= ticket.full_name %>
       <%= render( :partial => "ticket_times/starter", :object => ticket ) %>
     <% else %>
       No available tickets
