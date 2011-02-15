@@ -92,6 +92,6 @@ describe Workweek do
   end
 
   it "should return the number of workdays" do
-    Factory( :weekday_workweek ).number_of_workdays.should eql( 5 )
+    Factory( :weekday_workweek, :worker => Factory( :user ) ).number_of_workdays.should eql( 5 )
   end
 end

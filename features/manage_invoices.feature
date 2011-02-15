@@ -112,7 +112,6 @@ Feature: manage invoices
     And I follow "invoices"
     Then I should not see "New invoice"
 
-    @current
   Scenario: I should be able to edit invoices if I have rights to manage finances
     Given the following confirmed_user records:
       | username |

@@ -19,8 +19,7 @@ class Workweek < ActiveRecord::Base
       opts[:start_time] ||= opts[:current_time]
       opts[:end_time] ||= opts[:current_time]
     end
-    offset = -1 * ( opts[:period] == "Yearly" ? worker.vacation_days_remaining.to_i : 0 )
-    count_days( opts[:start_time], opts[:end_time], opts[:update_day] ) + offset
+    count_days( opts[:start_time], opts[:end_time], opts[:update_day] )
   end
 
   def number_of_workdays

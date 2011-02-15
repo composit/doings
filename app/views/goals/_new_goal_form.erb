@@ -19,6 +19,16 @@
   <%= f.select :units, Goal::UNIT_OPTIONS %><br />
   <%= f.label :amount, "Amount (minutes/dollars)" %>
   <%= f.text_field :amount %><br />
+  Update
+  <%= f.check_box :update_daily %>
+  <%= f.label :update_daily, "daily" %>
+  <%= f.radio_button :update_day, 0 %> <%= label_tag "goal_update_day_0", "Sun" %>
+  <%= f.radio_button :update_day, 1 %> <%= label_tag "goal_update_day_1", "Mon" %>
+  <%= f.radio_button :update_day, 2 %> <%= label_tag "goal_update_day_2", "Tue" %>
+  <%= f.radio_button :update_day, 3 %> <%= label_tag "goal_update_day_3", "Wed" %>
+  <%= f.radio_button :update_day, 4 %> <%= label_tag "goal_update_day_4", "Thu" %>
+  <%= f.radio_button :update_day, 5 %> <%= label_tag "goal_update_day_5", "Fri" %>
+  <%= f.radio_button :update_day, 6 %> <%= label_tag "goal_update_day_6", "Sat" %>
   <%= f.hidden_field :user_id %>
   <%= f.submit "Create goal" %>
 <% end %>
