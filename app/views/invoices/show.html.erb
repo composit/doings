@@ -21,21 +21,29 @@
       <div class="project-name">
         <%= project.name %>
       </div>
-      <div class="billing-rate">
-        <%= number_to_currency( project.billing_rate.dollars ) %>/<%= project.billing_rate.units %>
-      </div>
       <div class="hours-worked">
-        x <%= ( TicketTime.batch_seconds_worked( project.ticket_times.where( :invoice_id => @invoice.id ) ) / 360 ).round.to_f / 10 %> hours
+        <%= ( TicketTime.batch_seconds_worked( project.ticket_times.where( :invoice_id => @invoice.id ) ) / 360 ).round.to_f / 10 %> hours
       </div>
-      <div class="amount">
-        <%= number_to_currency( TicketTime.batch_dollars_earned( project.ticket_times.where( :invoice_id => @invoice.id ) ) ) %>
-      </div>
+      <% if( @invoice.client.billing_rate.units == "hour" ) %>
+        <div class="billing-rate">
+          x <%= number_to_currency( project.billing_rate.dollars ) %>/<%= project.billing_rate.units %>
+        </div>
+        <div class="amount">
+          <%= number_to_currency( TicketTime.batch_dollars_earned( project.ticket_times.where( :invoice_id => @invoice.id ) ) ) %>
+        </div>
+      <% end %>
     </div>
   <% end %>
   <div class="row total clear">
     <div class="project-name"></div>
-    <div class="billing-rate"></div>
-    <div class="hours-worked"><b>Total</div>
-    <div class="amount"><%= number_to_currency( TicketTime.batch_dollars_earned( @invoice.ticket_times ) ) %></div>
+    <div class="hours-worked"></div>
+    <div class="billing-rate"><b>Total</b></div>
+    <div class="amount">
+      <% if( @invoice.client.billing_rate.units == "hour" ) %>
+        <%= number_to_currency( TicketTime.batch_dollars_earned( @invoice.ticket_times ) ) %>
+      <% else %>
+        <%= number_to_currency( @invoice.client.billing_rate.amount ) %>
+      <% end %>
+    </div>
   </div>
 </div>
