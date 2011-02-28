@@ -6,21 +6,21 @@ gem 'rails', '3.0.4'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2', '>=0.2.6'
-gem 'devise', '>=1.1.5'
+gem 'devise', '>=1.1.7'
 gem 'cancan', '>=1.5.1'
 gem 'will_paginate', '>=3.0.pre2'
 
 group :development do
   gem 'ruby-debug19', '>=0.11.6'
-  gem 'passenger', '>=3.0.2'
+  gem 'passenger', '>=3.0.3'
 end
 
 group :test do
   gem 'capybara', '>=0.4.1.2'
-  gem 'database_cleaner', '>=0.6.3'
+  gem 'database_cleaner', '>=0.6.4'
   gem 'cucumber-rails', '>=0.3.2'
   gem 'rspec-rails', '>=2.5.0'
-  gem 'spork', '>=0.9.0.rc3'
+  gem 'spork', '>=0.9.0.rc4'
   gem 'rb-inotify', '>=0.8.4'
   gem 'libnotify', '0.3.0'
   gem 'guard-spork', '>=0.1.4'
