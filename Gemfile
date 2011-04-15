@@ -5,29 +5,29 @@ gem 'rails', '3.0.4'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
+gem 'cancan', '>=1.6.3'
+gem 'devise', '>=1.2.0'
 gem 'mysql2', '>=0.2.6'
-gem 'devise', '>=1.1.5'
-gem 'cancan', '>=1.5.1'
 gem 'will_paginate', '>=3.0.pre2'
 
 group :development do
+  gem 'passenger', '>=3.0.5'
   gem 'ruby-debug19', '>=0.11.6'
-  gem 'passenger', '>=3.0.2'
 end
 
 group :test do
   gem 'capybara', '>=0.4.1.2'
-  gem 'database_cleaner', '>=0.6.3'
-  gem 'cucumber-rails', '>=0.3.2'
-  gem 'rspec-rails', '>=2.5.0'
-  gem 'spork', '>=0.9.0.rc3'
-  gem 'rb-inotify', '>=0.8.4'
-  gem 'libnotify', '0.3.0'
-  gem 'guard-spork', '>=0.1.4'
-  gem 'launchy', '>=0.3.7'
+  gem 'cucumber-rails', '>=0.4.0'
+  gem 'database_cleaner', '>=0.6.6'
   gem 'factory_girl_rails', '>=1.0.1'
-  gem 'timecop', '>=0.3.5'
+  gem 'guard-spork', '>=0.1.6'
+  gem 'launchy', '>=0.3.7'
+  gem 'libnotify', '0.3.0'
+  gem 'rb-inotify', '>=0.8.4'
   gem 'rev', '>=0.3.2'
+  gem 'rspec-rails', '>=2.5.0'
+  gem 'spork', '>=0.9.0.rc4'
+  gem 'timecop', '>=0.3.5'
   gem 'watchr', '>=0.7'
 end
 

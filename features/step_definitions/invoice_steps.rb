@@ -14,7 +14,9 @@ When /^I follow "([^"]*)" for the "([^"]*)" invoice$/ do |link, invoice_date|
 end
 
 When /^I check the ticket time by "([^"]*)"$/ do |worker_username|
-  false.should eql( true )
+  with_scope( page.find( ".content", :text => worker_username ).parent( "div" ) ) do
+    check( "input" )
+  end
 end
 
 When /^I uncheck the ticket time by "([^"]*)"$/ do |worker_username|
@@ -28,7 +30,8 @@ Then /^I should see a ticket time by "([^"]*)"$/ do |worker_username|
 end
 
 Then /^the ticket time by "([^"]*)" should be checked$/ do |worker_username|
-  false.should eql( true )
+  page.find( :xpath, "//div[contains('#{worker_username}')" ).all( "input", :type => "checkbox" ).length.should eql( 1 )
+  #page.find( ".ticket-time", :text => worker_username ).find( "input", :type => "checkbox" )['checked'].should be_true
 end
 
 Then /^the ticket time by "([^"]*)" should not be checked$/ do |worker_username|
