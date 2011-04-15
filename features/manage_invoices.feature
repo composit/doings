@@ -150,7 +150,6 @@ Feature: manage invoices
     And I follow "invoices"
     Then I should not see "edit"
 
-    @current
   Scenario: I should see ticket times associated with the invoice with checked checkboxes
     Given the following confirmed_user records:
       | username |

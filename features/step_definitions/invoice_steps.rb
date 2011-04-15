@@ -7,8 +7,7 @@ end
 
 When /^I follow "([^"]*)" for the "([^"]*)" invoice$/ do |link, invoice_date|
   invoice = Invoice.find_by_invoice_date( invoice_date )
-  scope = "#invoice-#{invoice.id}"
-  with_scope( scope ) do
+  with_scope( "\"#invoice-#{invoice.id}\"" ) do
     click_link( link )
   end
 end
@@ -24,7 +23,7 @@ When /^I uncheck the ticket time by "([^"]*)"$/ do |worker_username|
 end
 
 Then /^I should see a ticket time by "([^"]*)"$/ do |worker_username|
-  with_scope( ".ticket-time" ) do
+  with_scope( "\".ticket-time\"" ) do
     page.should have_content( worker_username )
   end
 end

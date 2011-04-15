@@ -8,7 +8,7 @@ end
 
 When /^I follow "([^"]*)" for the "([^"]*)" goal$/ do |link, goal_name|
   goal = Goal.find_by_name( goal_name )
-  with_scope( "#goal-#{goal.id}" ) do
+  with_scope( "\"#goal-#{goal.id}\"" ) do
     click_link( link )
   end
 end

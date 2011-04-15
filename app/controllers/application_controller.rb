@@ -6,8 +6,7 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :set_user_time_zone
   before_filter :set_layout_defaults
-
-  self.responder = DoingsResponder
+  before_filter :set_responder, :unless => Proc.new { devise_controller? }
 
   private
     def set_user_time_zone
@@ -19,5 +18,9 @@ class ApplicationController < ActionController::Base
         @nav_clients = Client.accessible_by( current_ability ).order( :name )
         @current_ticket_time = current_user.ticket_times.where( :ended_at => nil ).first
       end
+    end
+
+    def set_responder
+      self.responder = DoingsResponder
     end
 end
