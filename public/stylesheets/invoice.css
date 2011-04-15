@@ -6,7 +6,6 @@ body {
 
 #wrap {
   width: 1030px;
-  border: 1px solid red;
   }
 
   #wrap #main {
@@ -53,7 +52,7 @@ div#invoice-body {
 }
 
   .row .project-name {
-    width: 550px;
+    width: 450px;
   }
 
   .row .billing-rate {
