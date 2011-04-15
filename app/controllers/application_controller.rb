@@ -1,3 +1,5 @@
+require 'doings_responder'
+
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
