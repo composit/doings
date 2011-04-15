@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  self.responder = DoingsResponder
   load_and_authorize_resource
 
   respond_to :js, :only => [:show, :edit, :update, :create, :workables]

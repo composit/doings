@@ -2,6 +2,7 @@ class GoalsController < ApplicationController
   respond_to :html, :only => [:index, :prioritize]
   respond_to :js, :only => [:create, :destroy]
 
+  self.responder = DoingsResponder
   load_and_authorize_resource
 
   def index

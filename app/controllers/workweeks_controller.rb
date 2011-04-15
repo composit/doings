@@ -1,4 +1,5 @@
 class WorkweeksController < ApplicationController
+  self.responder = DoingsResponder
   respond_to :html, :only => :create
 
   load_and_authorize_resource

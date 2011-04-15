@@ -1,6 +1,7 @@
 class InvoicesController < ApplicationController
   respond_to :html, :only => [:index, :show, :new]
 
+  self.responder = DoingsResponder
   load_and_authorize_resource
   skip_load_and_authorize_resource :only => :new
 
