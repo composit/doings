@@ -6,8 +6,9 @@ gem 'rails', '3.0.6'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'cancan', '>=1.6.4'
-gem 'devise', '>=1.2.1'
+gem 'devise', '>=1.3.1'
 gem 'mysql2', '>=0.2.7'
+gem 'newrelic_rpm', '>=2.14.1'
 gem 'will_paginate', '>=3.0.pre2'
 
 group :development do
@@ -20,7 +21,7 @@ group :test do
   gem 'cucumber-rails', '>=0.4.1'
   gem 'database_cleaner', '>=0.6.6'
   gem 'factory_girl_rails', '>=1.0.1'
-  gem 'guard-spork', '>=0.1.7'
+  gem 'guard-spork', '>=0.1.10'
   gem 'launchy', '>=0.4.0'
   gem 'libnotify', '0.3.0'
   gem 'rb-inotify', '>=0.8.4'
