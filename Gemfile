@@ -18,17 +18,16 @@ end
 
 group :test do
   gem 'capybara', '>=1.0.0'
-  gem 'database_cleaner', '>=0.6.7'
   gem 'cucumber-rails', '>=1.0.2'
-  gem 'rspec-rails', '>=2.6.1'
-  gem 'spork', '>=0.9.0.rc9'
-  #gem 'rb-inotify', '>=0.8.5'
-  #gem 'libnotify', '0.3.0'
+  gem 'database_cleaner', '>=0.6.7'
+  gem 'factory_girl_rails', '>=1.0.1'
+  gem 'guard-cucumber', '>=0.5.2'
+  gem 'guard-rspec', '>=0.4.0'
   gem 'guard-spork', '>=0.2.1'
   gem 'launchy', '>=0.4.0'
-  gem 'factory_girl_rails', '>=1.0.1'
+  gem 'rspec-rails', '>=2.6.1'
+  gem 'spork', '>=0.9.0.rc9'
   gem 'timecop', '>=0.3.5'
-  #gem 'rev', '>=0.3.2'
 end
 
 # Use unicorn as the web server
