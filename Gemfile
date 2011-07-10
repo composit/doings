@@ -1,34 +1,33 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.3'
+gem 'rails', '>=3.0.9'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'mysql2', '>=0.2.6'
-gem 'devise', '>=1.1.5'
-gem 'cancan', '>=1.5.1'
+gem 'cancan', '>=1.6.5'
+gem 'devise', '>=1.4.2'
+gem 'mysql2', '<0.3' # update this when switching to Rails 3.1
 gem 'will_paginate', '>=3.0.pre2'
 
 group :development do
+  gem 'passenger', '>=3.0.7'
   gem 'ruby-debug19', '>=0.11.6'
-  gem 'passenger', '>=3.0.2'
 end
 
 group :test do
-  gem 'capybara', '>=0.4.1.2'
-  gem 'database_cleaner', '>=0.6.3'
-  gem 'cucumber-rails', '>=0.3.2'
-  gem 'rspec-rails', '>=2.5.0'
-  gem 'spork', '>=0.9.0.rc3'
-  gem 'rb-inotify', '>=0.8.4'
-  gem 'libnotify', '0.3.0'
-  gem 'guard-spork', '>=0.1.4'
-  gem 'launchy', '>=0.3.7'
+  gem 'capybara', '>=1.0.0'
+  gem 'database_cleaner', '>=0.6.7'
+  gem 'cucumber-rails', '>=1.0.2'
+  gem 'rspec-rails', '>=2.6.1'
+  gem 'spork', '>=0.9.0.rc9'
+  #gem 'rb-inotify', '>=0.8.5'
+  #gem 'libnotify', '0.3.0'
+  gem 'guard-spork', '>=0.2.1'
+  gem 'launchy', '>=0.4.0'
   gem 'factory_girl_rails', '>=1.0.1'
   gem 'timecop', '>=0.3.5'
-  gem 'rev', '>=0.3.2'
-  gem 'watchr', '>=0.7'
+  #gem 'rev', '>=0.3.2'
 end
 
 # Use unicorn as the web server
