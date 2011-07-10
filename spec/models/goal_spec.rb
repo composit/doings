@@ -86,6 +86,13 @@ describe Goal do
     goal.full_description.should eql( "Test goal: $3.21/year for Test client" )
   end
 
+  it "should generate a full description including update day" do
+    client = Factory( :client, :name => "Test client" )
+    goal = Factory( :goal, :workable => client, :period => "Yearly", :amount => 3.21, :name => "Test goal", :units => "dollars", :update_day => 3 )
+
+    goal.full_description.should eql( "Test goal: $3.21/year for Test client - updates on Wednesday" )
+  end
+
   it "should find ticket times within the range of a daily goal" do
     user = Factory( :worker )
     goal = Factory( :goal, :user => user, :period => "Daily" )
@@ -221,7 +228,7 @@ describe Goal do
       @daily_wednesday = Factory( :goal, :user => @user, :units => "minutes", :amount => 20, :period => "Daily", :weekday => 3 )
       @weekly = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly" )
       @monthly = Factory( :goal, :user => @user, :units => "minutes", :amount => 40, :period => "Monthly" )
-      @yearly = Factory( :goal, :user => @user, :units => "minutes", :amount => 50, :period => "Yearly" )
+      @yearly = Factory( :goal, :user => @user, :units => "minutes", :amount => 261, :period => "Yearly" )
     end
 
     after( :each ) do
@@ -241,18 +248,24 @@ describe Goal do
     end
 
     it "should calculate the amount to be complete by the end of the day for monthly tasks" do
-      @monthly.amount_to_date.round.should eql( 37 )
+      ( ( @monthly.amount_to_date * 100 ).round.to_f / 100 ).should eql( 36.52 )
     end
 
     it "should calculate the amount to be complete by the end of the day for yearly tasks" do
-      ( ( @yearly.amount_to_date * 100 ).round.to_f / 100 ).should eql( 49.62 )
+      @yearly.amount_to_date.should eql( 259.0 )
+    end
+
+    it "should take vacation days remaining into account for yearly tasks" do
+      @user.update_attributes!( :vacation_days_remaining => 2 )
+
+      @yearly.amount_to_date.should eql( 261.0 )
     end
   end
 
   describe "with a specified update day" do
     before( :each ) do
-      @user = Factory( :worker )
       Timecop.freeze( Time.parse( "2010-12-29" ) ) #wednesday
+      @user = Factory( :worker )
     end
 
     after( :each ) do
@@ -272,19 +285,19 @@ describe Goal do
       it "should not show any amount before the update day" do
         goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly", :update_day => 4 )
 
-        goal.amount_to_date.should eql( 0 )
+        goal.amount_to_date.should eql( 0.0 )
       end
 
       it "should show full amount for the week on the update day" do
         goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly", :update_day => 3 )
 
-        goal.amount_to_date.should eql( 30 )
+        goal.amount_to_date.should eql( 30.0 )
       end
 
       it "should show full amount for the week after the update day before the end of the week" do
         goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 30, :period => "Weekly", :update_day => 1 )
 
-        goal.amount_to_date.should eql( 30 )
+        goal.amount_to_date.should eql( 30.0 )
       end
     end
 
@@ -292,14 +305,15 @@ describe Goal do
       it "should multiply the number of previous update dates in that month by the monthly amount divided by the number of workdays in that month times the number of workdays in that week" do
         goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 40, :period => "Monthly", :update_day => 3 )
 
-        goal.amount_to_date.should eql( 43.48 )
+        ( ( goal.amount_to_date * 100 ).round.to_f / 100 ).should eql( 43.48 )
       end
     end
 
     describe "for yearly goals" do
       it "should multiply the number of previous update dates in that year by the yearly amount divided by the number of workdays in that year times the number of workdays in that week" do
-        @yearly = Factory( :goal, :user => @user, :units => "minutes", :amount => 50, :period => "Yearly" )
-        true.should eql( false )
+        goal = Factory( :goal, :user => @user, :units => "minutes", :amount => 261, :period => "Yearly", :update_day => 4 )
+
+        goal.amount_to_date.should eql( 255.0 ) # $1 is lost to previous year
       end
     end
   end
@@ -531,5 +545,11 @@ describe Goal do
       goal = Factory( :goal, :user => user )
       goal.reload.priority.should eql( 1 )
     end
+  end
+
+  it "should set update_day to nil if 'update daily' is set" do
+    goal = Factory( :goal, :update_daily => "1", :update_day => 3 )
+
+    goal.update_day.should be_nil
   end
 end

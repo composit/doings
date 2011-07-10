@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   has_many :workweeks, :foreign_key => :worker_id
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :time_zone
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :time_zone, :vacation_days_remaining
 
   validates :username, :uniqueness => true, :presence => true
   validates :time_zone, :presence => true

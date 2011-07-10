@@ -42,6 +42,7 @@ Feature: manage billing rates
     And I select "total" from "per"
     Then "for" should be visible
 
+    @current
   @javascript
   Scenario: If the billable field is hidden, it should not submit data
     Given the following confirmed_user records:

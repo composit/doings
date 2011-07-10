@@ -13,13 +13,16 @@ class Goal < ActiveRecord::Base
   validates :period, :presence => true, :inclusion => { :in => PERIOD_OPTIONS }
   validates :units, :presence => true, :inclusion => { :in => UNIT_OPTIONS }
   validates :user_id, :presence => true
-  validates :update_day, :not_daily => true
+  validates :update_day, :daily_date => true
 
-  before_validation :update_daily_values, :generate_priorities
+  attr_accessor :update_daily
+
+  before_validation :update_daily_values, :generate_priorities, :check_update_day
 
   def full_description
     desc = "#{name}: #{amount_string}/#{period_unit}"
     desc += " for #{workable.name}" if( workable_id )
+    desc += " - updates on #{(Time.zone.now.beginning_of_week + update_day.days - 1).strftime( "%A" )}" if( update_day )
     return desc
   end
 
@@ -62,15 +65,21 @@ class Goal < ActiveRecord::Base
   end
 
   def amount_to_date
-    workweek = user.current_workweek
     if( period == "Daily" && Time.zone.now.wday != weekday )
       0
-    elsif( update_day )
-      Time.zone.now.wday >= update_day ? amount : 0
     else
+      workweek = user.current_workweek
       total_days = workweek.workday_count( :period => period )
-      days_to_current = workweek.workday_count( :period => period, :end_time => Time.zone.now )
-      total_days > 0 ? amount.to_f / total_days * days_to_current : 0
+      total_days -= user.vacation_days_remaining.to_i if( period == "Yearly" )
+      amount_per_day = ( total_days > 0 ? amount.to_f / total_days : 0 )
+      if( update_day ) # will update once a week on the specified day
+        workweeks_to_current = workweek.workday_count( :period => period, :end_time => Time.zone.now, :update_day => update_day )
+        amount_per_week = amount_per_day * workweek.number_of_workdays
+        workweeks_to_current * amount_per_week
+      else # will update every workday
+        days_to_current = workweek.workday_count( :period => period, :end_time => Time.zone.now )
+        amount_per_day * days_to_current
+      end
     end
   end
 
@@ -113,6 +122,10 @@ class Goal < ActiveRecord::Base
     end
   end
 
+  def update_daily
+    @update_daily ||= update_day.nil?
+  end
+
   private
     def period_unit
       case period
@@ -142,5 +155,9 @@ class Goal < ActiveRecord::Base
         goals = user.goals.order( :priority )
         self.priority = ( goals.empty? ? 1 : goals.last.priority.to_i + 1 )
       end
+    end
+
+    def check_update_day
+      self.update_day = nil if( update_daily == "1" )
     end
 end

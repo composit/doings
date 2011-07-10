@@ -1,4 +1,5 @@
 class TicketTimesController < ApplicationController
+  self.responder = DoingsResponder
   respond_to :js, :only => [:create, :update]
   respond_to :html, :only => [:index, :edit, :update]
 

@@ -2,6 +2,7 @@ class ClientsController < ApplicationController
   respond_to :html, :only => [:edit, :new, :create, :update]
   respond_to :js, :only => [:index, :workables]
 
+  self.responder = DoingsResponder
   load_and_authorize_resource
 
   def show

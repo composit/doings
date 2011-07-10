@@ -59,6 +59,7 @@ Feature: manage clients
     Then I should see "Test project"
     And I should not see "Other project"
 
+    @currentz
   Scenario: I should be able to edit client information if I have admin access to that client
     Given the following confirmed_user records:
       | username |
@@ -90,6 +91,7 @@ Feature: manage clients
     And I follow "Test client"
     Then I should not see a field labeled "Name"
 
+    @current
   Scenario: I should be able to create a new address if the client doesn't have an address
     Given the following confirmed_user records:
       | username |
@@ -107,6 +109,7 @@ Feature: manage clients
     Then I should see "Client was successfully updated"
     And the "Line 1" field should contain "Test address"
 
+    @current
   Scenario: I should be able to update billing rate info for a client
     Given the following confirmed_user records:
       | username |
@@ -207,3 +210,6 @@ Feature: manage clients
     When I log in as "tester"
     And I follow "Test client"
     Then I should see "No address on record"
+
+  Scenario: I should see error messages when editing a client and entering bad info
+    pending

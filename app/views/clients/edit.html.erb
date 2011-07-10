@@ -5,6 +5,7 @@
 <p>created by <%= @client.created_by_user.username %></p>
 
 <%= form_for( @client ) do |f| %>
+  <%= render( "shared/error_messages", :target => f.object ) %>
   <%= render( :partial => "form", :locals => { :f => f } ) %>
   <div class="row clear">
     <div class="title"> </div>

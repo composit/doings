@@ -19,7 +19,11 @@ class Workweek < ActiveRecord::Base
       opts[:start_time] ||= opts[:current_time]
       opts[:end_time] ||= opts[:current_time]
     end
-    count_days( opts[:start_time], opts[:end_time] )
+    count_days( opts[:start_time], opts[:end_time], opts[:update_day] )
+  end
+
+  def number_of_workdays
+    weekdays.length
   end
 
   private
@@ -35,8 +39,8 @@ class Workweek < ActiveRecord::Base
       return( wdays )
     end
 
-    def count_days( start_time, end_time, weekday = nil )
-      check_days = ( weekday ? [weekday] : weekdays ) 
+    def count_days( start_time, end_time, update_day = nil )
+      check_days = ( update_day ? [update_day] : weekdays ) 
       if( start_time.year == end_time.year )
         ( start_time.yday .. end_time.yday ).select { |day| check_days.include?( Date.ordinal( start_time.year, day ).wday ) }.length
       else

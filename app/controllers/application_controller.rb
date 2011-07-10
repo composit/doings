@@ -1,11 +1,11 @@
+require 'doings_responder'
+
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
   before_filter :authenticate_user!
   before_filter :set_user_time_zone
   before_filter :set_layout_defaults
-
-  self.responder = DoingsResponder
 
   private
     def set_user_time_zone

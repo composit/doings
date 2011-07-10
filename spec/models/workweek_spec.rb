@@ -55,4 +55,43 @@ describe Workweek do
     Timecop.freeze( Time.parse( "2010-10-13" ) )
     workweek.workday_count( :period => "Daily" ).should eql( 1 )
   end
+
+  describe "when figuring workweeks" do
+    before( :each ) do
+      @workweek = Factory( :workweek, :worker => Factory( :user ), :monday => true, :wednesday => true, :saturday => true )
+      Timecop.freeze( Time.parse( "2010-12-29" ) ) # Wednesday
+    end
+
+    after( :each ) do
+      Timecop.return
+    end
+
+    it "should determine the number of workweeks in the week to be one" do
+      @workweek.workday_count( :period => "Weekly", :update_day => 4 ).should eql( 1 )
+    end
+
+    it "should determine the number of workweeks in the week up to the current day" do
+      @workweek.workday_count( :period => "Weekly", :update_day => 4, :end_time => Time.zone.now ).should eql( 0 )
+    end
+
+    it "should determine the number of workweeks in the month" do
+      @workweek.workday_count( :period => "Monthly", :update_day => 4 ).should eql( 5 )
+    end
+
+    it "should determine the number of workweeks in the month up to the current day" do
+      @workweek.workday_count( :period => "Monthly", :update_day => 4, :end_time => Time.zone.now ).should eql( 4 )
+    end
+
+    it "should determine the number of workweeks in the year" do
+      @workweek.workday_count( :period => "Yearly", :update_day => 4 ).should eql( 52 )
+    end
+
+    it "should determine the number of workweeks in the year up to the current day" do
+      @workweek.workday_count( :period => "Yearly", :update_day => 4, :end_time => Time.zone.now ).should eql( 51 )
+    end
+  end
+
+  it "should return the number of workdays" do
+    Factory( :weekday_workweek, :worker => Factory( :user ) ).number_of_workdays.should eql( 5 )
+  end
 end

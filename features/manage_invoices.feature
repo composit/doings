@@ -92,6 +92,7 @@ Feature: manage invoices
     And I fill in "Invoice date" with "2010-01-01"
     And I fill in "Description" with "Test invoice"
     And I press "Create invoice"
+    And I am on the panel page
     And I follow "Test client"
     And I follow "invoices"
     And I follow "2010-01-01"
@@ -112,7 +113,6 @@ Feature: manage invoices
     And I follow "invoices"
     Then I should not see "New invoice"
 
-    @current
   Scenario: I should be able to edit invoices if I have rights to manage finances
     Given the following confirmed_user records:
       | username |
@@ -171,6 +171,7 @@ Feature: manage invoices
     And I follow "invoices"
     And I follow "edit" for the "2010-01-01" invoice
     Then I should see a ticket time by "tester"
+    And show me the page
     And the ticket time by "tester" should be checked
 
   Scenario: I should see ticket times not associated with any invoices

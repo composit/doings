@@ -136,5 +136,4 @@ describe Invoice do
       @invoice.projects.should be_empty
     end
   end
-
 end

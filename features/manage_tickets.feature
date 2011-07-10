@@ -175,6 +175,7 @@ Feature: manage tickets
     And I follow "tickets" for the "Test project" project
     Then I should not see "Test ticket"
 
+    @current
   @javascript
   Scenario: If I try to create an invalid ticket, I should see an alert
     Given the following confirmed_user records:
@@ -199,6 +200,7 @@ Feature: manage tickets
     And I press "Create ticket"
     Then I should see "t be blank"
 
+    @current
   @javascript
   Scenario: I should be able to add multiple tickets in a row without refreshing the page
     Given the following confirmed_user records:
@@ -616,6 +618,7 @@ Feature: manage tickets
     And I follow "tickets" for the "Test project" project
     Then I should not see "New name"
 
+    @current
   @javascript
   Scenario: I should see validation errors if a ticket I am editing fails validation
     Given the following confirmed_user records:

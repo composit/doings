@@ -18,6 +18,9 @@
   <p><%= f.label :time_zone %><br />
   <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones %></p>
 
+  <p><%= f.label :vacation_days_remaining %><br />
+  <%= f.text_field :vacation_days_remaining %></p>
+
   <p><%= f.submit "Sign up" %></p>
 <% end %>
 
