@@ -10,6 +10,7 @@ gem 'devise', '>=1.4.2'
 gem 'mysql2', '<0.3' # update this when switching to Rails 3.1
 gem 'newrelic_rpm', '>=2.14.1'
 gem 'will_paginate', '>=3.0.pre2'
+gem 'capistrano'
 
 group :development do
   gem 'passenger', '>=3.0.7'
