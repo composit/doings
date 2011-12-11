@@ -191,6 +191,7 @@ Feature: manage goals
     When I log in as "tester"
     And I am on the panel page
     And I follow "view daily goals"
+    And show me the page
     Then I should see "Goal one: 0/100 minutes"
     And I should see "Goal two: 0/50 dollars"
     And I should see "100 minutes to go"

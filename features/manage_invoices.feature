@@ -171,7 +171,6 @@ Feature: manage invoices
     And I follow "invoices"
     And I follow "edit" for the "2010-01-01" invoice
     Then I should see a ticket time by "tester"
-    And show me the page
     And the ticket time by "tester" should be checked
 
   Scenario: I should see ticket times not associated with any invoices
