@@ -33,7 +33,7 @@ describe Invoice do
   end
 
   it "should default the invoice_date_string to the current date" do
-    Timecop.freeze( Time.parse( "2001-02-03" ) ) do
+    Timecop.freeze( Time.zone.parse( "2001-02-03" ) ) do
       invoice = Factory( :invoice, :invoice_date => nil )
 
       invoice.invoice_date_string.should eql( "2001-02-03" )

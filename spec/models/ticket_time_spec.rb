@@ -31,7 +31,7 @@ describe TicketTime do
   it "should allow the entered start time if it exists" do
     ticket_time = Factory( :ticket_time, :started_at => "2001-02-03 04:05:06" )
 
-    ticket_time.started_at.should eql( Time.parse( "2001-02-03 04:05:06" ) )
+    ticket_time.started_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-02-03 04:05:06" )
   end
 
   it "should require that the end time is later than the start time" do
@@ -53,11 +53,11 @@ describe TicketTime do
   it "should close open ticket times for that worker when opening a new one" do
     user = Factory( :user )
     ticket_time = Factory( :ticket_time, :worker => user, :started_at => "2001-01-01 01:01:01" )
-    Timecop.freeze( Time.parse( "2001-01-01 02:03:04" ) ) do
+    Timecop.freeze( Time.zone.parse( "2001-01-01 02:03:04" ) ) do
       Factory( :ticket_time, :worker => user )
     end
 
-    ticket_time.reload.ended_at.should eql( Time.parse( "2001-01-01 02:03:04" ) )
+    ticket_time.reload.ended_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2001-01-01 02:03:04" )
   end
 
   it "should not close open ticket times for other workers when opening a new one" do
@@ -132,11 +132,11 @@ describe TicketTime do
     end
 
     it "should not alter the start time for that ticket" do
-      @ticket_time.reload.started_at.should eql( Time.parse( "2010-12-28 23:00:00" ) )
+      @ticket_time.reload.started_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2010-12-28 23:00:00" )
     end
 
     it "should end that ticket time a second before midnight" do
-      @ticket_time.reload.ended_at.should eql( Time.parse( "2010-12-28 23:59:59" ) )
+      @ticket_time.reload.ended_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2010-12-28 23:59:59" )
     end
 
     it "should create one ticket time for each day" do
@@ -150,7 +150,7 @@ describe TicketTime do
       end
 
       it "should set the second ticket time starting time to the beginning of the second day" do
-        @second_ticket_time.started_at.should eql( Time.parse( "2010-12-29 00:00:00" ) )
+        @second_ticket_time.started_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2010-12-29 00:00:00" )
       end
 
       it "should set the second ticket time ending time to the end of the second day" do
