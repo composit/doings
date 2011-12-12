@@ -154,7 +154,7 @@ describe TicketTime do
       end
 
       it "should set the second ticket time ending time to the end of the second day" do
-        @second_ticket_time.ended_at.should eql( Time.parse( "2010-12-29 23:59:59" ) )
+        @second_ticket_time.ended_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2010-12-29 23:59:59" )
       end
 
       it "should set the second ticket time worker id to the worker id" do
@@ -166,11 +166,11 @@ describe TicketTime do
       end
 
       it "should set the last ticket time starting time to the beginning of the last day" do
-        @last_ticket_time.started_at.should eql( Time.parse( "2010-12-30 00:00:00" ) )
+        @last_ticket_time.started_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2010-12-30 00:00:00" )
       end
 
       it "should set the last ticket time ending time to the end of ticket time span" do
-        @last_ticket_time.ended_at.should eql( Time.parse( "2010-12-30 01:00:00" ) )
+        @last_ticket_time.ended_at.strftime( "%Y-%m-%d %H:%M:%S" ).should eql( "2010-12-30 01:00:00" )
       end
 
       it "should set the last ticket time worker id to the worker id" do
@@ -194,7 +194,7 @@ describe TicketTime do
       Timecop.return
     end
 
-    it "should return 0 dollars earned if the previous earned is greater than the rate" do
+    it "should return 0 dollars earned if the previous earned is greater than the rate", focus: true do
       Factory( :ticket_time, :ticket => @ticket, :started_at => 2.hours.ago, :ended_at => 1.hour.ago )
       ticket_time = Factory( :ticket_time, :ticket => @ticket, :started_at => 1.hour.ago, :ended_at => Time.zone.now )
       ticket_time.dollars_earned.should eql( 0.0 )

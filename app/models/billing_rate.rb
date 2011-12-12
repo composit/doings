@@ -25,6 +25,7 @@ class BillingRate < ActiveRecord::Base
     applicable_ticket_times = applicable_ticket_times.where( "started_at >= ?", Time.zone.now.beginning_of_month ) if( units == "month" )
     calculated_total = TicketTime.batch_seconds_worked( applicable_ticket_times ) / 3600 * hourly_rate_for_calculations
     raw_remaining = dollars - calculated_total
+    debugger
     return( raw_remaining > 0 ? raw_remaining : 0.0 )
   end
 
