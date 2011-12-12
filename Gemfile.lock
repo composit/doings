@@ -83,7 +83,7 @@ GEM
       guard (>= 0.8.3)
     guard-rspec (0.5.9)
       guard (>= 0.8.4)
-    guard-spork (0.4.0)
+    guard-spork (0.4.1)
       guard (>= 0.8.4)
       spork (>= 0.8.4)
     headless (0.2.2)

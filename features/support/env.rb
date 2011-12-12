@@ -6,6 +6,7 @@
 
 require 'rubygems'
 require 'spork'
+require 'ruby-debug'
  
 Spork.prefork do
   require 'cucumber/rails'
@@ -15,6 +16,11 @@ Spork.prefork do
   # prefer to use XPath just remove this line and adjust any selectors in your
   # steps to use the XPath syntax.
   Capybara.default_selector = :css
+
+  require 'headless'
+  headless = Headless.new
+  headless.start
+  at_exit { headless.destroy }
 end
  
 Spork.each_run do
@@ -59,19 +65,4 @@ Spork.each_run do
   # The :transaction strategy is faster, but might give you threading problems.
   # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
   Cucumber::Rails::Database.javascript_strategy = :truncation
-
-  Before @javascript do
-    if Capybara.current_driver == :selenium
-      require 'headless'
-
-      @headless = Headless.new
-      @headless.start
-    end
-  end
-
-  After @javascript do
-    if @headless
-      @headless.destroy
-    end
-  end
 end

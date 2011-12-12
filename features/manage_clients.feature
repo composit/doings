@@ -197,19 +197,5 @@ Feature: manage clients
       | B Middle client |
       | C Last client   |
 
-  Scenario: I should be able to view a client even if they don't have an address
-    Given the following confirmed_user records:
-      | username |
-      | tester   |
-    And the following client records:
-      | name        | address_id |
-      | Test client | nil        |
-    And the following user roles:
-      | user_username | client_name |
-      | tester        | Test client |
-    When I log in as "tester"
-    And I follow "Test client"
-    Then I should see "No address on record"
-
   Scenario: I should see error messages when editing a client and entering bad info
     pending

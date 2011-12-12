@@ -194,7 +194,7 @@ describe TicketTime do
       Timecop.return
     end
 
-    it "should return 0 dollars earned if the previous earned is greater than the rate", focus: true do
+    it "should return 0 dollars earned if the previous earned is greater than the rate" do
       Factory( :ticket_time, :ticket => @ticket, :started_at => 2.hours.ago, :ended_at => 1.hour.ago )
       ticket_time = Factory( :ticket_time, :ticket => @ticket, :started_at => 1.hour.ago, :ended_at => Time.zone.now )
       ticket_time.dollars_earned.should eql( 0.0 )

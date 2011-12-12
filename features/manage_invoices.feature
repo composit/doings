@@ -1,5 +1,4 @@
 Feature: manage invoices
-
   Scenario: I should see a link to invoices on the client show page
     Given the following confirmed_user records:
       | username |
@@ -170,6 +169,7 @@ Feature: manage invoices
     And I follow "Test client"
     And I follow "invoices"
     And I follow "edit" for the "2010-01-01" invoice
+    And show me the page
     Then I should see a ticket time by "tester"
     And the ticket time by "tester" should be checked
 

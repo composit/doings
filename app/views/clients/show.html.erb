@@ -6,14 +6,10 @@
 
 <p><%= @client.name %></p>
 <p><%= link_to @client.web_address, @client.web_address %></p>
-<% if( @client.address ) %>
-  <p><%= @client.address.street_address %></p>
-  <p><%= @client.address.phone %></p>
-  <p><%= @client.billing_frequency %></p>
-  <p><%= @client.active ? "Active" : "Not active" %></p>
-<% else %>
-  <p class="sidenote">No address on record</p>
-<% end %>
+<p><%= @client.address.street_address %></p>
+<p><%= @client.address.phone %></p>
+<p><%= @client.billing_frequency %></p>
+<p><%= @client.active ? "Active" : "Not active" %></p>
 <% if( can?( :read_finances, @client ) ) %>
   <%= link_to "invoices", client_invoices_path( :client_id => @client.id ) %>
 <% end %>
