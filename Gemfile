@@ -11,6 +11,7 @@ gem 'mysql2', '<0.3'
 gem 'newrelic_rpm'
 gem 'will_paginate'
 gem 'capistrano'
+gem 'rvm-capistrano'
 
 group :development do
   gem 'ruby-debug19', require: 'ruby-debug'
