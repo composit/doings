@@ -2,14 +2,15 @@ set :application, "doings"
 set :repository,  "git@github.com:composit/doings.git"
 set :user, "root"
 set :deploy_to, "/var/www/doings"
+set :deploy_via, :remote_cache
 ssh_options[:forward_agent] = true
 
 #$:.unshift(File.expand_path('./lib', ENV['rvm_path'])) # Add RVM's lib directory to the load path.
 require "rvm/capistrano"                  # Load RVM's capistrano plugin.
-set :rvm_ruby_string, '1.9.2@doings'        # Or whatever env you want it to run in.
+set :rvm_ruby_string, '1.9.2-p290@doings'        # Or whatever env you want it to run in.
 set :rvm_type, :system
 
-set :scm, 'git'
+set :scm, :git
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
 
 server "parasites", :app, :web, :db, :primary => true
