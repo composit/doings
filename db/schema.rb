@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110415163359) do
+ActiveRecord::Schema.define(:version => 20120524180254) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line_1"
@@ -71,6 +71,14 @@ ActiveRecord::Schema.define(:version => 20110415163359) do
     t.float    "daily_goal_amount"
     t.integer  "priority"
     t.integer  "update_day"
+  end
+
+  create_table "invoice_adjustments", :force => true do |t|
+    t.string   "description"
+    t.decimal  "amount",      :precision => 10, :scale => 2
+    t.integer  "invoice_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "invoices", :force => true do |t|
