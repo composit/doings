@@ -58,7 +58,7 @@
     <div class="billing-rate"><b>Total</b></div>
     <div class="amount">
       <% if( @invoice.client.billing_rate.units == "hour" ) %>
-        <%= number_to_currency( TicketTime.batch_dollars_earned( @invoice.ticket_times ) + @invoice.adjustments.all.sum( &:amount ).to_f ) %>
+        <%= number_to_currency( TicketTime.batch_dollars_earned( @invoice.ticket_times ) + @invoice.invoice_adjustments.all.sum( &:amount ).to_f ) %>
       <% else %>
         <%= number_to_currency( @invoice.client.billing_rate.dollars + @invoice.invoice_adjustments.all.sum( &:amount ).to_f ) %>
       <% end %>
